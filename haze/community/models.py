@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+    from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -25,6 +25,8 @@ class Game(models.Model):
     source_url = models.fields.URLField()
     price = models.fields.DecimalField(decimal_places=2,
                                        validators=[MinValueValidator(0.0)])
+    sales_price = models.fields.DecimalField(decimal_places=2, validators=
+                                             [MinValueValidator(0.0)], null=True)
     name = models.fields.CharField(max_length=50)
     description = models.fields.TextField(blank=True)
     game_logo = models.ImageField(null=True)  # Should specify height and width
