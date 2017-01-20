@@ -19,11 +19,13 @@ class Category(models.Model):
 
 class Game(models.Model):
     # Use unique slug for game URL?
-    game_id = models.fields.SlugField(unique=True, primary_key=True)
+    #game_id = models.fields.SlugField(unique=True, primary_key=True)
+    game_id = models.AutoField(primary_key=True)
     developer_id = models.ForeignKey(Developer)  # Should this be cascading?
     category_id = models.ForeignKey(Category)
     source_url = models.fields.URLField()
-    price = models.fields.DecimalField(decimal_places=2,
+    price = models.fields.DecimalField(max_digits=5,
+                                       decimal_places=2,
                                        validators=[MinValueValidator(0.0)])
     name = models.fields.CharField(max_length=50)
     description = models.fields.TextField(blank=True)
@@ -34,7 +36,7 @@ class Game(models.Model):
 
 class Player(models.Model):
     player_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    games = models.ManyToManyField(Game, symmetrical=False, null=True)
+    games = models.ManyToManyField(Game, symmetrical=False)
 
 
 class Game_Score(models.Model):
@@ -44,7 +46,7 @@ class Game_Score(models.Model):
     game = models.ForeignKey(Game)
     score = models.fields.BigIntegerField(null=False,
                                           validators=[MinValueValidator(0)])
-    timestamp = models.DateTimeField(default=timezone.now())
+    timestamp = models.DateTimeField(default=timezone.now)
 
 
 class Game_State(models.Model):
@@ -52,5 +54,5 @@ class Game_State(models.Model):
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
     state_data = JSONField()
-    timestamp = models.DateTimeField(default=timezone.now())
+    timestamp = models.DateTimeField(default=timezone.now)
     # name = models.fields.CharField(max_length=50)

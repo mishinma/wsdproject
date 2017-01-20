@@ -10,10 +10,11 @@ class Transaction(models.Model):
     # Should the length be fixed?
     pid = models.fields.CharField(max_length=100, primary_key=True)
     ref = models.fields.CharField(max_length=100)
-    amount = models.fields.DecimalField(decimal_places=2,
+    amount = models.fields.DecimalField(max_digits=5,
+                                        decimal_places=2,
                                         validators=[MinValueValidator(0.0)])
     result = models.fields.CharField(max_length=10)
-    timestamp = models.DateTimeField(default=timezone.now())
+    timestamp = models.DateTimeField(default=timezone.now)
 
 
 class Gift(models.Model):
