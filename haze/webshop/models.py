@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
 from community.models import Player, Game
@@ -12,7 +12,8 @@ class Transaction(models.Model):
     ref = models.fields.CharField(max_length=100)
     amount = models.fields.DecimalField(max_digits=5,
                                         decimal_places=2,
-                                        validators=[MinValueValidator(0.0)])
+                                        validators=[MinValueValidator(0.0),
+                                                    MaxValueValidator(999.00)])
     result = models.fields.CharField(max_length=10)
     timestamp = models.DateTimeField(default=timezone.now)
 
