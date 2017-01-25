@@ -26,8 +26,8 @@ class Game(models.Model):
     source_url = models.fields.URLField()
     price = models.fields.DecimalField(max_digits=5,
                                        decimal_places=2,
-                                       validators=[MinValueValidator(0.0)],
-                                                   MaxValueValidator(999.99))
+                                       validators=[MinValueValidator(0.0),
+                                                   MaxValueValidator(999.99)])
     sales_price = models.fields.DecimalField(max_digits=5, decimal_places=2,
                                              validators=[MinValueValidator(0.0),
                                                          MaxValueValidator(999.99)],
