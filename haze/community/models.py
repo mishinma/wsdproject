@@ -8,12 +8,12 @@ from accounts.models import Developer, Player
 
 
 class Game_Category(models.Model):
-    category_name = models.fields.CharField(max_length=50, unique=True)
+    name = models.fields.CharField(max_length=50, unique=True)
 
 
 class Game(models.Model):
     # Use unique slug for game URL?
-    game_slug = models.fields.SlugField(unique=True)
+    slug = models.fields.SlugField(unique=True)
     developer = models.ForeignKey(Developer)  # Should this be cascading?
     category = models.ForeignKey(Game_Category)
     source_url = models.fields.URLField()
@@ -27,7 +27,7 @@ class Game(models.Model):
                                              null=True)
     name = models.fields.CharField(max_length=50, unique=True)
     description = models.fields.TextField(blank=True)
-    game_logo = models.ImageField(null=True)  # Should specify height and width
+    logo = models.ImageField(null=True)  # Should specify height and width
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
 
