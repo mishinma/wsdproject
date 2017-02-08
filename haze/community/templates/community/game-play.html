@@ -9,12 +9,12 @@
             {% if game.game_logo %}
                 <img src="{{game.game_logo.url}}" class="img-responsive">
             {% else %}
-                <img src="../../static/community/images/placeholder-pacman-grey.jpg" class="img-responsive">
+                <img src="../../../base/static/base/images/placeholder-pacman-grey.jpg" class="img-responsive">
             {% endif %}
             <div class="row">
                 <div class="col-xs-4 col-md-2">
                     <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
-                    <img src="../../static/community/images/rating/{{game.rating | floatformat:"0"}}.png">
+                    <img src="../../../base/static/base/images/rating/{{game.rating | floatformat:" 0"}}.png">
                 </div>
                 <div class="col-xs-4 col-md-2">
                     <h3>{{game.price}}</h3>

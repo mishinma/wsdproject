@@ -1,0 +1,11 @@
+body {
+    background: url("images/006-fine-plaster.png");
+}
+
+#rating {
+    width: 200px;
+}
+
+.rating {
+    width: 200px;
+}
