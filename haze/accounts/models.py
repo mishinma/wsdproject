@@ -12,4 +12,3 @@ class Developer(models.Model):
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     games = models.ManyToManyField('community.Game', symmetrical=False)
-    games = models.fields.TextField()
