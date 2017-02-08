@@ -28,4 +28,4 @@ class Purchase(models.Model):
     pid = models.ForeignKey(Transaction)
     payer = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
-    gift_id = models.ForeignKey(Gift, null=True, blank=True)
+    gift = models.ForeignKey(Gift, null=True, blank=True)
