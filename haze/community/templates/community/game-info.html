@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-{% block title %}Register{% endblock %}
+{% block title %}{{game.name}}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-xs-8 col-md-5">
             {% if game.logo %}
-                <img src="{{game.logo.url}}" class="img-responsive">
+                <img src="{{game.logo}}" class="img-responsive">
             {% else %}
                 <img src="../../static/community/images/placeholder-pacman-grey.jpg" class="img-responsive">
             {% endif %}
@@ -16,11 +16,9 @@
                     <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
                     <img src="../../static/community/images/rating/{{game.rating | floatformat:"0"}}.png">
                 </div>
-                <div class="col-xs-4 col-md-2">
-                    <h3>{{game.price}}</h3>
-                </div>
-                <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span>Play now!</button>
             </div>
+            <h3>{{game.price}} &euro;</h3>
+            <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span>Play now!</button>
         </div>
         <div class="col-xs-8 col-md-5">
             <p>{{game.description}}</p>
