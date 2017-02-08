@@ -5,10 +5,14 @@ from django.contrib.auth.models import User
 
 
 class Developer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User,
+                                primary_key=True,
+                                on_delete=models.CASCADE)
     corp_page = models.fields.URLField()
 
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User,
+                                primary_key=True,
+                                on_delete=models.CASCADE)
     games = models.ManyToManyField('community.Game', symmetrical=False)
