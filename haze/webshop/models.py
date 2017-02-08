@@ -21,11 +21,11 @@ class Transaction(models.Model):
 
 class Gift(models.Model):
     receiver = models.ForeignKey(Player)
-    message = models.fields.TextField(blank=True)
+    message = models.fields.TextField(null=True, blank=True)
 
 
 class Purchase(models.Model):
     pid = models.ForeignKey(Transaction)
     payer = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
-    gift_id = models.ForeignKey(Gift, null=True)
+    gift_id = models.ForeignKey(Gift, null=True, blank=True)
