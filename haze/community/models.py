@@ -14,10 +14,9 @@ class Game_Category(models.Model):
 
 class Game(models.Model):
     # Use unique slug for game URL?
-    game_id = models.AutoField(primary_key=True)
     game_slug = models.fields.SlugField(unique=True)
-    developer_id = models.ForeignKey(Developer)  # Should this be cascading?
-    category_id = models.ForeignKey(Game_Category)
+    developer = models.ForeignKey(Developer)  # Should this be cascading?
+    category = models.ForeignKey(Game_Category)
     source_url = models.fields.URLField()
     price = models.fields.DecimalField(max_digits=5,
                                        decimal_places=2,
