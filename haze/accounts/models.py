@@ -8,7 +8,7 @@ class Developer(models.Model):
     user = models.OneToOneField(User,
                                 primary_key=True,
                                 on_delete=models.CASCADE)
-    corp_page = models.fields.URLField()
+    corp_page = models.fields.URLField(blank=True)
 
 
 class Player(models.Model):
