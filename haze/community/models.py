@@ -24,10 +24,10 @@ class Game(models.Model):
     sales_price = models.fields.DecimalField(max_digits=5, decimal_places=2,
                                              validators=[MinValueValidator(0.0),
                                                          MaxValueValidator(999.99)],
-                                             null=True)
+                                             null=True, blank=True)
     name = models.fields.CharField(max_length=50, unique=True)
-    description = models.fields.TextField(blank=True)
-    logo = models.ImageField(null=True)  # Should specify height and width
+    description = models.fields.TextField(null=True, blank=True)
+    logo = models.ImageField(null=True, blank=True)  # Should specify height and width
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
 
@@ -36,8 +36,7 @@ class Game_Score(models.Model):
     # Cascading?
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
-    score = models.fields.BigIntegerField(null=False,
-                                          validators=[MinValueValidator(0)])
+    score = models.fields.BigIntegerField(validators=[MinValueValidator(0)])
     timestamp = models.DateTimeField(default=timezone.now)
 
 
