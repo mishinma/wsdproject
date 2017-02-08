@@ -26,7 +26,7 @@ class Game(models.Model):
                                                          MaxValueValidator(999.99)],
                                              null=True, blank=True)
     name = models.fields.CharField(max_length=50, unique=True)
-    description = models.fields.TextField(null=True, blank=True)
+    description = models.fields.TextField(blank=True)
     logo = models.ImageField(null=True, blank=True)  # Should specify height and width
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])

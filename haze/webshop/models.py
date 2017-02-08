@@ -21,7 +21,7 @@ class Transaction(models.Model):
 
 class Gift(models.Model):
     receiver = models.ForeignKey(Player)
-    message = models.fields.TextField(null=True, blank=True)
+    message = models.fields.TextField(blank=True)
 
 
 class Purchase(models.Model):
