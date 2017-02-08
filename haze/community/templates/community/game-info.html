@@ -1,0 +1,31 @@
+{% extends 'community/base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1>{{game.name}}</h1>
+    <div class="row">
+        <div class="col-xs-8 col-md-5">
+            {% if game.game_logo %}
+                <img src="{{game.game_logo.url}}" class="img-responsive">
+            {% else %}
+                <img src="../../static/community/images/placeholder-pacman-grey.jpg" class="img-responsive">
+            {% endif %}
+            <div class="row">
+                <div class="col-xs-4 col-md-2">
+                    <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
+                    <img src="../../static/community/images/rating/{{game.rating | floatformat:"0"}}.png">
+                </div>
+                <div class="col-xs-4 col-md-2">
+                    <h3>{{game.price}}</h3>
+                </div>
+                <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span>Play now!</button>
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-5">
+            <p>{{game.description}}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
