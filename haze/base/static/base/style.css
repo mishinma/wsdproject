@@ -6,6 +6,7 @@ body {
     width: 200px;
 }
 
-.rating {
-    width: 200px;
+#playbtn {
+    margin: 10px;
 }
+

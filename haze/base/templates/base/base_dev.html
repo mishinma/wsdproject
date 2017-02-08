@@ -11,9 +11,9 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 </head>
 <body>
+
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
-
         <!-- Header -->
         <div class="nav-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
@@ -23,7 +23,6 @@
             </button>
             <a class="navbar-brand" href="{% url 'base:index' %}">HaZe</a>
         </div>
-
         <!-- Items -->
         <div class="collapse navbar-collapse" id="topNavBar">
             <ul class="nav navbar-nav">
@@ -42,25 +41,21 @@
                 </li>
                 <li class="">
                     <a href="#">
-                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Log in
+                        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
                     </a>
                 </li>
                 <li class="">
                     <a href={% url 'accounts:register-user' %}>
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Sign up
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, Mr.Dev
                     </a>
                 </li>
             </ul>
-
         </div>
-
     </div>
 </nav>
 
 {% block body %}
 {% endblock %}
-
-
 
 </body>
 </html>
