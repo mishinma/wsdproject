@@ -8,7 +8,6 @@ from accounts.models import Developer, Player
 
 
 class Game_Category(models.Model):
-    category_id = models.AutoField(primary_key=True)
     category_name = models.fields.CharField(max_length=50, unique=True)
 
 
@@ -34,7 +33,6 @@ class Game(models.Model):
 
 
 class Game_Score(models.Model):
-    category_id = models.AutoField(primary_key=True)
     # Cascading?
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
@@ -44,7 +42,6 @@ class Game_Score(models.Model):
 
 
 class Game_State(models.Model):
-    state_id = models.AutoField(primary_key=True)
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
     state_data = JSONField()
