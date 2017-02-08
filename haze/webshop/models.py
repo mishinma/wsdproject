@@ -3,7 +3,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
-from community.models import Player, Game
+from community.models import Game
+from community.models import Player
 
 
 class Transaction(models.Model):
@@ -19,14 +20,12 @@ class Transaction(models.Model):
 
 
 class Gift(models.Model):
-    gift_id = models.AutoField(primary_key=True)
     receiver = models.ForeignKey(Player)
     message = models.fields.TextField(blank=True)
 
 
 class Purchase(models.Model):
-    purchase_id = models.AutoField(primary_key=True)
     pid = models.ForeignKey(Transaction)
     payer = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
-    gift_id = models.ForeignKey(Gift, null=True)
+    gift = models.ForeignKey(Gift, null=True, blank=True)
