@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
-from accounts.models import Developer, Player
+from django.contrib.auth.models import User
 
 
 class Game_Category(models.Model):
@@ -14,7 +14,8 @@ class Game_Category(models.Model):
 class Game(models.Model):
     # Use unique slug for game URL?
     slug = models.fields.SlugField(unique=True)
-    developer = models.ForeignKey(Developer)  # Should this be cascading?
+    developer = models.ForeignKey(User)  # Should this be cascading?
+    players = models.ManyToManyField(User, related_name='games')
     category = models.ForeignKey(Game_Category)
     source_url = models.fields.URLField()
     price = models.fields.DecimalField(max_digits=5,
@@ -31,17 +32,22 @@ class Game(models.Model):
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
 
+    class Meta:
+        permissions = (
+            ("play_game", "Can play the game"),
+        )
+
 
 class Game_Score(models.Model):
     # Cascading?
-    player = models.ForeignKey(Player)
+    player = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     score = models.fields.BigIntegerField(validators=[MinValueValidator(0)])
     timestamp = models.DateTimeField(default=timezone.now)
 
 
 class Game_State(models.Model):
-    player = models.ForeignKey(Player)
+    player = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     state_data = JSONField()
     timestamp = models.DateTimeField(default=timezone.now)
