@@ -1,3 +1,14 @@
-venv/**
-**.idea
+# Python virtual environment
+venv
+
+# Compiled files
 *.pyc
+
+# Python 3 cache directories
+__pycache__/
+
+# Django static files collection
+staticfiles
+
+# Pycharm stuff
+**.idea
