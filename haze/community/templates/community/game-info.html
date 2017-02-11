@@ -1,0 +1,28 @@
+{% extends 'base/base_visitor.html' %}
+{% block title %}{{game.name}}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>{{game.name}}</h1>
+    <div class="row">
+        <div class="col-xs-8 col-md-5">
+            {% if game.logo %}
+                <img src="{{game.logo}}" class="img-responsive">
+            {% else %}
+                <img src="../../static/base/images/placeholder-pacman-grey.jpg" class="img-responsive">
+            {% endif %}
+
+        </div>
+        <div class="col-xs-8 col-md-5">
+            <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
+            <div>
+                <img id="rating" class="rating" src="../../static/base/images/rating/{{game.rating | floatformat:" 0"}}.png">
+            </div>
+            <h3>{{game.price}} &euro;</h3>
+            <button id="playbtn" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
+            <p>{{game.description}}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
