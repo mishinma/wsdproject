@@ -1,1 +1,1 @@
-web: gunicorn django_heroku_demo.wsgi --log-file -
+web: gunicorn haze.wsgi --log-file -
