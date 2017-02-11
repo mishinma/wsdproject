@@ -1,16 +1,14 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from accounts.models import Developer
 from community.models import Game, Game_Category
 
 
 class GameTestCase(TestCase):
     def setUp(self):
-        jon_user = User.objects.create(username='jon', password='bastard')
-        jon_developer = Developer.objects.create(user=jon_user)
+        jon = User.objects.create(username='jon', password='bastard')
         rpg_cat = Game_Category.objects.create(name='RPG')
         Game.objects.create(
-            developer=jon_developer,
+            developer=jon,
             category=rpg_cat,
             source_url='got.test',
             price=50.00,
