@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect
 from accounts.forms import RegistrationForm, LoginForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 
 
 def register_player(request):
     form, new_user = get_user_from_registration_form(request)
     if new_user is not None:
         # user.password refers to password hash
+        player_group = Group.objects.get(name='player')
+        new_user.groups.add(player_group)
+        new_user.save()
         password = form.cleaned_data['password']
         user = authenticate(username=new_user.username, password=password)
         if user is not None and user.is_active:
@@ -22,6 +26,9 @@ def register_devloper(request):
     form, new_user = get_user_from_registration_form(request)
     if new_user is not None:
         # user.password refers to password hash
+        developer_group = Group.objects.get(name='developer')
+        new_user.groups.add(developer_group)
+        new_user.save()
         password = form.cleaned_data['password']
         user = authenticate(username=new_user.username, password=password)
         if user is not None and user.is_active:
