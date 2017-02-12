@@ -1,5 +1,4 @@
 from django import forms
-# from accounts.models import Player, Developer
 from django.contrib.auth.models import User
 
 

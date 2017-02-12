@@ -2,22 +2,21 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+
 # Create your tests here.
 
 
 class RegisterTestCase(TestCase):
-
     def test_register_new_player(self):
-
         response = self.client.post(
             path=reverse('accounts:register-user'),
             data={
-            'username': 'jon',
-            'email': 'jon.snow@aalto.fi',
-            'password': 'asdf',
-            'confirm_password': 'asdf',
-            'is_developer': False
-        })
+                'username': 'jon',
+                'email': 'jon.snow@aalto.fi',
+                'password': 'asdf',
+                'confirm_password': 'asdf',
+                'is_developer': False
+            })
 
         # Redirect to user
         self.assertEqual(response.status_code, 302)
@@ -33,16 +32,15 @@ class RegisterTestCase(TestCase):
         self.assertFalse(jon_player.has_perm('community.edit_game'))
 
     def test_register_new_developer(self):
-
         response = self.client.post(
             path=reverse('accounts:register-user'),
             data={
-            'username': 'daenerys',
-            'email': 'daenerys.targerian@aalto.fi',
-            'password': 'fdsa',
-            'confirm_password': 'fdsa',
-            'is_developer': True
-        })
+                'username': 'daenerys',
+                'email': 'daenerys.targerian@aalto.fi',
+                'password': 'fdsa',
+                'confirm_password': 'fdsa',
+                'is_developer': True
+            })
         # Redirect to user
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('base:index'))
@@ -57,16 +55,15 @@ class RegisterTestCase(TestCase):
         self.assertTrue(dany_developer.has_perm('community.change_game'))
 
     def test_register_password_mismatch(self):
-
         response = self.client.post(
             path=reverse('accounts:register-user'),
             data={
-            'username': 'ramsey',
-            'email': 'ramsey.bolton@aalto.fi',
-            'password': 'asdfasdf',
-            'confirm_password': 'asdf',
-            'is_developer': False
-        })
+                'username': 'ramsey',
+                'email': 'ramsey.bolton@aalto.fi',
+                'password': 'asdfasdf',
+                'confirm_password': 'asdf',
+                'is_developer': False
+            })
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(User.DoesNotExist):
             ramsey_player = User.objects.get(username='ramsey')
