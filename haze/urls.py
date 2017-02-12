@@ -23,5 +23,4 @@ urlpatterns = [
     url(r'^', include('base.urls')),
     url(r'^', include('community.urls')),
     url(r'^', include('accounts.urls')),
-    url('^accounts/', include('django.contrib.auth.urls')),
 ]
