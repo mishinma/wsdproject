@@ -45,28 +45,30 @@
                     </a>
                 </li>
 
-                {% if user|has_group:"developer" %}
-                <li class="">
-                    <a href={% url 'accounts:developer-inventory' %}>
-                    <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
-                    </a>
-                </li>
-                <li class="">
-                    <a href={% url 'accounts:developer-info' %}>
-                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, Mr.Dev
-                    </a>
-                </li>
-                {% elif user|has_group:"player" %}
-                <li class="">
-                    <a href={% url 'accounts:developer-inventory' %}>
+                {% if user.is_authenticated %}
+
+                    {% if user|has_group:"player" %}
+                    <li class="">
+                        <a href={% url 'accounts:developer-inventory' %}>
                         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
-                    </a>
-                </li>
-                <li class="">
-                    <a href={% url 'accounts:player-info' %}>
-                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, Misha
-                    </a>
-                </li>
+                        </a>
+                    </li>
+
+                    {% else %}
+                    <li class="">
+                        <a href={% url 'accounts:developer-inventory' %}>
+                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+                    <li class="">
+                        <a href={% url 'accounts:player-info' %}>
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, {{ user.username }}
+                        </a>
+                    </li>
+
                 {% else %}
                 <li class="">
                     <a href="#">
