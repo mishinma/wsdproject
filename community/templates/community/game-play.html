@@ -6,7 +6,7 @@
     <h1>{{game.name}}</h1>
     <div class="row">
         <div class="col-xs-8 col-md-5">
-           <iframe src={{game.source_url}}></iframe>
+            <iframe src={{game.source_url}}></iframe>
         </div>
         <div class="col-xs-8 col-md-5">
             <div>
@@ -19,28 +19,77 @@
                 {% for x in "xxx" %}
                 <li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>
                 {% endfor %}
-
             </ol>
         </div>
     </div>
 </div>
 
 
-  <script>
-  $(document).ready(function () {
-    "use strict";
-    window.addEventListener("message", function(evt) {
-/*      if(evt.origin === "http://localhost:8000") {
-        console.log(evt);*/
-        $("#data-returned").append(evt.data);
-/*      } else {
-        alert("Intruder alert!");
-      }*/
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
     });
-  });
-  </script>
 
 
+    $(document).ready(function () {
+        "use strict";
+        window.addEventListener("message", function (evt) {
+            console.log(evt);
+            console.log(evt.data);
+            var j = JSON.stringify(evt.data);
+            console.log(j);
+
+            if (evt.data["messageType"] == "SCORE") {
+                $.ajax({
+                    method: "POST",
+                    data: j
+                })
+                    .done(function () {
+                        console.log("Score Saved");
+                    })
+            }
+
+            if (evt.data["messageType"] == "SAVE") {
+                $.ajax({
+                    method: "POST",
+                    data: evt.data.gameState
+                })
+                    .done(function () {
+                        console.log("State Saved");
+                    })
+            }
+        });
+
+
+    });
+
+
+</script>
 
 
 {% endblock %}

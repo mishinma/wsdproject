@@ -33,3 +33,14 @@ def play_game(request, game_id):
         return render(request, "community/game-play.html", context)
     else:
         return redirect('community:game-info', game_id=game_id)
+
+
+def save_score(request):
+    if request.POST:
+        # HOW TO GET GAME ID?
+        score = Game_Score(player=request.user, game=request.game, score=request.score)
+        score.save()
+
+
+def save_state(request):
+    pass
