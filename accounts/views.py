@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from accounts.forms import RegistrationForm, LoginForm
+from accounts.forms import RegistrationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 
@@ -38,28 +38,6 @@ def register_devloper(request):
         "form": form,
     }
     return render(request, 'accounts/registration_form.html', context)
-
-
-def login_user(request):
-    form = LoginForm(request.POST or None)
-    if form.is_valid():
-        user = form.save(commit=False)
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['password']
-
-        user = authenticate(username=username, password=password)
-        if user is not None and user.is_active:
-            login(request, user)
-            return render(request, 'community/welcome_user.html', {'games': None})
-    context = {
-        'form': form,
-    }
-    return render(request, 'accounts/login_form.html', context)
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('index')
 
 
 def get_user_from_registration_form(request):
