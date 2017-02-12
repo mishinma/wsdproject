@@ -6,7 +6,7 @@
     <h1>{{game.name}}</h1>
     <div class="row">
         <div class="col-xs-8 col-md-5">
-           <iframe src="example_game.html"></iframe>
+           <iframe src={{game.source_url}}></iframe>
         </div>
         <div class="col-xs-8 col-md-5">
             <div>
@@ -18,9 +18,29 @@
             <ol>
                 {% for x in "xxx" %}
                 <li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>
+                {% endfor %}
+
             </ol>
         </div>
     </div>
 </div>
+
+
+  <script>
+  $(document).ready(function () {
+    "use strict";
+    window.addEventListener("message", function(evt) {
+/*      if(evt.origin === "http://localhost:8000") {
+        console.log(evt);*/
+        $("#data-returned").append(evt.data);
+/*      } else {
+        alert("Intruder alert!");
+      }*/
+    });
+  });
+  </script>
+
+
+
 
 {% endblock %}
