@@ -1,16 +1,23 @@
 from community.models import Game, Game_Category
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
+from django.contrib.auth.models import Group
 
 
 # Helper function to deal with existing usernames
-def get_or_create_user(username, email, password):
+def get_or_create_user(username, email, password, dev=False):
     try:
         new_user = User.objects.create(username, email)
     except IntegrityError:
         return User.objects.get(username=username)
     else:
         new_user.set_password(password)
+        new_user.save()
+        if dev:
+            user_group = Group.objects.get(name='developer')
+        else:
+            user_group = Group.objects.get(name='player')
+        new_user.groups.add(user_group)
         new_user.save()
 
     return new_user
