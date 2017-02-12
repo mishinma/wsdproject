@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 
@@ -31,6 +32,14 @@ class Game(models.Model):
     logo = models.ImageField(null=True, blank=True)  # Should specify height and width
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            # Newly created object, so set slug
+            self.slug = slugify(self.name)
+
+        super(Game, self).save(*args, **kwargs)
+
 
     class Meta:
         permissions = (
