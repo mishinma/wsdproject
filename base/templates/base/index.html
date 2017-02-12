@@ -1,9 +1,15 @@
-{% extends 'base/base_user.html' %}
+{% extends 'base/base.html' %}
 
 {% block body %}
 
     <div class="container-fluid">
-        <h1>Welcome, {{user.name}}</h1>
+        <h1>
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }}!
+        {% else %}
+            Welcome to HaZe!
+        {% endif %}
+        </h1>
         <h2>Top games:</h2><br>
         <div class="row">
              {% for x in "xxxx" %}
