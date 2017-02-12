@@ -49,14 +49,14 @@
 
                     {% if user|has_group:"player" %}
                     <li class="">
-                        <a href={% url 'accounts:developer-inventory' %}>
+                        <a href='#'>
                         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
                         </a>
                     </li>
 
                     {% else %}
                     <li class="">
-                        <a href={% url 'accounts:developer-inventory' %}>
+                        <a href='#'>
                             <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
                         </a>
                     </li>
@@ -64,19 +64,19 @@
                     {% endif %}
 
                     <li class="">
-                        <a href={% url 'accounts:player-info' %}>
+                        <a href='#'>
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, {{ user.username }}
                         </a>
                     </li>
 
                 {% else %}
                 <li class="">
-                    <a href="#">
+                    <a href={% url 'accounts:login-user'%}>
                         <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Log in
                     </a>
                 </li>
                 <li class="">
-                    <a href="#"> <!--{% url 'accounts:register-user' %}-->
+                    <a href={% url 'accounts:register-user'%}>
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Sign up
                     </a>
                 </li>
