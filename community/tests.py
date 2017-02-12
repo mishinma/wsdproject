@@ -10,7 +10,7 @@ class GameTestCase(TestCase):
         Game.objects.create(
             developer=jon,
             category=rpg_cat,
-            source_url='got.test',
+            source_url='http://webcourse.cs.hut.fi/example_game.html',
             price=50.00,
             sales_price=49.99,
             name='The Battle of the Bastards',
@@ -24,3 +24,4 @@ class GameTestCase(TestCase):
     def test_game_init(self):
         rpg_cat = Game_Category.objects.get(name='RPG')
         got_game = Game.objects.get(name='The Battle of the Bastards')
+
