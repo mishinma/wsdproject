@@ -47,17 +47,17 @@
 
                 {% if user.is_authenticated %}
 
-                    {% if user|has_group:"player" %}
+                    {% if user|has_group:"developer" %}
                     <li class="">
                         <a href='#'>
-                        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
+                        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
                         </a>
                     </li>
 
                     {% else %}
                     <li class="">
                         <a href='#'>
-                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
+                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
                         </a>
                     </li>
 
@@ -69,10 +69,17 @@
                         </a>
                     </li>
 
+                    <li class="">
+                        <a href={% url 'accounts:logout-user'%}>
+                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp; Logout
+                        </a>
+                    </li>
+
+
                 {% else %}
                 <li class="">
                     <a href={% url 'accounts:login-user'%}>
-                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Log in
+                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
                     </a>
                 </li>
                 <li class="">
