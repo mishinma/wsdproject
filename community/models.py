@@ -11,6 +11,12 @@ from django.contrib.auth.models import User
 class Game_Category(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'game_categories'
+
 
 class Game(models.Model):
     # Use unique slug for game URL?
@@ -33,6 +39,9 @@ class Game(models.Model):
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
 
+    def __str__(self):
+        return self.name
+
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
@@ -45,6 +54,7 @@ class Game(models.Model):
         permissions = (
             ("play_game", "Can play the game"),
         )
+
 
 
 class Game_Score(models.Model):
