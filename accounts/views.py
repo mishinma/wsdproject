@@ -5,6 +5,10 @@ from django.contrib.auth.models import Group
 
 
 def register(request):
+
+    if request.user.is_authenticated():
+        return redirect('base:index')
+
     if request.POST:
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
@@ -25,8 +29,8 @@ def register(request):
             auth_user = authenticate(username=new_user.username, password=password)
             if auth_user is not None:
                 login(request, auth_user)
-                return render(request, 'community/welcome_user.html', {'games': None})
+                return redirect('base:index')
     else:
         form = RegistrationForm()
-    return render(request, 'accounts/registration_form.html', context={'form': form})
+    return render(request, 'accounts/registration-form.html', context={'form': form})
 
