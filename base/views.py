@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from community.models import Game, Game_Category
 
 
 def index(request):
-    return render(request, "base/index.html")
+    games = Game.objects.all().
+    return render(request, "base/index.html", {'games': games})
