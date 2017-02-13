@@ -20,24 +20,23 @@ class Command(BaseCommand):
         else:
             user_group = Group.objects.get(name='player')
         try:
-            new_user = User.objects.create(username=username, email=email)
+            user = User.objects.create(username=username, email=email)
         except IntegrityError:
-            existing_user = User.objects.get(username=username)
-            existing_user.groups.clear()
-            existing_user.groups.add(user_group)
-            existing_user.save()
-            return existing_user
+            # Update existing user
+            user = User.objects.get(username=username)
+            user.email = email
+            user.groups.clear()
         else:
-            new_user.set_password(password)
-            new_user.save()
-            new_user.groups.add(user_group)
-            new_user.save()
-            return new_user
+            user.save()
+        user.set_password(password)
+        user.groups.add(user_group)
+        user.save()
+        return user
 
     # Helper function to deal with existing game names
     def get_or_create_game(self, dev, cat, url, price, name, desc, rating, sale=None):
         try:
-            new_game = Game.objects.create(
+            game = Game.objects.create(
                 developer=dev,
                 category=cat,
                 source_url=url,
@@ -48,10 +47,18 @@ class Command(BaseCommand):
                 rating=rating
             )
         except IntegrityError:
-            return Game.objects.get(name=name)
-        else:
-            new_game.save()
-            return new_game
+            # Update existing game
+            game = Game.objects.get(name=name)
+            game.developer = dev
+            game.category = cat
+            game.source_url = url
+            game.price = price
+            game.sales_price = sale
+            game.name = name
+            game.description = desc
+            game.rating = rating
+        game.save()
+        return game
 
     # Helper function to deal with existing category names
     def get_or_create_game_cat(self, name):
@@ -65,10 +72,11 @@ class Command(BaseCommand):
 
     def run(self):
         default_url = 'http://webcourse.cs.hut.fi/example_game.html'
-        default_desc = 'The Battle of the Bastards is a battle late in the War '
-        'of the Five Kings in which Jon Snow and Sansa Stark retake '
-        'Winterfell from Lord Ramsay Bolton, the Warden of the North, '
-        'and restore House Stark as the ruling house of the North. '
+        default_desc = ('The Battle of the Bastards is a battle late in the '
+                        'War of the Five Kings in which Jon Snow and Sansa '
+                        'Stark retake Winterfell from Lord Ramsay Bolton, the '
+                        'Warden of the North, and restore House Stark as the '
+                        'ruling house of the North.')
         # Game categories
         rpg_cat = self.get_or_create_game_cat('RPG')
         action_cat = self.get_or_create_game_cat('Action')
