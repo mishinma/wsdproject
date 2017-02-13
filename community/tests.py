@@ -10,7 +10,7 @@ class GameTestCase(TestCase):
         Game.objects.create(
             developer=jon,
             category=rpg_cat,
-            source_url='http://webcourse.cs.hut.fi/example_game.html',
+            source_url='http://got.test',
             price=50.00,
             sales_price=49.99,
             name='The Battle of the Bastards',
