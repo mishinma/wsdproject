@@ -38,10 +38,10 @@ class GameTestCase(TestCase):
         bran.groups.add(player_group)
 
         # Create scores
-        gs1 = Game_Score.objects.create(player=sansa, game=game, score=3)
-        gs2 = Game_Score.objects.create(player=bran, game=game, score=12)
-        gs3 = Game_Score.objects.create(player=sansa, game=game, score=54)
-        gs4 = Game_Score.objects.create(player=bran, game=game, score=25)
+        gs1 = Game_Score.objects.create(player=sansa, game=game, score=3, timestamp=1426441988)
+        gs2 = Game_Score.objects.create(player=bran, game=game, score=12, timestamp=1424022788)
+        gs3 = Game_Score.objects.create(player=sansa, game=game, score=54, timestamp=1424019188)
+        gs4 = Game_Score.objects.create(player=bran, game=game, score=25, timestamp=1423932788)
 
     def test_game_init(self):
         rpg_cat = Game_Category.objects.get(name='RPG')
@@ -52,4 +52,11 @@ class GameTestCase(TestCase):
         game = Game.objects.get(name='The Battle of the Bastards')
         sansa_game_highest_score = game.get_user_highest_score(sansa)
         self.assertEqual(sansa_game_highest_score, 54)
+
+    def test_game_get_user_latest_score(self):
+        sansa = User.objects.get(username='sansa')
+        game = Game.objects.get(name='The Battle of the Bastards')
+        sansa_game_latest_score = game.get_user_latest_score(sansa)
+        self.assertEqual(sansa_game_latest_score, 1426441988)
+
 
