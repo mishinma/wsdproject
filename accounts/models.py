@@ -6,8 +6,11 @@ from community.models import Game
 
 class UserMethods(User):
 
-    def plays_game(self, game_id):
-        return self.games.filter(id=game_id).exists()
+    def plays_game(self, game):
+        return self.games.filter(id=game.id).exists()
+
+    def develops_game(self, game):
+        return game.developer.id == self.id
 
     class Meta:
         proxy = True
