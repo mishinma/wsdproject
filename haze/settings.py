@@ -26,6 +26,11 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = '***REMOVED***'
 
 
+# Mock Payment Service Parameters
+PAYMENT_SID = 'mTahcJJXwbA9AybTFv4Z'
+PAYMENT_SECRET_KEY = 'a4b5b9158b6bef0fd157548f383e7b73'
+
+
 # Application definition
 
 INSTALLED_APPS = [
