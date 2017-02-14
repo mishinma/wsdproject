@@ -1,0 +1,16 @@
+[
+  {
+    "model": "community.game_category",
+    "pk": 1,
+    "fields": {
+      "name": "RPG"
+    }
+  },
+  {
+    "model": "community.game_category",
+    "pk": 2,
+    "fields": {
+      "name": "Action"
+    }
+  }
+]
