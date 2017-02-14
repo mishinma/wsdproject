@@ -23,11 +23,11 @@ class GameModelTestCase(TestCase):
 
     def test_game_get_user_highest_score(self):
         sansa_game_highest_score = self.game2.get_user_highest_score(self.sansa_player)
-        self.assertEqual(sansa_game_highest_score, 54)
+        self.assertEqual(sansa_game_highest_score.score, 54)
 
     def test_game_get_user_latest_score(self):
         sansa_game_latest_score = self.game2.get_user_latest_score(self.sansa_player)
-        self.assertEqual(sansa_game_latest_score.id, 3)
+        self.assertEqual(sansa_game_latest_score.score, 3)
 
 
 class GameCreateEditViewTestCase(TestCase):

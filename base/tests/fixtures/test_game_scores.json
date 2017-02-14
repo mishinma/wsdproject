@@ -5,7 +5,7 @@
     "fields": {
       "player": 3,
       "game": 2,
-      "score": 3,
+      "score": 54,
       "timestamp": "2017-02-14T09:12:41.226Z"
     }
   },
@@ -25,7 +25,7 @@
     "fields": {
       "player": 3,
       "game": 2,
-      "score": 54,
+      "score": 3,
       "timestamp": "2017-02-15T09:12:41.226Z"
     }
   },
