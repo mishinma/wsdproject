@@ -9,11 +9,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"
-            integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+
 </head>
 <body>
 
@@ -47,44 +51,44 @@
 
                 {% if user.is_authenticated %}
 
-                    {% if user|has_group:"developer" %}
-                    <li class="">
-                        <a href='#'>
+                {% if user|has_group:"developer" %}
+                <li class="">
+                    <a href='#'>
                         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
-                        </a>
-                    </li>
+                    </a>
+                </li>
 
-                    {% else %}
-                    <li class="">
-                        <a href='#'>
-                            <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
-                        </a>
-                    </li>
+                {% else %}
+                <li class="">
+                    <a href='#'>
+                        <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
+                    </a>
+                </li>
 
-                    {% endif %}
+                {% endif %}
 
-                    <li class="">
-                        <a href='#'>
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, {{ user.username }}
-                        </a>
-                    </li>
+                <li class="">
+                    <a href='#'>
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp; Hello, {{ user.username }}
+                    </a>
+                </li>
 
-                    <li class="">
-                        <a href={% url 'accounts:logout-user'%}>
-                            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp; Logout
-                        </a>
-                    </li>
+                <li class="">
+                    <a href={% url 'accounts:logout-user'%}>
+                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp; Logout
+                    </a>
+                </li>
 
 
                 {% else %}
                 <li class="">
                     <a href={% url 'accounts:login-user'%}>
-                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
+                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
                     </a>
                 </li>
                 <li class="">
                     <a href={% url 'accounts:register-user'%}>
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Sign up
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp; Sign up
                     </a>
                 </li>
                 {% endif %}

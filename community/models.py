@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
-
+from django.db.models import Max
 
 class Game_Category(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
@@ -39,6 +39,12 @@ class Game(models.Model):
     rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
                                                   MaxValueValidator(5.0)])
 
+    def get_user_highest_score(self, user):
+        return self.game_score_set.filter(player=user).aggregate(Max('score'))['score__max']
+
+    def get_user_latest_score(self, user):
+        return self.game_score_set.filter(player=user).aggregate(Max('timestamp'))['timestamp__max']
+
     def __str__(self):
         return self.name
 
@@ -63,6 +69,9 @@ class Game_Score(models.Model):
     game = models.ForeignKey(Game)
     score = models.fields.BigIntegerField(validators=[MinValueValidator(0)])
     timestamp = models.DateTimeField(default=timezone.now)
+
+    def __repr__(self):
+        return "<GameScore: game_id={}, score={}>".format(self.game.id, self.score)
 
 
 class Game_State(models.Model):

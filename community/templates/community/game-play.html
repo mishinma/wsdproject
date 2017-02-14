@@ -1,31 +1,95 @@
-{% extends 'community/base.html' %}
-{% block title %}Register{% endblock %}
+{% extends 'base/base.html' %}
+{% block title %}{{game.name}}{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
+<div class="container">
     <h1>{{game.name}}</h1>
     <div class="row">
         <div class="col-xs-8 col-md-5">
-            {% if game.game_logo %}
-                <img src="{{game.game_logo.url}}" class="img-responsive">
-            {% else %}
-                <img src="../../../base/static/base/images/placeholder-pacman-grey.jpg" class="img-responsive">
-            {% endif %}
-            <div class="row">
-                <div class="col-xs-4 col-md-2">
-                    <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
-                    <img src="../../../base/static/base/images/rating/{{game.rating | floatformat:" 0"}}.png">
-                </div>
-                <div class="col-xs-4 col-md-2">
-                    <h3>{{game.price}}</h3>
-                </div>
-                <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span>Play now!</button>
-            </div>
+            <iframe src={{game.source_url}}></iframe>
         </div>
         <div class="col-xs-8 col-md-5">
-            <p>{{game.description}}</p>
+            <div>
+                <h2>My highest Score: {{ user_high_score.score }}</h2> <!-- Pick user's score -->
+                <h2>My last Score: {{ user_last_score.score }}</h2> <!-- Pick user's score -->
+                <h3><a href="#">My score history</a></h3>
+            </div>
+            <h2>Leader Board</h2>
+            <!--<ol>-->
+                <!--{% for x in "xxx" %}-->
+                <!--<li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>-->
+                <!--{% endfor %}-->
+            <!--</ol>-->
         </div>
     </div>
 </div>
+
+
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+    $(document).ready(function () {
+        "use strict";
+        window.addEventListener("message", function (evt) {
+            console.log(evt);
+            console.log(evt.data);
+            var j = JSON.stringify(evt.data);
+            console.log(j);
+
+            if (evt.data["messageType"] == "SCORE") {
+                $.ajax({
+                    method: "POST",
+                    data: j
+                })
+                    .done(function () {
+                        console.log("Score Saved");
+                    })
+            }
+
+            if (evt.data["messageType"] == "SAVE") {
+                $.ajax({
+                    method: "POST",
+                    data: evt.data.gameState
+                })
+                    .done(function () {
+                        console.log("State Saved");
+                    })
+            }
+        });
+
+
+    });
+
+
+</script>
+
 
 {% endblock %}

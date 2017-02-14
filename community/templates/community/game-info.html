@@ -14,7 +14,6 @@
 
         </div>
         <div class="col-xs-8 col-md-5">
-            <!-- https://docs.djangoproject.com/en/dev/ref/templates/builtins/#floatformat -->
             <div>
                 <img id="rating" class="rating" src="../../static/base/images/rating/{{game.rating | floatformat:" 0"}}.png">
             </div>
@@ -26,5 +25,20 @@
         </div>
     </div>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+  <script>
+  $(document).ready(function () {
+    "use strict";
+    window.addEventListener("message", function(evt) {
+      if(evt.origin === "http://localhost:8000") {
+        console.log(evt);
+        $("#data-returned").append(evt.data);
+      } else {
+        alert("Intruder alert!");
+      }
+    });
+  });
+  </script>
 
 {% endblock %}
