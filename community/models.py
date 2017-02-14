@@ -11,6 +11,12 @@ from django.db.models import Max
 class Game_Category(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'game_categories'
+
 
 class Game(models.Model):
     # Use unique slug for game URL?
@@ -39,6 +45,9 @@ class Game(models.Model):
     def get_user_latest_score(self, user):
         return self.game_score_set.filter(player=user).aggregate(Max('timestamp'))['timestamp__max']
 
+    def __str__(self):
+        return self.name
+
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
@@ -51,6 +60,7 @@ class Game(models.Model):
         permissions = (
             ("play_game", "Can play the game"),
         )
+
 
 
 class Game_Score(models.Model):
