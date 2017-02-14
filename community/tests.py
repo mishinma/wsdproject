@@ -1,10 +1,7 @@
-import datetime
-
 from decimal import Decimal
 
 from django.urls import reverse
 from django.test import TestCase
-from django.utils import timezone
 from accounts.models import UserMethods
 from community.models import Game, Game_Category
 
