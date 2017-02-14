@@ -14,6 +14,9 @@ class Game_Category(models.Model):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return "<GameCategory: {}>".format(self.name)
+
     class Meta:
         verbose_name_plural = 'game_categories'
 
@@ -48,13 +51,15 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return "<Game: {}>".format(self.name)
+
     def save(self, *args, **kwargs):
         if not self.id:
             # Newly created object, so set slug
             self.slug = slugify(self.name)
 
         super(Game, self).save(*args, **kwargs)
-
 
     class Meta:
         permissions = (
@@ -71,7 +76,7 @@ class Game_Score(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __repr__(self):
-        return "<GameScore: game_id={}, score={}>".format(self.game.id, self.score)
+        return "<GameScore: game={}, score={}>".format(self.game.id, self.score)
 
 
 class Game_State(models.Model):
@@ -80,3 +85,6 @@ class Game_State(models.Model):
     state_data = JSONField()
     timestamp = models.DateTimeField(default=timezone.now)
     # name = models.fields.CharField(max_length=50)
+
+    def __repr__(self):
+        return '<GameState: game={}, player={}, data={}>'.format(self.game.id, self.score, self.state_data)
