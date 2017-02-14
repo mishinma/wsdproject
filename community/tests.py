@@ -1,12 +1,13 @@
+import datetime
+
 from django.test import TestCase
+from django.utils import timezone
 from django.contrib.auth.models import User, Group
 from community.models import Game, Game_Category, Game_Score
 
 
 class GameTestCase(TestCase):
-
     def setUp(self):
-
         # Create a developer
         developer_group = Group.objects.get(name='developer')
         jon = User.objects.create(username='jon', password='bastard')
@@ -38,10 +39,18 @@ class GameTestCase(TestCase):
         bran.groups.add(player_group)
 
         # Create scores
-        gs1 = Game_Score.objects.create(player=sansa, game=game, score=3, timestamp=1426441988)
-        gs2 = Game_Score.objects.create(player=bran, game=game, score=12, timestamp=1424022788)
-        gs3 = Game_Score.objects.create(player=sansa, game=game, score=54, timestamp=1424019188)
-        gs4 = Game_Score.objects.create(player=bran, game=game, score=25, timestamp=1423932788)
+        gs1 = Game_Score.objects.create(player=sansa, game=game, score=3,
+                                        timestamp=datetime.datetime(2017, 2, 14, 9, 12, 41, 226088,
+                                                                    tzinfo=timezone.utc))
+        gs2 = Game_Score.objects.create(player=bran, game=game, score=12,
+                                        timestamp=datetime.datetime(2017, 2, 14, 10, 43, 11, 226088,
+                                                                    tzinfo=timezone.utc))
+        gs3 = Game_Score.objects.create(player=sansa, game=game, score=54,
+                                        timestamp=datetime.datetime(2017, 2, 15, 9, 12, 41, 226088,
+                                                                    tzinfo=timezone.utc))
+        gs4 = Game_Score.objects.create(player=bran, game=game, score=25,
+                                        timestamp=datetime.datetime(2017, 2, 16, 1, 30, 21, 226088,
+                                                                    tzinfo=timezone.utc))
 
     def test_game_init(self):
         rpg_cat = Game_Category.objects.get(name='RPG')
@@ -57,6 +66,5 @@ class GameTestCase(TestCase):
         sansa = User.objects.get(username='sansa')
         game = Game.objects.get(name='The Battle of the Bastards')
         sansa_game_latest_score = game.get_user_latest_score(sansa)
-        self.assertEqual(sansa_game_latest_score, 1426441988)
-
-
+        self.assertEqual(sansa_game_latest_score,
+                         datetime.datetime(2017, 2, 15, 9, 12, 41, 226088, tzinfo=timezone.utc))
