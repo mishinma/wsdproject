@@ -1,70 +1,31 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from accounts.models import UserMethods
 from community.models import Game, Game_Category
 
 # Any resemblance to Game of Thrones characters is purely coincidental
 
 
-class RegisterTestCase(TestCase):
+class UserMethodsTestCase(TestCase):
+
+    fixtures = [
+        'test_users',
+        'test_game_categories',
+        'test_games'
+    ]
 
     def setUp(self):
+        self.ned_player = UserMethods.objects.get(username='ned')
+        self.bran_developer = UserMethods.objects.get(username='bran')
+        self.game1 = Game.objects.get(name='The Battle of the Bastards')
+        self.game2 = Game.objects.get(name='The Test Game')
 
-        # Create developers
-        self.developer_group = Group.objects.get(name='developer')
-        self.bran_developer = UserMethods.objects.create(username='bran', password='bran')
-        self.bran_developer.groups.add(self.developer_group)
-        self.tyrion_developer = UserMethods.objects.create(username='tyrion', password='tyrion')
-        self.tyrion_developer.groups.add(self.developer_group)
-
-        # Create a category
-        self.rpg_cat = Game_Category.objects.create(name='RPG')
-
-        # Create games
-        self.game1 = Game.objects.create(
-            developer=self.bran_developer,
-            category=self.rpg_cat,
-            source_url='http://got.test',
-            price=50.00,
-            sales_price=49.99,
-            name='The Battle of the Bastards',
-            description='The Battle of the Bastards is a battle late in the War '
-                        'of the Five Kings in which Jon Snow and Sansa Stark retake '
-                        'Winterfell from Lord Ramsay Bolton, the Warden of the North, '
-                        'and restore House Stark as the ruling house of the North. ',
-            rating=4.5
-        )
-
-        self.game2 = Game.objects.create(
-            developer=self.tyrion_developer,
-            category=self.rpg_cat,
-            source_url='http://test.test',
-            price=50.00,
-            sales_price=49.99,
-            name='The Test Game',
-            description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc '
-                        'in felis odio. Suspendisse tristique vestibulum feugiat. '
-                        'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ',
-            rating=3.5
-        )
-
-        # Create players
-        self.player_group = Group.objects.get(name='player')
-        self.sansa_player = UserMethods.objects.create(username='sansa', password='sansa')
-        self.sansa_player.groups.add(self.player_group)
-        self.ned_player = UserMethods.objects.create(username='ned', password='ned')
-        self.ned_player.groups.add(self.player_group)
-
-        self.sansa_player.games.add(self.game1)
-        self.ned_player.games.add(self.game2)
-
-    # Test Models
     def test_player_plays_game_true(self):
-        self.assertTrue(self.sansa_player.plays_game(self.game1))
+        self.assertTrue(self.ned_player.plays_game(self.game2))
 
     def test_player_plays_game_false(self):
-        self.assertFalse(self.sansa_player.plays_game(self.game2))
+        self.assertFalse(self.ned_player.plays_game(self.game1))
 
     def test_developer_develops_game_true(self):
         self.assertTrue(self.bran_developer.develops_game(self.game1))
@@ -72,7 +33,15 @@ class RegisterTestCase(TestCase):
     def test_developer_develops_game_false(self):
         self.assertFalse(self.bran_developer.develops_game(self.game2))
 
-    # Test views
+
+class RegisterViewTestCase(TestCase):
+
+    fixtures = [
+        'test_users',
+        'test_game_categories',
+        'test_games'
+    ]
+
     def test_register_new_player(self):
         response = self.client.post(
             path=reverse('accounts:register-user'),
