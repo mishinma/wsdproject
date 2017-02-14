@@ -8,29 +8,15 @@
         <div class="col-sm-12 col-md-7">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h3>Purchase {{game.name}} </h3>
-                    <div>
-                      <h4>Price: {{game.price}}</h4>
-                      <h4>Developer: {{game.developer.username}}</h4>
-                    </div>
-                    <form id="payment-form" class="form-horizontal" action={{url}} method="post" enctype="multipart/form-data">
+                    <h3>Purchase "{{game.name}}"</h3>
+                    <h4>Price: {{price}}</h4>
+                    <h4>Developer: {{game.developer.username}}</h4>
+                    <form id="pending-transaction-form" class="form-horizontal" action={{url}} method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for field in form %}
-                          {% if field.label == "Send as gift" %}
-                            <div class="form-group">
-                              <label class="control-label col-sm-2">{{ field.label_tag }}</label>
-                              <div class="col-sm-10">{{ field }}</div>
-                            </div>
-                          {% elif field.label == "Gift to"%}
-                            <div class="form-group" id="gift-recipient-selector" style="display:none;">
-                              <label class="control-label col-sm-2">{{ field.label_tag }}</label>
-                              <div class="col-sm-10">{{ field }}</div>
-                            </div>
-                          {% else %}
                             <div class="form-group" style="display:none;">
                               {{ field }}
                             </div>
-                          {% endif %}
                         {% endfor %}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
@@ -44,29 +30,30 @@
     </div>
 </div>
 <script>
-  $(document).ready(function() {
-    $('#id_pid').val("{{pid}}")
-    $('#id_sid').val("{{sid}}");
-    $('#id_amount').val("{{amount}}");
-    $('#id_success_url').val("{{success_url}}");
-    $('#id_cancel_url').val("{{cancel_url}}");
-    $('#id_error_url').val("{{error_url}}");
-    $('#id_checksum').val("{{checksum}}");
-  });
-  $('#id_is_gift').click(function() {
-    giftRecipientSelector = $('#gift-recipient-selector');
-    if(this.checked) {
-      giftRecipientSelector.show();
-    } else {
-      giftRecipientSelector.hide();
-    }
-  });
-  $("#payment-form").submit(function(e){
+  // $(document).ready(function() {
+  //   $('#id_pid').val("{{pid}}")
+  //   $('#id_sid').val("{{sid}}");
+  //   $('#id_amount').val("{{amount}}");
+  //   $('#id_success_url').val("{{success_url}}");
+  //   $('#id_cancel_url').val("{{cancel_url}}");
+  //   $('#id_error_url').val("{{error_url}}");
+  //   $('#id_checksum').val("{{checksum}}");
+  // });
+  // $('#id_is_gift').click(function() {
+  //   giftRecipientSelector = $('#gift-recipient-selector');
+  //   if(this.checked) {
+  //     giftRecipientSelector.show();
+  //   } else {
+  //     giftRecipientSelector.hide();
+  //   }
+  // });
+  $("#pending-transaction-form").submit(function(e){
     e.preventDefault();
     var form = this;
-    if($('#id_is_gift').is(':checked')) {
-      alert('Gift to ' + $('select[name=gift_recipient]').val())
-    }
+    // if($('#id_is_gift').is(':checked')) {
+    //   alert('Gift to ' + $('select[name=gift_recipient]').val())
+    // }
+    alert("Intercepted")
     form.submit();
 
   });
