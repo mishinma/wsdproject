@@ -17,13 +17,16 @@ def play_game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     if request.user.plays_game(game):
 
-        if request.method == "POST" and request.POST.get("messageType") == "SCORE":
-            score = Game_Score(score=request.POST.get("score"), game=game, player=request.user)
-            score.save()
+        if request.method == "POST":
+            if request.POST.get("messageType") == "SCORE":
+                score = Game_Score(score=request.POST.get("score"), game=game, player=request.user)
+                score.save()
 
-        if request.method == "POST" and request.POST.get("messageType") == "SAVE":
-            state = Game_State(state_data=json.dumps(request.POST.get("gameState")), game=game, player=request.user)
-            state.save()
+            if request.POST.get("messageType") == "SAVE":
+                state_data = request.POST.get("gameState")
+                import pdb; pdb.set_trace()
+                state = Game_State(state_data=json.dumps(state_data), game=game, player=request.user)
+                state.save()
 
         # TODO: add top scores
         context = {
