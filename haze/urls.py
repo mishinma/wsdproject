@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^', include('base.urls')),
     url(r'^', include('community.urls')),
     url(r'^', include('accounts.urls')),
+    url(r'^', include('webshop.urls')),
 ]
 
 
