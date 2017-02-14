@@ -64,6 +64,8 @@ class Game(models.Model):
     class Meta:
         permissions = (
             ("play_game", "Can play the game"),
+            ("test_game", "Can test games"),
+            ("buy_game", "Can buy games")    
         )
 
 
