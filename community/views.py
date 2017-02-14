@@ -13,7 +13,7 @@ def game_info(request, game_id):
 @login_required
 @permission_required('community.play_game', raise_exception=True)
 def play_game(request, game_id):
-    if request.user.owns_game(game_id):
+    if request.user.plays_game(game_id):
         game = get_object_or_404(Game, id=game_id)
 
         # TODO: add top scores
@@ -40,4 +40,4 @@ def create_game(request):
     else:
         form = GameForm()
     return render(request, 'community/game-form.html', context={'form': form})
-    
+

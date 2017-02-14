@@ -6,7 +6,7 @@ from community.models import Game
 
 class UserMethods(User):
 
-    def owns_game(self, game_id):
+    def plays_game(self, game_id):
         return self.games.filter(id=game_id).exists()
 
     class Meta:
