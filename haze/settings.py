@@ -145,6 +145,11 @@ AUTHENTICATION_BACKENDS = (
     )
 
 
+FIXTURE_DIRS = (
+    os.path.join(BASE_DIR, 'base/tests/fixtures/'),
+)
+
+
 LOGIN_URL = 'accounts:login-user'
 LOGIN_REDIRECT_URL = 'base:index'
 LOGOUT_REDIRECT_URL = 'base:index'
