@@ -41,3 +41,6 @@ def create_game(request):
         form = GameForm()
     return render(request, 'community/game-form.html', context={'form': form})
 
+
+def edit_game(request):
+    pass
