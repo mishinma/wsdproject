@@ -97,7 +97,7 @@ class Game_Score(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __repr__(self):
-        return "<GameScore: game={}, score={}>".format(self.game.id, self.score)
+        return "<GameScore: game={}, score={}>".format(self.game.id, self.score, self.timestamp)
 
 
 class Game_State(models.Model):
@@ -109,4 +109,5 @@ class Game_State(models.Model):
     # name = models.fields.CharField(max_length=50)
 
     def __repr__(self):
-        return '<GameState: game={}, player={}, data={}>'.format(self.game.id, self.score, self.state_data)
+        return '<GameState: game={}, player={} state={}, time={}>'.format(
+            self.game.id, self.player.username, self.state_data, self.timestamp)
