@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from community.models import Game, Game_Score, Game_State
 from community.forms import GameForm
+import json
 
 
 def game_info(request, game_id):
@@ -21,7 +22,7 @@ def play_game(request, game_id):
             score.save()
 
         if request.method == "POST" and request.POST.get("messageType") == "SAVE":
-            state = Game_State(state_data=request.POST.get("gameState"), game=game, player=request.user)
+            state = Game_State(state_data=json.dumps(request.POST.get("gameState")), game=game, player=request.user)
             state.save()
 
         # TODO: add top scores

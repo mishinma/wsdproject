@@ -55,6 +55,7 @@
         }
     });
 
+// CLEAN DEBUGGING LOGS
 
     $(document).ready(function () {
         "use strict";
@@ -64,10 +65,11 @@
             var j = JSON.stringify(evt.data);
             console.log(j);
 
+// REMOVE IF AND REPEAT BEFORE SUBMITTING
             if (evt.data["messageType"] == "SCORE") {
                 $.ajax({
                     method: "POST",
-                    data: j
+                    data: evt.data
                 })
                     .done(function () {
                         console.log("Score Saved");
@@ -77,7 +79,7 @@
             if (evt.data["messageType"] == "SAVE") {
                 $.ajax({
                     method: "POST",
-                    data: j
+                    data: evt.data
                 })
                     .done(function () {
                         console.log("State Saved");
