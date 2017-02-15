@@ -25,13 +25,7 @@
                  height="auto"/>
             {% endif %}
             <h3>{{ game.name }}</h3>
-            <div>
-                {% with rating=game.rating|floatformat:"0" %}
-                {% with image_static='base/images/rating/'|add:rating|add:'.png' %}
-                <img id="rating" class="rating" src="{% static image_static %}" }>
-                {% endwith %}
-                {% endwith %}
-            </div>
+            <h3> Rating: {{ game.rating }}</h3>
             <div>
                 <!-- Details -->
                 <a href={% url 'community:game-info' game_id=game.id %} class="btn btn-primary btn-sm">Details</a>
