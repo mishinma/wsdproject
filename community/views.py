@@ -62,3 +62,9 @@ def edit_game(request, game_id):
         form = GameForm(instance=game)
 
     return render(request, 'community/game-form.html', context={'form': form})
+
+
+@login_required
+@permission_required('community.add_game', raise_exception=True)
+def my_inventory(request):
+    pass
