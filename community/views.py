@@ -47,7 +47,7 @@ def play_game(request, game_id):
 
 def save_score(request, game):
     score_value = request.POST.get("score")
-    score = Game_Score.objects.create(
+    score = GameScore.objects.create(
         score=score_value, game=game, player=request.user)
 
     # Fetch the scores and update them
