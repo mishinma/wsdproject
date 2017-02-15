@@ -10,6 +10,4 @@ urlpatterns = [
     url(r'^dev/games/(?P<game_id>\d+)/edit/$', views.edit_game, name='game-edit'),
     url(r'^dev/my-inventory/$', views.my_inventory, name='my-inventory'),
     url(r'^dev/games/create/$', views.create_game, name='game-create'),
-    url(r'^games/(?P<game_id>\d+)/play/save-state/$', views.save_state, name='save-state'),
-    url(r'^games/create/$', views.create_game, name='game-create'),
 ]
