@@ -69,3 +69,10 @@ def edit_game(request, game_id):
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
     return render(request, 'community/my-inventory.html', context={'games': games})
+
+
+@login_required
+@permission_required('community.play_game', raise_exception=True)
+def my_games(request):
+    games = Game.objects.games_for_player(request.user)
+    return render(request, 'community/my-games.html', context={'games': games})
