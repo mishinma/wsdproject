@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, Game_Score, Game_State
 from community.forms import GameForm
+import json
 
 MESSAGE_TYPE_SCORE = 'SCORE'
 MESSAGE_TYPE_SAVE = 'SAVE'
