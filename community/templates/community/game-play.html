@@ -55,22 +55,15 @@
         }
     });
 
-    // CLEAN DEBUGGING LOGS
-
     $(document).ready(function () {
         "use strict";
         window.addEventListener("message", function (evt) {
-            console.log(evt);
-            console.log(evt.data);
-            var j = JSON.stringify(evt.data);
-            console.log(j);
+
             var state = JSON.stringify(evt.data["gameState"])
 
-// REMOVE IF AND REPEAT BEFORE SUBMITTING
             if (evt.data["messageType"] == "SCORE") {
                 $.ajax({
                     method: "POST",
-                    //url: '/save-score/',
                     data: evt.data
                 })
                     .done(function () {
