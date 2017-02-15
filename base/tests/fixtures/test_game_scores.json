@@ -1,0 +1,42 @@
+[
+  {
+    "model": "community.game_score",
+    "pk": 1,
+    "fields": {
+      "player": 3,
+      "game": 2,
+      "score": 54,
+      "timestamp": "2017-02-14T09:12:41.226Z"
+    }
+  },
+  {
+    "model": "community.game_score",
+    "pk": 2,
+    "fields": {
+      "player": 4,
+      "game": 2,
+      "score": 12,
+      "timestamp": "2017-02-14T10:43:11.226Z"
+    }
+  },
+  {
+    "model": "community.game_score",
+    "pk": 3,
+    "fields": {
+      "player": 3,
+      "game": 2,
+      "score": 3,
+      "timestamp": "2017-02-15T09:12:41.226Z"
+    }
+  },
+  {
+    "model": "community.game_score",
+    "pk": 4,
+    "fields": {
+      "player": 4,
+      "game": 2,
+      "score": 25,
+      "timestamp": "2017-02-16T01:30:21.226Z"
+    }
+  }
+]
