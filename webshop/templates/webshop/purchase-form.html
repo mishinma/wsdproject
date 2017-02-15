@@ -50,6 +50,7 @@
     var data = {
       'game': {{game.id}},
       'pid': '{{pid}}',
+      'amount': {{price}},
       'csrfmiddlewaretoken': '{{csrf_token}}'
     };
     $.ajax({
@@ -58,7 +59,7 @@
       data: data,
       statusCode: {
         200: function() {
-          alert("Worked!");
+          form.submit();
         },
         400: function() {
           $('#ajax-error').show();
