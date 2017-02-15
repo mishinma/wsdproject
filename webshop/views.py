@@ -2,6 +2,7 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.core.exceptions import SuspiciousOperation
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
 from community.models import Game
@@ -9,7 +10,7 @@ from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
 
 
 @login_required
-@permission_required('community.play_game', raise_exception=True)
+@permission_required('community.buy_game', raise_exception=True)
 def purchase_game(request, game_id):
     user = request.user
     game = get_object_or_404(Game, id=game_id)
@@ -23,9 +24,12 @@ def purchase_game(request, game_id):
         else:
             amount = game.price
         pid = Transaction.generate_new_pid(game=game, user=user)
-        checksum = Transaction.generate_checksum(pid=pid, sid=PAYMENT_SID,
-                                                 amount=amount,
-                                                 token=PAYMENT_SECRET_KEY)
+        checksum = Transaction.generate_checksum(
+            pid=pid,
+            sid=PAYMENT_SID,
+            amount=amount,
+            token=PAYMENT_SECRET_KEY
+        )
         success_url = request.build_absolute_uri(reverse('webshop:purchase-success'))
         cancel_url = request.build_absolute_uri(reverse('webshop:purchase-cancel'))
         error_url = request.build_absolute_uri(reverse('webshop:purchase-error'))
@@ -51,20 +55,52 @@ def purchase_game(request, game_id):
 
 
 @login_required
+@permission_required('community.buy_game', raise_exception=True)
 def purchase_pending(request):
-    game_id = request.POST.get('game')
-    pid = request.POST.get('pid')
-    if(game_id and pid and request.is_ajax()):
+    try:
+        game_id, pid, amount = extract_post_callback_data(request)
+    except KeyError:
+        return HttpResponseBadRequest()
+
+    if(request.is_ajax()):
         user = request.user
         game = Game.objects.get(id=game_id)
-        PendingTransaction.objects.create(user=user, pid=pid, game=game)
+        # TODO deal with existing ones
+        PendingTransaction.objects.create(user=user, pid=pid, game=game, amount=amount)
         return HttpResponse()
     else:
         return HttpResponseBadRequest()
 
 
 def success(request):
-    pass
+    try:
+        pid, ref, result, checksum_received = extract_get_callback_data(request)
+    except KeyError:
+        return HttpResponseBadRequest()
+
+    try:
+        pending_transaction = PendingTransaction.objects.get(pid=pid)
+    except PendingTransaction.DoesNotExist:
+        return HttpResponseBadRequest()
+
+    purchased_game = pending_transaction.game
+    valid_checksum = Transaction.validate_received_checksum(
+        checksum=checksum_received,
+        pid=pid,
+        ref=ref,
+        result=result,
+        token=PAYMENT_SECRET_KEY
+    )
+    if(valid_checksum):
+        transaction, purchase = Transaction.objects.create_from_pending(
+            pending_transaction=pending_transaction,
+            ref=ref,
+            result=result
+        )
+        transaction.user.games.add(purchased_game)
+        return redirect('community:game-play', game_id=purchased_game.id)
+    else:
+        raise SuspiciousOperation('Invalid request. The checksum was incorrect')
 
 
 def cancel(request):
@@ -73,3 +109,20 @@ def cancel(request):
 
 def error(request):
     pass
+
+
+def extract_post_callback_data(request):
+    game_id = request.POST['game']
+    pid = request.POST['pid']
+    amount = request.POST['amount']
+
+    return game_id, pid, amount
+
+
+def extract_get_callback_data(request):
+    pid = request.GET['pid']
+    ref = request.GET['ref']
+    result = request.GET['result']
+    checksum = request.GET['checksum']
+
+    return pid, ref, result, checksum
