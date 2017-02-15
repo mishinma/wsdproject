@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from community.models import Game, Game_Category
+from community.models import Game, GameCategory
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import Group
@@ -63,9 +63,9 @@ class Command(BaseCommand):
     # Helper function to deal with existing category names
     def get_or_create_game_cat(self, name):
         try:
-            new_cat = Game_Category.objects.create(name=name)
+            new_cat = GameCategory.objects.create(name=name)
         except IntegrityError:
-            return Game_Category.objects.get(name=name)
+            return GameCategory.objects.get(name=name)
         else:
             new_cat.save()
             return new_cat

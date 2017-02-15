@@ -1,6 +1,6 @@
 [
   {
-    "model": "community.game_score",
+    "model": "community.gamescore",
     "pk": 1,
     "fields": {
       "player": 3,
@@ -10,7 +10,7 @@
     }
   },
   {
-    "model": "community.game_score",
+    "model": "community.gamescore",
     "pk": 2,
     "fields": {
       "player": 4,
@@ -20,7 +20,7 @@
     }
   },
   {
-    "model": "community.game_score",
+    "model": "community.gamescore",
     "pk": 3,
     "fields": {
       "player": 3,
@@ -30,7 +30,7 @@
     }
   },
   {
-    "model": "community.game_score",
+    "model": "community.gamescore",
     "pk": 4,
     "fields": {
       "player": 4,

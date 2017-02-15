@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from community.models import Game, Game_Category
+from community.models import Game, GameCategory
 
 
 def index(request):

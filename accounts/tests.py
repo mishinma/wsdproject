@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from accounts.models import UserMethods
-from community.models import Game, Game_Category
+from community.models import Game, GameCategory
 from base.tests.status_codes import OK_200, FOUND_302
 
 # Any resemblance to Game of Thrones characters is purely coincidental

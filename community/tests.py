@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase, RequestFactory
 from accounts.models import UserMethods
 from community import views
-from community.models import Game, Game_Category
+from community.models import Game, GameCategory
 from base.tests.status_codes import FORBIDDEN_403, FOUND_302
 
 
@@ -52,7 +52,7 @@ class GameCreateEditViewTestCase(TestCase):
                 'test_games']
 
     def setUp(self):
-        self.rpg_cat = Game_Category.objects.get(name='RPG')
+        self.rpg_cat = GameCategory.objects.get(name='RPG')
         self.bran_developer = UserMethods.objects.get(username='bran')
 
     def test_create_new_game(self):

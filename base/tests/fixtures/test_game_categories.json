@@ -1,13 +1,13 @@
 [
   {
-    "model": "community.game_category",
+    "model": "community.gamecategory",
     "pk": 1,
     "fields": {
       "name": "RPG"
     }
   },
   {
-    "model": "community.game_category",
+    "model": "community.gamecategory",
     "pk": 2,
     "fields": {
       "name": "Action"

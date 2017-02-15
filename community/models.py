@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Max
 
 
-class Game_Category(models.Model):
+class GameCategory(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
 
     def __str__(self):
@@ -38,7 +38,7 @@ class Game(models.Model):
     slug = models.fields.SlugField(unique=True)
     developer = models.ForeignKey(User)  # Should this be cascading?
     players = models.ManyToManyField(User, related_name='games')
-    category = models.ForeignKey(Game_Category)
+    category = models.ForeignKey(GameCategory)
     source_url = models.fields.URLField()
     price = models.fields.DecimalField(max_digits=5,
                                        decimal_places=2,
@@ -65,6 +65,7 @@ class Game(models.Model):
 
     def get_user_last_score(self, user):
         latest_score = self.game_score_set.filter(player=user).order_by('-timestamp').first()
+
         latest_score_value = latest_score.score if latest_score is not None else None
         return latest_score_value
 
@@ -89,7 +90,7 @@ class Game(models.Model):
         )
 
 
-class Game_Score(models.Model):
+class GameScore(models.Model):
     # Cascading?
     player = models.ForeignKey(User)
     game = models.ForeignKey(Game)
@@ -100,7 +101,7 @@ class Game_Score(models.Model):
         return "<GameScore: game={}, score={}>, time={}".format(self.game.id, self.score, self.timestamp)
 
 
-class Game_State(models.Model):
+class GameState(models.Model):
     player = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     state_data = JSONField()
