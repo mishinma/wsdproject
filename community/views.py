@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
-from community.models import Game, Game_Score
+from community.models import Game, GameScore
 from django.contrib.auth.models import User
 from community.forms import GameForm
 

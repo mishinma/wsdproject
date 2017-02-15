@@ -24,7 +24,7 @@ def extend_group_permissions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0003_usermethods'),
+        ('accounts', '0003_usermethods')
     ]
 
     operations = [
