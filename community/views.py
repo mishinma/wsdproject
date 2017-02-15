@@ -53,7 +53,6 @@ def edit_game(request, game_id):
         raise PermissionDenied
 
     if request.POST:
-        game = Game(developer=request.user, rating=0.0)
         form = GameForm(data=request.POST, instance=game)
         if form.is_valid():
             form.save()
