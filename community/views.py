@@ -22,11 +22,7 @@ def play_game(request, game_id):
                 score = Game_Score(score=request.POST.get("score"), game=game, player=request.user)
                 score.save()
 
-            if request.POST.get("messageType") == "SAVE":
-                state_data = request.POST.get("gameState")
-                import pdb; pdb.set_trace()
-                state = Game_State(state_data=json.dumps(state_data), game=game, player=request.user)
-                state.save()
+
 
         # TODO: add top scores
         context = {
@@ -87,3 +83,16 @@ def my_inventory(request):
 def my_games(request):
     games = Game.objects.games_for_player(request.user)
     return render(request, 'community/my-games.html', context={'games': games})
+
+def save_state(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    # {"messageType":"SAVE","gameState":{"playerItems":["A rock"],"score":10}}
+    #data = request.POST.get("gameState")
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    #data = body['gameState']
+        #json.loads(request.body.decode('utf-8'))
+    #import pdb; pdb.set_trace()
+    state = Game_State(state_data=data, game=game, player=request.user)
+    state.save()
+    return render(request, "community/game-play.html")

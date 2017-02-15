@@ -16,9 +16,9 @@
             </div>
             <h2>Leader Board</h2>
             <!--<ol>-->
-                <!--{% for x in "xxx" %}-->
-                <!--<li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>-->
-                <!--{% endfor %}-->
+            <!--{% for x in "xxx" %}-->
+            <!--<li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>-->
+            <!--{% endfor %}-->
             <!--</ol>-->
         </div>
     </div>
@@ -55,7 +55,7 @@
         }
     });
 
-// CLEAN DEBUGGING LOGS
+    // CLEAN DEBUGGING LOGS
 
     $(document).ready(function () {
         "use strict";
@@ -64,11 +64,13 @@
             console.log(evt.data);
             var j = JSON.stringify(evt.data);
             console.log(j);
+            var state = JSON.stringify(evt.data["gameState"])
 
 // REMOVE IF AND REPEAT BEFORE SUBMITTING
             if (evt.data["messageType"] == "SCORE") {
                 $.ajax({
                     method: "POST",
+                    //url: '/save-score/',
                     data: evt.data
                 })
                     .done(function () {
@@ -79,7 +81,8 @@
             if (evt.data["messageType"] == "SAVE") {
                 $.ajax({
                     method: "POST",
-                    data: evt.data
+                    url: './save-state/',
+                    data: state
                 })
                     .done(function () {
                         console.log("State Saved");
