@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.exceptions import SuspiciousOperation
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
@@ -23,33 +23,13 @@ def purchase_game(request, game_id):
             amount = game.sales_price
         else:
             amount = game.price
-        pid = Transaction.generate_new_pid(game=game, user=user)
-        checksum = Transaction.generate_checksum(
-            pid=pid,
-            sid=PAYMENT_SID,
-            amount=amount,
-            token=PAYMENT_SECRET_KEY
-        )
-        success_url = request.build_absolute_uri(reverse('webshop:purchase-success'))
-        cancel_url = request.build_absolute_uri(reverse('webshop:purchase-cancel'))
-        error_url = request.build_absolute_uri(reverse('webshop:purchase-error'))
 
-        form = PendingTransactionForm(initial={
-            'user': user.id,
-            'pid': pid,
-            'sid': PAYMENT_SID,
-            'amount': amount,
-            'success_url': success_url,
-            'cancel_url': cancel_url,
-            'error_url': error_url,
-            'checksum': checksum
-        })
+        form = PendingTransactionForm()
         context = {
             'url': 'http://payments.webcourse.niksula.hut.fi/pay/',
             'game': game,
             'form': form,
             'price': amount,
-            'pid': pid,
             }
         return render(request, 'webshop/purchase-form.html', context=context)
 
@@ -58,16 +38,47 @@ def purchase_game(request, game_id):
 @permission_required('community.buy_game', raise_exception=True)
 def purchase_pending(request):
     try:
-        game_id, pid, amount = extract_post_callback_data(request)
+        game_id, amount = extract_post_callback_data(request)
     except KeyError:
         return HttpResponseBadRequest()
 
     if(request.is_ajax()):
         user = request.user
         game = Game.objects.get(id=game_id)
-        # TODO deal with existing ones
-        PendingTransaction.objects.create(user=user, pid=pid, game=game, amount=amount)
-        return HttpResponse()
+        pid = Transaction.generate_new_pid(game=game, user=user)
+        checksum = Transaction.generate_checksum(
+            pid=pid,
+            sid=PAYMENT_SID,
+            amount=amount,
+            token=PAYMENT_SECRET_KEY
+        )
+
+        success_url = request.build_absolute_uri(
+            reverse('webshop:purchase-success')
+        )
+        cancel_url = request.build_absolute_uri(
+            reverse('webshop:purchase-cancel')
+        )
+        error_url = request.build_absolute_uri(reverse(
+            'webshop:purchase-error')
+        )
+
+        PendingTransaction.objects.create(
+            user=user,
+            pid=pid,
+            game=game,
+            amount=amount
+        )
+        responseData = {
+            'pid': pid,
+            'sid': PAYMENT_SID,
+            'amount': amount,
+            'success_url': success_url,
+            'cancel_url': cancel_url,
+            'error_url': error_url,
+            'checksum': checksum
+        }
+        return JsonResponse(responseData)
     else:
         return HttpResponseBadRequest()
 
@@ -113,10 +124,9 @@ def error(request):
 
 def extract_post_callback_data(request):
     game_id = request.POST['game']
-    pid = request.POST['pid']
     amount = request.POST['amount']
 
-    return game_id, pid, amount
+    return game_id, amount
 
 
 def extract_get_callback_data(request):
