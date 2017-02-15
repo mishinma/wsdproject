@@ -10,3 +10,9 @@ body {
     margin: 10px;
 }
 
+/* TODO: figure out how to set width and height*/
+#play-game-iframe {
+    width: 400px;
+    height: 400px;
+}
+

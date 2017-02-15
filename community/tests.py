@@ -1,8 +1,9 @@
 from decimal import Decimal
 
 from django.urls import reverse
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from accounts.models import UserMethods
+from community import views
 from community.models import Game, GameCategory
 from base.tests.status_codes import FORBIDDEN_403, FOUND_302
 
@@ -23,11 +24,11 @@ class GameModelTestCase(TestCase):
         self.game2 = Game.objects.get(name='The Test Game')
 
     def test_game_get_user_highest_score(self):
-        sansa_game_highest_score = self.game2.get_user_highest_score(self.sansa_player)
+        sansa_game_highest_score = self.game2.get_user_high_score(self.sansa_player)
         self.assertEqual(sansa_game_highest_score, 54)
 
     def test_game_get_user_latest_score(self):
-        sansa_game_latest_score = self.game2.get_user_latest_score(self.sansa_player)
+        sansa_game_latest_score = self.game2.get_user_last_score(self.sansa_player)
         self.assertEqual(sansa_game_latest_score, 3)
 
     def test_game_manager_games_for_developer(self):
@@ -177,6 +178,35 @@ class GameCreateEditViewTestCase(TestCase):
         self.assertEqual(response.status_code, FORBIDDEN_403)
 
 
+class PlayGameViewTestCase(TestCase):
+
+    # Mind the order
+    fixtures = ['test_users',
+                'test_game_categories',
+                'test_games']
+
+    def setUp(self):
+        self.rpg_cat = Game_Category.objects.get(name='RPG')
+        self.bran_developer = UserMethods.objects.get(username='bran')
+        self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.ned_player = UserMethods.objects.get(username='ned')
+        self.game2 = Game.objects.get(name='The Test Game')
+        self.factory = RequestFactory()
+
+    def test_save_score(self):
+        test_score = 64
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data={'score': test_score}
+        )
+        request.user = self.sansa_player
+        views.save_score(request, self.game2)
+
+        sansa_new_high_score = self.game2.get_user_high_score(self.sansa_player)
+        sansa_new_last_score = self.game2.get_user_last_score(self.sansa_player)
+
+        self.assertEqual(sansa_new_high_score, test_score)
+        self.assertEqual(sansa_new_last_score, test_score)
 
 
 

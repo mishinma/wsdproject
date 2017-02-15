@@ -58,13 +58,14 @@ class Game(models.Model):
 
     objects = GameManager()
 
-    def get_user_highest_score(self, user):
-        highest_score = self.gamescore_set.filter(player=user).order_by('-score').first()
+    def get_user_high_score(self, user):
+        highest_score = self.game_score_set.filter(player=user).order_by('-score').first()
         highest_score_value = highest_score.score if highest_score is not None else None
         return highest_score_value
 
-    def get_user_latest_score(self, user):
-        latest_score = self.gamescore_set.filter(player=user).order_by('-timestamp').first()
+    def get_user_last_score(self, user):
+        latest_score = self.game_score_set.filter(player=user).order_by('-timestamp').first()
+
         latest_score_value = latest_score.score if latest_score is not None else None
         return latest_score_value
 
@@ -97,7 +98,7 @@ class GameScore(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __repr__(self):
-        return "<GameScore: game={}, score={}>".format(self.game.id, self.score)
+        return "<GameScore: game={}, score={}>, time={}".format(self.game.id, self.score, self.timestamp)
 
 
 class GameState(models.Model):
@@ -109,4 +110,5 @@ class GameState(models.Model):
     # name = models.fields.CharField(max_length=50)
 
     def __repr__(self):
-        return '<GameState: game={}, player={}, data={}>'.format(self.game.id, self.score, self.state_data)
+        return '<GameState: game={}, player={} state={}, time={}>'.format(
+            self.game.id, self.player.username, self.state_data, self.timestamp)

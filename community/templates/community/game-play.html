@@ -5,22 +5,11 @@
 <div class="container">
     <h1>{{game.name}}</h1>
     <div class="row">
-        <div class="col-xs-8 col-md-5">
-            <iframe src={{game.source_url}}></iframe>
+        <div class="col-xs-12 col-md-8">
+            <iframe id="play-game-iframe" src={{game.source_url}}></iframe>
+
         </div>
-        <div class="col-xs-8 col-md-5">
-            <div>
-                <h2>My highest Score: {{ user_high_score }}</h2> <!-- Pick user's score -->
-                <h2>My last Score: {{ user_last_score }}</h2> <!-- Pick user's score -->
-                <h3><a href="#">My score history</a></h3>
-            </div>
-            <h2>Leader Board</h2>
-            <!--<ol>-->
-                <!--{% for x in "xxx" %}-->
-                <!--<li>{{ leaders_scores.player }}: {{leaders_scores.score}}</li>-->
-                <!--{% endfor %}-->
-            <!--</ol>-->
-        </div>
+        {% include "community/score-leaderboard.html" %}
     </div>
 </div>
 
@@ -55,34 +44,34 @@
         }
     });
 
-
     $(document).ready(function () {
         "use strict";
         window.addEventListener("message", function (evt) {
-            console.log(evt);
-            console.log(evt.data);
-            var j = JSON.stringify(evt.data);
-            console.log(j);
+
+//            var state = JSON.stringify(evt.data["gameState"]);
+
 
             if (evt.data["messageType"] == "SCORE") {
                 $.ajax({
                     method: "POST",
-                    data: j
+                    data: evt.data,
+                    success: function (data) {
+                        $("#userHighScore").text(data.userHighScore);
+                        $("#userLastScore").text(data.userLastScore);
+                    }
                 })
-                    .done(function () {
-                        console.log("Score Saved");
-                    })
             }
 
-            if (evt.data["messageType"] == "SAVE") {
-                $.ajax({
-                    method: "POST",
-                    data: evt.data.gameState
-                })
-                    .done(function () {
-                        console.log("State Saved");
-                    })
-            }
+//            if (evt.data["messageType"] == "SAVE") {
+//                $.ajax({
+//                    method: "POST",
+//                    url: './save-state/',
+//                    data: state
+//                })
+//                    .done(function () {
+//                        console.log("State Saved");
+//                    })
+//            }
         });
 
 
