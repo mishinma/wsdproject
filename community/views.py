@@ -67,4 +67,5 @@ def edit_game(request, game_id):
 @login_required
 @permission_required('community.add_game', raise_exception=True)
 def my_inventory(request):
-    pass
+    games = Game.objects.games_for_developer(request.user)
+    return render(request, 'community/my-inventory.html', context={'games': games})
