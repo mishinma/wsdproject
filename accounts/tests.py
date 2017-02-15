@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from accounts.models import UserMethods
 from community.models import Game, Game_Category
+from base.tests.status_codes import OK_200, FOUND_302
 
 # Any resemblance to Game of Thrones characters is purely coincidental
 
@@ -54,7 +55,7 @@ class RegisterViewTestCase(TestCase):
             })
 
         # Redirect to user
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check user data and permissions
@@ -77,7 +78,7 @@ class RegisterViewTestCase(TestCase):
                 'is_developer': True
             })
         # Redirect to user
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check user data and permissions
@@ -99,7 +100,7 @@ class RegisterViewTestCase(TestCase):
                 'confirm_password': 'asdf',
                 'is_developer': False
             })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, OK_200)
         with self.assertRaises(User.DoesNotExist):
             ramsey_player = User.objects.get(username='ramsey')
 
