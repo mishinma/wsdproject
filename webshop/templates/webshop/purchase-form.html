@@ -23,6 +23,9 @@
                                 <button type="submit" class="btn btn-success">Purchase</button>
                             </div>
                         </div>
+                        <p id="ajax-error" class="text-danger" style="display:none;">
+                          An error occured while processing your request.
+                        </p>
                     </form>
                 </div>
             </div>
@@ -30,15 +33,6 @@
     </div>
 </div>
 <script>
-  // $(document).ready(function() {
-  //   $('#id_pid').val("{{pid}}")
-  //   $('#id_sid').val("{{sid}}");
-  //   $('#id_amount').val("{{amount}}");
-  //   $('#id_success_url').val("{{success_url}}");
-  //   $('#id_cancel_url').val("{{cancel_url}}");
-  //   $('#id_error_url').val("{{error_url}}");
-  //   $('#id_checksum').val("{{checksum}}");
-  // });
   // $('#id_is_gift').click(function() {
   //   giftRecipientSelector = $('#gift-recipient-selector');
   //   if(this.checked) {
@@ -53,9 +47,24 @@
     // if($('#id_is_gift').is(':checked')) {
     //   alert('Gift to ' + $('select[name=gift_recipient]').val())
     // }
-    alert("Intercepted")
-    form.submit();
-
+    var data = {
+      'game': {{game.id}},
+      'pid': '{{pid}}',
+      'csrfmiddlewaretoken': '{{csrf_token}}'
+    };
+    $.ajax({
+      method: "POST",
+      url: "{% url 'webshop:purchase-pending' %}",
+      data: data,
+      statusCode: {
+        200: function() {
+          alert("Worked!");
+        },
+        400: function() {
+          $('#ajax-error').show();
+        }
+      }
+    });
   });
 </script>
 
