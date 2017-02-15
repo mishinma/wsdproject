@@ -9,12 +9,14 @@ import time
 
 
 class TransactionManager(models.Manager):
-    def create_from_pending(pending_transaction, ref, amount, result):
-        finished_transaction = Transaction(user=pending_transaction.user,
-                                           pid=pending_transaction.pid,
-                                           ref=ref, amount=amount,
-                                           result=result
-                                           )
+    def create_from_pending(self, pending_transaction, ref, result):
+        finished_transaction = Transaction(
+            user=pending_transaction.user,
+            pid=pending_transaction.pid,
+            ref=ref,
+            amount=pending_transaction.amount,
+            result=result
+        )
         finished_transaction.save()
         PendingTransaction.objects.get(pid=pending_transaction.pid).delete()
         purchase = None
@@ -45,10 +47,14 @@ class Transaction(models.Model):
 
     @staticmethod
     def generate_checksum(pid, sid, amount, token):
-        checksum_str = "pid={}&sid={}&amount={}&token={}".format(pid, sid,
-                                                                 amount, token)
-        generator = md5(checksum_str.encode('ascii'))
-        return generator.hexdigest()
+        checksum_str = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
+        return md5(checksum_str.encode('ascii')).hexdigest()
+
+    @staticmethod
+    def validate_received_checksum(checksum, pid, ref, result, token):
+        checksum_str = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, token)
+        checksum_computed = md5(checksum_str.encode('ascii')).hexdigest()
+        return checksum_computed == checksum
 
 
 class Gift(models.Model):
@@ -67,3 +73,7 @@ class PendingTransaction(models.Model):
     user = models.OneToOneField(User)
     pid = models.fields.CharField(max_length=100, primary_key=True)
     game = models.ForeignKey(Game)
+    amount = models.fields.DecimalField(max_digits=5,
+                                        decimal_places=2,
+                                        validators=[MinValueValidator(0.0),
+                                                    MaxValueValidator(999.00)])
