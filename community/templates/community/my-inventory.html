@@ -1,0 +1,53 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% load extra_template_tags %}
+{% block body %}
+
+<div class="container-fluid">
+    <h1> My Inventory </h1><br>
+
+
+
+    <div class="row">
+        {% for game in games %}
+
+        <div class="col-sm-3">
+
+            {% if game.logo %}
+            <img src={{ game.logo }} class="img-responsive" width="300" height="auto">
+            {% else %}
+            <img src="{% static 'base/images/placeholder-pacman-grey.jpg' %}" class="img-responsive"
+                 alt="img unavailable" width="300"
+                 height="auto"/>
+            {% endif %}
+            <h3>{{ game.name }}</h3>
+            <div>
+                {% with rating=game.rating|floatformat:"0" %}
+                {% with image_static='base/images/rating/'|add:rating|add:'.png' %}
+                <img id="rating" class="rating" src="{% static image_static %}" }>
+                {% endwith %}
+                {% endwith %}
+            </div>
+            <div>
+                <!-- Details -->
+                <a href={% url 'community:game-info' game_id=game.id %} class="btn btn-primary btn-sm">Details</a>
+
+                <a href={% url 'community:game-edit' game_id=game.id %}>
+                <button class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-edit"></span> Edit
+                </button>
+                </a>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div> <br>
+    
+    <h2> Create new game: </h2>
+    <a href={% url 'community:game-create' %}>
+    <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Create
+    </button>
+    </a> <br>
+
+</div>
+
+{% endblock %}
