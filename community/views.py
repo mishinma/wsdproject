@@ -37,7 +37,7 @@ def create_game(request):
         form = GameForm(data=request.POST, instance=game)
         if form.is_valid():
             form.save()
-            return redirect('base:index')
+            return redirect('community:my-inventory')
     else:
         form = GameForm()
 
@@ -57,8 +57,22 @@ def edit_game(request, game_id):
         form = GameForm(data=request.POST, instance=game)
         if form.is_valid():
             form.save()
-            return redirect('base:index')
+            return redirect('community:my-inventory')
     else:
         form = GameForm(instance=game)
 
     return render(request, 'community/game-form.html', context={'form': form})
+
+
+@login_required
+@permission_required('community.add_game', raise_exception=True)
+def my_inventory(request):
+    games = Game.objects.games_for_developer(request.user)
+    return render(request, 'community/my-inventory.html', context={'games': games})
+
+
+@login_required
+@permission_required('community.play_game', raise_exception=True)
+def my_games(request):
+    games = Game.objects.games_for_player(request.user)
+    return render(request, 'community/my-games.html', context={'games': games})

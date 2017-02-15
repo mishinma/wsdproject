@@ -53,14 +53,14 @@
 
                 {% if user|has_group:"developer" %}
                 <li class="">
-                    <a href='#'>
+                    <a href={% url 'community:my-inventory' %}>
                         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Inventory
                     </a>
                 </li>
 
                 {% else %}
                 <li class="">
-                    <a href='#'>
+                    <a href={% url 'community:my-games' %}>
                         <span class="glyphicon glyphicon-th" aria-hidden="true"></span>&nbsp; My Games
                     </a>
                 </li>

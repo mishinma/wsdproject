@@ -17,6 +17,9 @@ class GameModelTestCase(TestCase):
 
     def setUp(self):
         self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.ned_player = UserMethods.objects.get(username='ned')
+        self.bran_developer = UserMethods.objects.get(username='bran')
+        self.game1 = Game.objects.get(name='The Battle of the Bastards')
         self.game2 = Game.objects.get(name='The Test Game')
 
     def test_game_get_user_highest_score(self):
@@ -26,6 +29,18 @@ class GameModelTestCase(TestCase):
     def test_game_get_user_latest_score(self):
         sansa_game_latest_score = self.game2.get_user_latest_score(self.sansa_player)
         self.assertEqual(sansa_game_latest_score, 3)
+
+    def test_game_manager_games_for_developer(self):
+        bran_develops_games = {game.id for game in Game.objects.games_for_developer(self.bran_developer)}
+        self.assertEqual(bran_develops_games, {self.game1.id,})
+
+    def test_game_manager_games_for_player_multiple_games(self):
+        sansa_playes_games = {game.id for game in Game.objects.games_for_player(self.sansa_player)}
+        self.assertEqual(sansa_playes_games, {self.game1.id, self.game2.id})
+
+    def test_game_manager_games_for_player_one_game(self):
+        ned_playes_games = {game.id for game in Game.objects.games_for_player(self.ned_player)}
+        self.assertEqual(ned_playes_games, {self.game2.id})
 
 
 class GameCreateEditViewTestCase(TestCase):

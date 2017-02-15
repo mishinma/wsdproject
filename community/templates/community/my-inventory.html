@@ -1,19 +1,22 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
-{% load extra_template_tags %}
+
+{% block title %} My Inventory {% endblock %}
+
 {% block body %}
 
 <div class="container-fluid">
-    <h1>
-        {% if user.is_authenticated %}
-        Welcome, {{ user.username }}!
-        {% else %}
-        Welcome to HaZe!
-        {% endif %}
-    </h1>
-    <h2>Top games:</h2><br>
+    <h1> My Inventory </h1>
+
+    <a href={% url 'community:game-create' %}>
+    <button id="create-new-bnt" class="btn btn-success btn-sm">
+        <span class="glyphicon glyphicon-plus"></span> Create New Game
+    </button>
+    </a> <br><br>
+
+
     <div class="row">
-        {% for game in top_games %}
+        {% for game in games %}
 
         <div class="col-sm-3">
 
@@ -29,18 +32,18 @@
             <div>
                 <!-- Details -->
                 <a href={% url 'community:game-info' game_id=game.id %} class="btn btn-primary btn-sm">Details</a>
-                {% if not user|has_group:"developer" %}
-                <a href={% url 'community:game-play' game_id=game.id %}>
-                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span> Play
-                    now!
+
+                <a href={% url 'community:game-edit' game_id=game.id %}>
+                <button class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-edit"></span> Edit
                 </button>
-                </a>{% endif %}
+                </a>
             </div>
         </div>
 
         {% endfor %}
+    </div> <br>
 
-    </div>
+
 </div>
 
 {% endblock %}

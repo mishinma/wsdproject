@@ -22,6 +22,17 @@ class Game_Category(models.Model):
         verbose_name_plural = 'game_categories'
 
 
+class GameManager(models.Manager):
+
+    def games_for_developer(self, developer):
+        """ Return a queryset of games that `developer` develops """
+        return super(GameManager, self).get_queryset().filter(developer=developer)
+
+    def games_for_player(self, player):
+        """ Return a queryset of games that `player` plays in """
+        return super(GameManager, self).get_queryset().filter(players__id=player.id)
+
+
 class Game(models.Model):
     # Use unique slug for game URL?
     slug = models.fields.SlugField(unique=True)
@@ -45,13 +56,17 @@ class Game(models.Model):
                                         validators=[MinValueValidator(0.0),
                                                     MaxValueValidator(5.0)])
 
+    objects = GameManager()
+
     def get_user_highest_score(self, user):
         highest_score = self.game_score_set.filter(player=user).order_by('-score').first()
-        return highest_score.score
+        highest_score_value = highest_score.score if highest_score is not None else None
+        return highest_score_value
 
     def get_user_latest_score(self, user):
         latest_score = self.game_score_set.filter(player=user).order_by('-timestamp').first()
-        return latest_score.score
+        latest_score_value = latest_score.score if latest_score is not None else None
+        return latest_score_value
 
     def __str__(self):
         return self.name
