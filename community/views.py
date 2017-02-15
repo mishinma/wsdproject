@@ -40,6 +40,7 @@ def create_game(request):
             return redirect('base:index')
     else:
         form = GameForm()
+
     return render(request, 'community/game-form.html', context={'form': form})
 
 
@@ -58,5 +59,6 @@ def edit_game(request, game_id):
             form.save()
             return redirect('base:index')
     else:
-        form = GameForm(game)
+        form = GameForm(instance=game)
+        
     return render(request, 'community/game-form.html', context={'form': form})
