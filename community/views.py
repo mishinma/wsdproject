@@ -37,7 +37,7 @@ def create_game(request):
         form = GameForm(data=request.POST, instance=game)
         if form.is_valid():
             form.save()
-            return redirect('base:index')
+            return redirect('community:my-inventory')
     else:
         form = GameForm()
 
@@ -57,7 +57,7 @@ def edit_game(request, game_id):
         form = GameForm(data=request.POST, instance=game)
         if form.is_valid():
             form.save()
-            return redirect('base:index')
+            return redirect('community:my-inventory')
     else:
         form = GameForm(instance=game)
 
