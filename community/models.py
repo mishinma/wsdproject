@@ -28,6 +28,10 @@ class GameManager(models.Manager):
         """ Return a queryset of games that `developer` develops """
         return super(GameManager, self).get_queryset().filter(developer=developer)
 
+    def games_for_player(self, player):
+        """ Return a queryset of games that `player` plays in """
+        return super(GameManager, self).get_queryset().filter(players__id=player.id)
+
 
 class Game(models.Model):
     # Use unique slug for game URL?
