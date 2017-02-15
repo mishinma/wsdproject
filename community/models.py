@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.db.models import Max
 
+
 class Game_Category(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
 
@@ -39,8 +40,10 @@ class Game(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
     description = models.fields.TextField(blank=True)
     logo = models.ImageField(null=True, blank=True)  # Should specify height and width
-    rating = models.fields.FloatField(validators=[MinValueValidator(0.0),
-                                                  MaxValueValidator(5.0)])
+    rating = models.fields.DecimalField(max_digits=2,
+                                        decimal_places=1,
+                                        validators=[MinValueValidator(0.0),
+                                                    MaxValueValidator(5.0)])
 
     def get_user_highest_score(self, user):
         highest_score = self.game_score_set.filter(player=user).order_by('-score').first()
@@ -67,7 +70,7 @@ class Game(models.Model):
         permissions = (
             ("play_game", "Can play the game"),
             ("test_game", "Can test games"),
-            ("buy_game", "Can buy games")    
+            ("buy_game", "Can buy games")
         )
 
 
@@ -87,6 +90,7 @@ class Game_State(models.Model):
     game = models.ForeignKey(Game)
     state_data = JSONField()
     timestamp = models.DateTimeField(default=timezone.now)
+
     # name = models.fields.CharField(max_length=50)
 
     def __repr__(self):
