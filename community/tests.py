@@ -24,11 +24,11 @@ class GameModelTestCase(TestCase):
         self.game2 = Game.objects.get(name='The Test Game')
 
     def test_game_get_user_highest_score(self):
-        sansa_game_highest_score = self.game2.get_user_highest_score(self.sansa_player)
+        sansa_game_highest_score = self.game2.get_user_high_score(self.sansa_player)
         self.assertEqual(sansa_game_highest_score, 54)
 
     def test_game_get_user_latest_score(self):
-        sansa_game_latest_score = self.game2.get_user_latest_score(self.sansa_player)
+        sansa_game_latest_score = self.game2.get_user_last_score(self.sansa_player)
         self.assertEqual(sansa_game_latest_score, 3)
 
     def test_game_manager_games_for_developer(self):
@@ -202,8 +202,8 @@ class PlayGameViewTestCase(TestCase):
         request.user = self.sansa_player
         views.save_score(request, self.game2)
 
-        sansa_new_high_score = self.game2.get_user_highest_score(self.sansa_player)
-        sansa_new_last_score = self.game2.get_user_latest_score(self.sansa_player)
+        sansa_new_high_score = self.game2.get_user_high_score(self.sansa_player)
+        sansa_new_last_score = self.game2.get_user_last_score(self.sansa_player)
 
         self.assertEqual(sansa_new_high_score, test_score)
         self.assertEqual(sansa_new_last_score, test_score)
