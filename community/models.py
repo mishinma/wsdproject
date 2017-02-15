@@ -76,7 +76,7 @@ class Game_Score(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __repr__(self):
-        return "<GameScore: game={}, score={}>".format(self.game.id, self.score, self.timestamp)
+        return "<GameScore: game={}, score={}>, time={}".format(self.game.id, self.score, self.timestamp)
 
 
 class Game_State(models.Model):
