@@ -43,10 +43,12 @@ class Game(models.Model):
                                                   MaxValueValidator(5.0)])
 
     def get_user_highest_score(self, user):
-        return self.game_score_set.filter(player=user).order_by('-score').first()
+        highest_score = self.game_score_set.filter(player=user).order_by('-score').first()
+        return highest_score.score
 
     def get_user_latest_score(self, user):
-        return self.game_score_set.filter(player=user).order_by('-timestamp').first()
+        latest_score = self.game_score_set.filter(player=user).order_by('-timestamp').first()
+        return latest_score.score
 
     def __str__(self):
         return self.name
@@ -67,7 +69,6 @@ class Game(models.Model):
             ("test_game", "Can test games"),
             ("buy_game", "Can buy games")    
         )
-
 
 
 class Game_Score(models.Model):
