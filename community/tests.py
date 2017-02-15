@@ -69,7 +69,7 @@ class GameCreateEditViewTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, FOUND_302)
-        self.assertEqual(response.url, reverse('base:index'))
+        self.assertEqual(response.url, reverse('community:my-inventory'))
 
         # Check data
         test_game = Game.objects.get(name='The Test Game 2')
@@ -106,7 +106,7 @@ class GameCreateEditViewTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, FOUND_302)
-        self.assertEqual(response.url, reverse('base:index'))
+        self.assertEqual(response.url, reverse('community:my-inventory'))
 
         # Check data
         changed_game = Game.objects.get(name='The Awesome Test Game 3')
@@ -144,7 +144,7 @@ class GameCreateEditViewTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, FOUND_302)
-        self.assertEqual(response.url, reverse('base:index'))
+        self.assertEqual(response.url, reverse('community:my-inventory'))
 
         # Check data
         changed_game = Game.objects.get(name='The Test Game 3')
