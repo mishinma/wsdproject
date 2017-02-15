@@ -59,15 +59,14 @@ class Game(models.Model):
     objects = GameManager()
 
     def get_user_high_score(self, user):
-        highest_score = self.game_score_set.filter(player=user).order_by('-score').first()
-        highest_score_value = highest_score.score if highest_score is not None else None
-        return highest_score_value
+        high_score = self.gamescore_set.filter(player=user).order_by('-score').first()
+        high_score_value = high_score.score if high_score is not None else None
+        return high_score_value
 
     def get_user_last_score(self, user):
-        latest_score = self.game_score_set.filter(player=user).order_by('-timestamp').first()
-
-        latest_score_value = latest_score.score if latest_score is not None else None
-        return latest_score_value
+        last_score = self.gamescore_set.filter(player=user).order_by('-timestamp').first()
+        last_score_value = last_score.score if last_score is not None else None
+        return last_score_value
 
     def __str__(self):
         return self.name

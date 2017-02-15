@@ -186,7 +186,7 @@ class PlayGameViewTestCase(TestCase):
                 'test_games']
 
     def setUp(self):
-        self.rpg_cat = Game_Category.objects.get(name='RPG')
+        self.rpg_cat = GameCategory.objects.get(name='RPG')
         self.bran_developer = UserMethods.objects.get(username='bran')
         self.sansa_player = UserMethods.objects.get(username='sansa')
         self.ned_player = UserMethods.objects.get(username='ned')
