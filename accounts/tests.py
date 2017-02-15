@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from accounts.models import UserMethods
 from community.models import Game, Game_Category
-from base.tests.status_codes import OK_200, SEE_OTHER_303
+from base.tests.status_codes import OK_200, FOUND_302
 
 # Any resemblance to Game of Thrones characters is purely coincidental
 
@@ -55,7 +55,7 @@ class RegisterViewTestCase(TestCase):
             })
 
         # Redirect to user
-        self.assertEqual(response.status_code, SEE_OTHER_303)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check user data and permissions
@@ -78,7 +78,7 @@ class RegisterViewTestCase(TestCase):
                 'is_developer': True
             })
         # Redirect to user
-        self.assertEqual(response.status_code, SEE_OTHER_303)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check user data and permissions

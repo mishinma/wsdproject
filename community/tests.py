@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase
 from accounts.models import UserMethods
 from community.models import Game, Game_Category
-from base.tests.status_codes import FORBIDDEN_403, SEE_OTHER_303
+from base.tests.status_codes import FORBIDDEN_403, FOUND_302
 
 
 class GameModelTestCase(TestCase):
@@ -53,7 +53,7 @@ class GameCreateEditViewTestCase(TestCase):
                                   'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ')
         )
 
-        self.assertEqual(response.status_code, SEE_OTHER_303)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check data
@@ -90,7 +90,7 @@ class GameCreateEditViewTestCase(TestCase):
                                   'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ')
         )
 
-        self.assertEqual(response.status_code, SEE_OTHER_303)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check data
@@ -128,7 +128,7 @@ class GameCreateEditViewTestCase(TestCase):
                       rating=5.0
         )
 
-        self.assertEqual(response.status_code, SEE_OTHER_303)
+        self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('base:index'))
 
         # Check data
