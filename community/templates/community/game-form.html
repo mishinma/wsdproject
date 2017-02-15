@@ -1,5 +1,11 @@
 {% extends 'base/base.html' %}
-{% block title %} Create new game {% endblock %}
+{% block title %}
+    {% if create %}
+        Create new game
+    {% else %}
+        Edit game
+    {% endif %}
+{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -8,13 +14,24 @@
         <div class="col-sm-12 col-md-7">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h3>Create a New Game </h3>
+                    <h3>{% if create %}
+                            Create new game:
+                        {% else %}
+                            Edit game:
+                        {% endif %}
+                    </h3>
                     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% include 'base/form-template.html' %}
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                <button type="submit" class="btn btn-success">
+                                {% if create %}
+                                    Create
+                                {% else %}
+                                    Save
+                                {% endif %}
+                                </button>
                             </div>
                         </div>
                     </form>
