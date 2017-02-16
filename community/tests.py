@@ -1,11 +1,15 @@
+import json
 from decimal import Decimal
 
 from django.urls import reverse
 from django.test import TestCase, RequestFactory
+
 from accounts.models import UserMethods
 from community import views
-from community.models import Game, GameCategory
-from base.tests.status_codes import FORBIDDEN_403, FOUND_302
+from community.views import MESSAGE_SAVE_SCORE_ERROR, MESSAGE_LOAD_GAME_ERROR, \
+    MESSAGE_SAVE_STATE_ERROR
+from community.models import Game, GameCategory, GameScore, GameState
+from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400
 
 
 class GameModelTestCase(TestCase):
@@ -14,7 +18,8 @@ class GameModelTestCase(TestCase):
     fixtures = ['test_users',
                 'test_game_categories',
                 'test_games',
-                'test_game_scores']
+                'test_game_scores',
+                'test_game_states']
 
     def setUp(self):
         self.sansa_player = UserMethods.objects.get(username='sansa')
@@ -30,6 +35,16 @@ class GameModelTestCase(TestCase):
     def test_game_get_user_latest_score(self):
         sansa_game_latest_score = self.game2.get_user_last_score(self.sansa_player)
         self.assertEqual(sansa_game_latest_score, 3)
+
+    def test_game_get_user_last_state(self):
+        test_sansa_game2_last_state = {
+            "score": 42,
+            "items": [
+                "sword"
+            ]
+        }
+        last_state = self.game2.get_user_last_state(self.sansa_player)
+        self.assertEqual(last_state.state_data, test_sansa_game2_last_state)
 
     def test_game_manager_games_for_developer(self):
         bran_develops_games = {game.id for game in Game.objects.games_for_developer(self.bran_developer)}
@@ -190,6 +205,7 @@ class PlayGameViewTestCase(TestCase):
         self.bran_developer = UserMethods.objects.get(username='bran')
         self.sansa_player = UserMethods.objects.get(username='sansa')
         self.ned_player = UserMethods.objects.get(username='ned')
+        self.game1 = Game.objects.get(name='The Battle of the Bastards')
         self.game2 = Game.objects.get(name='The Test Game')
         self.factory = RequestFactory()
 
@@ -207,6 +223,75 @@ class PlayGameViewTestCase(TestCase):
 
         self.assertEqual(sansa_new_high_score, test_score)
         self.assertEqual(sansa_new_last_score, test_score)
+
+    def test_save_score_bad_message(self):
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data={'not_a_score': 64}
+        )
+        request.user = self.sansa_player
+        response = views.save_score(request, self.game2)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+        self.assertEqual(response.content.decode('utf-8'), MESSAGE_SAVE_SCORE_ERROR)
+
+    def test_save_state(self):
+        test_game_state = dict(
+            score=64,
+            playerItems=['shield', 'sword']
+        )
+        test_game_state_json = json.dumps(test_game_state)
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data={'gameState': test_game_state_json}
+        )
+
+        request.user = self.sansa_player
+        views.save_state(request, self.game2)
+        last_state = self.sansa_player.gamestate_set.order_by('-timestamp').first()
+
+        self.assertEqual(last_state.state_data, test_game_state)
+
+    def test_save_state_bad_message(self):
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data={'not-a-gameState': {'kingdoms': 7}}
+        )
+        request.user = self.sansa_player
+        response = views.save_state(request, self.game2)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+        self.assertEqual(response.content.decode('utf-8'), MESSAGE_SAVE_STATE_ERROR)
+
+    def test_load_game(self):
+        test_state_data = {"score": 104, "items": ["sword", "shotgun"]}
+        GameState.objects.create(
+            player=self.sansa_player,
+            game=self.game2,
+            state_data=test_state_data
+        )
+
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data=dict()
+        )
+        request.user = self.sansa_player
+        response = views.load_game(request, self.game2)
+        loaded_state = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual(loaded_state, test_state_data)
+
+    def test_load_game_does_not_exist(self):
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game1.id}),
+            data=dict()
+        )
+        request.user = self.ned_player
+        response = views.load_game(request, self.game1)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+        self.assertEqual(response.content.decode('utf-8'), MESSAGE_LOAD_GAME_ERROR)
+
 
 
 

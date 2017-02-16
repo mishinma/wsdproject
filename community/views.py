@@ -1,10 +1,12 @@
-from django.http import JsonResponse
+import json
+
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState
 from django.contrib.auth.models import User
 from community.forms import GameForm
-import json
+
 
 MESSAGE_TYPE_SCORE = 'SCORE'
 MESSAGE_TYPE_SAVE = 'SAVE'
@@ -12,6 +14,10 @@ MESSAGE_TYPE_LOAD_REQUEST = 'LOAD_REQUEST'
 MESSAGE_TYPE_LOAD = 'LOAD'
 MESSAGE_TYPE_ERROR = 'ERROR'
 MESSAGE_TYPE_SETTING = 'SETTING'
+
+MESSAGE_SAVE_SCORE_ERROR = "Sorry, we couldn't save your score."
+MESSAGE_SAVE_STATE_ERROR = "Sorry, we couldn't save your state."
+MESSAGE_LOAD_GAME_ERROR = "Sorry, we couldn't load your game."
 
 
 def game_info(request, game_id):
@@ -32,8 +38,16 @@ def play_game(request, game_id):
         message_type = request.POST.get("messageType")
 
         if message_type == MESSAGE_TYPE_SCORE:
-            response = save_score(request, game)
-            return response
+            action_func = save_score
+        elif message_type == MESSAGE_TYPE_SAVE:
+            action_func = save_state
+        elif message_type == MESSAGE_TYPE_LOAD_REQUEST:
+            action_func = load_game
+        else:
+            return HttpResponseBadRequest()
+
+        response = action_func(request, game)
+        return response
 
     # TODO: add top scores
     context = {
@@ -46,8 +60,13 @@ def play_game(request, game_id):
 
 
 def save_score(request, game):
-    score_value = request.POST.get("score")
-    score = GameScore.objects.create(
+    """ Save game score from the received postMessage """
+    try:
+        score_value = request.POST["score"]
+    except KeyError:
+        return HttpResponseBadRequest(MESSAGE_SAVE_SCORE_ERROR)
+
+    GameScore.objects.create(
         score=score_value, game=game, player=request.user)
 
     # Fetch the scores and update them
@@ -58,6 +77,31 @@ def save_score(request, game):
         'userHighScore': user_high_score,
         'userLastScore': user_last_score
     })
+
+
+def save_state(request, game):
+    """ Save game state from the received postMessage """
+    try:
+        game_state_data = json.loads(request.POST['gameState'])
+    except KeyError:
+        return HttpResponseBadRequest(MESSAGE_SAVE_STATE_ERROR)
+
+    GameState.objects.create(
+        state_data=game_state_data, game=game, player=request.user
+    )
+
+    return HttpResponse()
+
+
+def load_game(request, game):
+    """ Load game for the user """
+    # ToDo: currently only loads the last game
+    last_state = game.get_user_last_state(request.user)
+
+    if last_state is None:
+        return HttpResponseBadRequest(MESSAGE_LOAD_GAME_ERROR)
+    else:
+        return JsonResponse(last_state.state_data)
 
 
 @login_required

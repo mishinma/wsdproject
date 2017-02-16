@@ -68,6 +68,9 @@ class Game(models.Model):
         last_score_value = last_score.score if last_score is not None else None
         return last_score_value
 
+    def get_user_last_state(self, user):
+        return self.gamestate_set.filter(player=user).order_by('-timestamp').first()
+
     def __str__(self):
         return self.name
 
