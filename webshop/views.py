@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
 from django.http import JsonResponse
 from django.core.exceptions import SuspiciousOperation
+from django.views import defaults
+
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
 from community.models import Game
 from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
-from django.views import defaults
 
 
 @login_required
