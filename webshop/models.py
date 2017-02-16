@@ -70,7 +70,7 @@ class Purchase(models.Model):
 
 
 class PendingTransaction(models.Model):
-    user = models.OneToOneField(User)
+    user = models.ForeignKey(User)
     pid = models.fields.CharField(max_length=100, primary_key=True)
     game = models.ForeignKey(Game)
     amount = models.fields.DecimalField(max_digits=5,
