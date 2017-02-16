@@ -1,12 +1,13 @@
 from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from django.core.exceptions import SuspiciousOperation
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
 from community.models import Game
 from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
+from django.views import defaults
 
 
 @login_required
@@ -40,7 +41,7 @@ def purchase_pending(request):
     try:
         game_id, amount = extract_post_callback_data(request)
     except KeyError:
-        return HttpResponseBadRequest()
+        return defaults.bad_request(request=request, exception=KeyError)
 
     if(request.is_ajax()):
         user = request.user
@@ -80,19 +81,25 @@ def purchase_pending(request):
         }
         return JsonResponse(responseData)
     else:
-        return HttpResponseBadRequest()
+        return defaults.bad_request(
+            request=request,
+            exception=SuspiciousOperation
+        )
 
 
 def success(request):
     try:
         pid, ref, result, checksum_received = extract_get_callback_data(request)
     except KeyError:
-        return HttpResponseBadRequest()
+        return defaults.bad_request(request=request, exception=KeyError)
 
     try:
         pending_transaction = PendingTransaction.objects.get(pid=pid)
     except PendingTransaction.DoesNotExist:
-        return HttpResponseBadRequest()
+        return defaults.bad_request(
+            request=request,
+            exception=PendingTransaction.DoesNotExist
+        )
 
     purchased_game = pending_transaction.game
     valid_checksum = Transaction.validate_received_checksum(
@@ -111,7 +118,10 @@ def success(request):
         transaction.user.games.add(purchased_game)
         return redirect('community:game-play', game_id=purchased_game.id)
     else:
-        raise SuspiciousOperation('Invalid request. The checksum was incorrect')
+        return defaults.bad_request(
+            request=request,
+            exception=SuspiciousOperation
+        )
 
 
 def cancel(request):
