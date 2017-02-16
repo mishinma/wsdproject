@@ -6,7 +6,7 @@
     <h1>{{game.name}}</h1>
     <div class="row">
         <div class="col-xs-12 col-md-8">
-            <iframe id="play-game-iframe" src={{game.source_url}}></iframe>
+            <iframe id="playGameIframe" src={{game.source_url}}></iframe>
 
         </div>
         {% include "community/score-leaderboard.html" %}
@@ -50,31 +50,25 @@
 
 //            var state = JSON.stringify(evt.data["gameState"]);
 
-
-            if (evt.data["messageType"] == "SCORE") {
-                $.ajax({
-                    method: "POST",
-                    data: evt.data,
-                    success: function (data) {
-                        $("#userHighScore").text(data.userHighScore);
-                        $("#userLastScore").text(data.userLastScore);
-                    }
-                })
+            switch (evt.data["messageType"]){
+                // ToDo: set options before the document is ready?
+                case "SETTING":
+                    $("#playGameIframe").css(evt.data.options);
+                    break;
+                case "SCORE":
+                    $.ajax({
+                        method: "POST",
+                        data: evt.data,
+                        success: function (data) {
+                            $("#userHighScore").text(data.userHighScore);
+                            $("#userLastScore").text(data.userLastScore);
+                        }
+                    });
+                    break;
+                default:
+                    console.log('Unrecognized message type');
             }
-
-//            if (evt.data["messageType"] == "SAVE") {
-//                $.ajax({
-//                    method: "POST",
-//                    url: './save-state/',
-//                    data: state
-//                })
-//                    .done(function () {
-//                        console.log("State Saved");
-//                    })
-//            }
         });
-
-
     });
 
 
