@@ -16,7 +16,8 @@ class GameModelTestCase(TestCase):
     fixtures = ['test_users',
                 'test_game_categories',
                 'test_games',
-                'test_game_scores']
+                'test_game_scores',
+                'test_game_states']
 
     def setUp(self):
         self.sansa_player = UserMethods.objects.get(username='sansa')
@@ -32,6 +33,16 @@ class GameModelTestCase(TestCase):
     def test_game_get_user_latest_score(self):
         sansa_game_latest_score = self.game2.get_user_last_score(self.sansa_player)
         self.assertEqual(sansa_game_latest_score, 3)
+
+    def test_game_get_user_last_state(self):
+        test_sansa_game2_last_state = {
+            "score": 42,
+            "items": [
+                "sword"
+            ]
+        }
+        last_state = self.game2.get_user_last_state(self.sansa_player)
+        self.assertEqual(last_state.state_data, test_sansa_game2_last_state)
 
     def test_game_manager_games_for_developer(self):
         bran_develops_games = {game.id for game in Game.objects.games_for_developer(self.bran_developer)}
