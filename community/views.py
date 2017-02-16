@@ -7,7 +7,11 @@ from community.forms import GameForm
 
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
-    return render(request, "community/game-info.html", {'game': game})
+
+    context = {
+        'game': game,
+    }
+    return render(request, "community/game-info.html", context=context)
 
 
 @login_required
@@ -25,7 +29,7 @@ def play_game(request, game_id):
         }
         return render(request, "community/game-play.html", context)
     else:
-        return redirect('community:game-info', game_id=game_id)
+        return redirect('webshop:purchase-game', game_id=game_id)
 
 
 @login_required
