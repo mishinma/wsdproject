@@ -54,14 +54,8 @@ def purchase_pending(request):
             token=PAYMENT_SECRET_KEY
         )
 
-        success_url = request.build_absolute_uri(
-            reverse('webshop:purchase-success')
-        )
-        cancel_url = request.build_absolute_uri(
-            reverse('webshop:purchase-cancel')
-        )
-        error_url = request.build_absolute_uri(reverse(
-            'webshop:purchase-error')
+        callback_url = request.build_absolute_uri(
+            reverse('webshop:purchase-callback')
         )
 
         PendingTransaction.objects.create(
@@ -74,9 +68,9 @@ def purchase_pending(request):
             'pid': pid,
             'sid': PAYMENT_SID,
             'amount': amount,
-            'success_url': success_url,
-            'cancel_url': cancel_url,
-            'error_url': error_url,
+            'success_url': callback_url,
+            'cancel_url': callback_url,
+            'error_url': callback_url,
             'checksum': checksum
         }
         return JsonResponse(responseData)
@@ -87,12 +81,15 @@ def purchase_pending(request):
         )
 
 
-def success(request):
+@login_required
+@permission_required('community.buy_game', raise_exception=True)
+def purchase_callback(request):
+    # Get passed parameters
     try:
         pid, ref, result, checksum_received = extract_get_callback_data(request)
     except KeyError:
         return defaults.bad_request(request=request, exception=KeyError)
-
+    # Get referenced pending transaction
     try:
         pending_transaction = PendingTransaction.objects.get(pid=pid)
     except PendingTransaction.DoesNotExist:
@@ -100,8 +97,7 @@ def success(request):
             request=request,
             exception=PendingTransaction.DoesNotExist
         )
-
-    purchased_game = pending_transaction.game
+    # Compute checksum
     valid_checksum = Transaction.validate_received_checksum(
         checksum=checksum_received,
         pid=pid,
@@ -109,27 +105,34 @@ def success(request):
         result=result,
         token=PAYMENT_SECRET_KEY
     )
+    # Handle callback according to result
     if(valid_checksum):
         transaction, purchase = Transaction.objects.create_from_pending(
             pending_transaction=pending_transaction,
             ref=ref,
             result=result
         )
-        transaction.user.games.add(purchased_game)
-        return redirect('community:game-play', game_id=purchased_game.id)
-    else:
-        return defaults.bad_request(
-            request=request,
-            exception=SuspiciousOperation
-        )
+        if(result == 'success'):
+            purchased_game = pending_transaction.game
+            transaction.user.games.add(purchase_game)
+            return redirect('community:game-play', game_id=purchased_game.id)
+        elif(result == 'cancel'):
+            return redirect(
+                'webshop:purchase-game',
+                game_id=pending_transaction.game.id
+            )
+        elif(result == 'error'):
+            return redirect(
+                'webshop:purchase-game',
+                game_id=pending_transaction.game.id
+            )
+        else:
+            pass
 
-
-def cancel(request):
-    pass
-
-
-def error(request):
-    pass
+    return defaults.bad_request(
+        request=request,
+        exception=SuspiciousOperation
+    )
 
 
 def extract_post_callback_data(request):
