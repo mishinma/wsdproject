@@ -1,10 +1,12 @@
-from django.http import JsonResponse
+import json
+
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState
 from django.contrib.auth.models import User
 from community.forms import GameForm
-import json
+
 
 MESSAGE_TYPE_SCORE = 'SCORE'
 MESSAGE_TYPE_SAVE = 'SAVE'
@@ -12,6 +14,9 @@ MESSAGE_TYPE_LOAD_REQUEST = 'LOAD_REQUEST'
 MESSAGE_TYPE_LOAD = 'LOAD'
 MESSAGE_TYPE_ERROR = 'ERROR'
 MESSAGE_TYPE_SETTING = 'SETTING'
+
+BAD_MESSAGE_RESPONSE = 'Bad message'
+SAVED_RESPONSE = 'Saved'
 
 
 def game_info(request, game_id):
@@ -33,6 +38,10 @@ def play_game(request, game_id):
 
         if message_type == MESSAGE_TYPE_SCORE:
             response = save_score(request, game)
+            return response
+
+        elif message_type == MESSAGE_TYPE_SAVE:
+            response = save_state(request, game)
             return response
 
     # TODO: add top scores
@@ -59,6 +68,19 @@ def save_score(request, game):
         'userLastScore': user_last_score
     })
 
+
+def save_state(request, game):
+
+    try:
+        game_state_data = json.loads(request.POST['gameState'])
+    except KeyError:
+        return HttpResponse(BAD_MESSAGE_RESPONSE)
+
+    GameState.objects.create(
+        state_data=game_state_data, game=game, player=request.user
+    )
+
+    return HttpResponse(SAVED_RESPONSE)
 
 @login_required
 @permission_required('community.add_game', raise_exception=True)
