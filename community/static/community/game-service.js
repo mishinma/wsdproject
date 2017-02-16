@@ -6,7 +6,8 @@ function send_error_message (jqXHR, exception)  {
         "messageType": "ERROR",
         "info": jqXHR.responseText
     };
-    $("#playGameIframe")[0].contentWindow.postMessage(msg, "*");
+    var gameIframe = $("#playGameIframe")[0];
+    gameIframe.contentWindow.postMessage(msg, gameIframe.src);
 }
 
 
@@ -24,7 +25,8 @@ function load_game (data) {
          "messageType": "LOAD",
          "gameState": data
      };
-     $("#playGameIframe")[0].contentWindow.postMessage(msg, "*");
+     var gameIframe = $("#playGameIframe")[0];
+     gameIframe.contentWindow.postMessage(msg, gameIframe.src);
 }
 
 
