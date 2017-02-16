@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from django.urls import reverse
@@ -5,7 +6,7 @@ from django.test import TestCase, RequestFactory
 from accounts.models import UserMethods
 from community import views
 from community.views import BAD_MESSAGE_RESPONSE
-from community.models import Game, GameCategory
+from community.models import Game, GameCategory, GameScore
 from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400
 
 
@@ -219,6 +220,24 @@ class PlayGameViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, BAD_REQUEST_400)
         self.assertEqual(response.content.decode('utf-8'), BAD_MESSAGE_RESPONSE)
+
+    def test_save_state(self):
+        test_game_state = dict(
+            score=64,
+            playerItems=['shield', 'sword']
+        )
+        test_game_state_json = json.dumps(test_game_state)
+        request = self.factory.post(
+            path=reverse('community:game-play', kwargs={'game_id': self.game2.id}),
+            data={'gameState': test_game_state_json}
+        )
+        request.user = self.sansa_player
+        views.save_state(request, self.game2)
+
+        last_state = self.sansa_player.gamestate_set.order_by('-timestamp').first()
+
+        self.assertEqual(last_state.state_data, test_game_state)
+
 
 
 
