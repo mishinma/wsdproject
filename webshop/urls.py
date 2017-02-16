@@ -7,7 +7,5 @@ app_name = 'webshop'
 urlpatterns = [
     url(r'^shop/buy/(?P<game_id>\d+)/$', views.purchase_game, name='purchase-game'),
     url(r'^shop/buy/pending/$', views.purchase_pending, name='purchase-pending'),
-    url(r'^shop/buy/success', views.success, name='purchase-success'),
-    url(r'^shop/buy/cancel', views.cancel, name='purchase-cancel'),
-    url(r'^shop/buy/error', views.error, name='purchase-error'),
+    url(r'^shop/buy/callback', views.purchase_callback, name='purchase-callback'),
 ]
