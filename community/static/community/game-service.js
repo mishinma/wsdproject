@@ -10,9 +10,16 @@ function send_error_message (jqXHR, exception)  {
 }
 
 
+function update_scores (data) {
+    'use strict';
+    $("#userHighScore").text(data.userHighScore);
+    $("#userLastScore").text(data.userLastScore);
+}
+
+
 function load_game (data) {
     // Send LOAD message
-    'use strict'
+    'use strict';
      var msg = {
          "messageType": "LOAD",
          "gameState": data
@@ -40,10 +47,7 @@ $(document).ready(function () {
                     method: "POST",
                     data: evt.data,
                     dataType: 'json',
-                    success: function (data) {
-                        $("#userHighScore").text(data.userHighScore);
-                        $("#userLastScore").text(data.userLastScore);
-                    },
+                    success: update_scores,
                     error: send_error_message
                 });
                 break;
