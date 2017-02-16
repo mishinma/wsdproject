@@ -10,6 +10,17 @@ function send_error_message (jqXHR, exception)  {
 }
 
 
+function load_game (data) {
+    // Send LOAD message
+    'use strict'
+     var msg = {
+         "messageType": "LOAD",
+         "gameState": data
+     };
+     $("#playGameIframe")[0].contentWindow.postMessage(msg, "*");
+}
+
+
 // Communication between the game and the service using window.postMessage.
 $(document).ready(function () {
     "use strict";
@@ -45,6 +56,16 @@ $(document).ready(function () {
                 $.ajax({
                     method: "POST",
                     data: data,
+                    error: send_error_message
+                });
+                break;
+
+            case "LOAD_REQUEST":
+                $.ajax({
+                    method: "POST",
+                    data: evt.data,
+                    dataType: 'json',
+                    success: load_game,
                     error: send_error_message
                 });
                 break;

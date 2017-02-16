@@ -17,6 +17,7 @@ MESSAGE_TYPE_SETTING = 'SETTING'
 
 MESSAGE_SAVE_SCORE_ERROR = "Sorry, we couldn't save your score."
 MESSAGE_SAVE_STATE_ERROR = "Sorry, we couldn't save your state."
+MESSAGE_LOAD_GAME_ERROR = "Sorry, we couldn't load your game."
 
 
 def game_info(request, game_id):
@@ -37,12 +38,16 @@ def play_game(request, game_id):
         message_type = request.POST.get("messageType")
 
         if message_type == MESSAGE_TYPE_SCORE:
-            response = save_score(request, game)
-            return response
-
+            action_func = save_score
         elif message_type == MESSAGE_TYPE_SAVE:
-            response = save_state(request, game)
-            return response
+            action_func = save_state
+        elif message_type == MESSAGE_TYPE_LOAD_REQUEST:
+            action_func = load_game
+        else:
+            return HttpResponseBadRequest()
+
+        response = action_func(request, game)
+        return response
 
     # TODO: add top scores
     context = {
@@ -86,6 +91,18 @@ def save_state(request, game):
     )
 
     return HttpResponse()
+
+
+def load_game(request, game):
+    """ Load game for the user """
+    # ToDo: currently only loads the last game
+    last_state = game.get_user_last_state(request.user)
+
+    if last_state is None:
+        return HttpResponseBadRequest(MESSAGE_LOAD_GAME_ERROR)
+    else:
+        return JsonResponse(last_state.state_data)
+
 
 @login_required
 @permission_required('community.add_game', raise_exception=True)
