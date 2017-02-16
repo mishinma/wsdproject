@@ -21,6 +21,19 @@ $(document).ready(function () {
                     }
                 });
                 break;
+            case "SAVE":
+                var data = {
+                    messageType: evt.data.messageType,
+                    gameState: JSON.stringify(evt.data.gameState)
+                };
+                $.ajax({
+                    method: "POST",
+                    data: data,
+                    success: function () {
+                        console.log('State saved')
+                    }
+                });
+                break;
             default:
                 console.log('Unrecognized message type');
         }
