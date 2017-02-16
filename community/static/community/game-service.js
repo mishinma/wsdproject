@@ -17,9 +17,14 @@ $(document).ready(function () {
                 $.ajax({
                     method: "POST",
                     data: evt.data,
+                    dataType: 'json',
                     success: function (data) {
                         $("#userHighScore").text(data.userHighScore);
                         $("#userLastScore").text(data.userLastScore);
+                    },
+                    error: function (jqXHR, exception) {
+                        // Bad message
+                        console.log(jqXHR.responseText);
                     }
                 });
                 break;
@@ -34,6 +39,10 @@ $(document).ready(function () {
                     data: data,
                     success: function () {
                         console.log('State saved')
+                    },
+                    error: function (jqXHR, exception) {
+                        // Bad message
+                        console.log(jqXHR.responseText);
                     }
                 });
                 break;

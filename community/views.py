@@ -1,6 +1,6 @@
 import json
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState
@@ -59,7 +59,7 @@ def save_score(request, game):
     try:
         score_value = request.POST["score"]
     except KeyError:
-        return HttpResponse(BAD_MESSAGE_RESPONSE)
+        return HttpResponseBadRequest(BAD_MESSAGE_RESPONSE)
 
     GameScore.objects.create(
         score=score_value, game=game, player=request.user)
@@ -79,7 +79,7 @@ def save_state(request, game):
     try:
         game_state_data = json.loads(request.POST['gameState'])
     except KeyError:
-        return HttpResponse(BAD_MESSAGE_RESPONSE)
+        return HttpResponseBadRequest(BAD_MESSAGE_RESPONSE)
 
     GameState.objects.create(
         state_data=game_state_data, game=game, player=request.user

@@ -6,7 +6,7 @@ from accounts.models import UserMethods
 from community import views
 from community.views import BAD_MESSAGE_RESPONSE
 from community.models import Game, GameCategory
-from base.tests.status_codes import FORBIDDEN_403, FOUND_302, OK_200
+from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400
 
 
 class GameModelTestCase(TestCase):
@@ -217,8 +217,8 @@ class PlayGameViewTestCase(TestCase):
         request.user = self.sansa_player
         response = views.save_score(request, self.game2)
 
-        self.assertEqual(response.status_code, OK_200)
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
         self.assertEqual(response.content.decode('utf-8'), BAD_MESSAGE_RESPONSE)
-    
+
 
 
