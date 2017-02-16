@@ -55,7 +55,7 @@ def play_game(request, game_id):
 
 
 def save_score(request, game):
-
+    """ Save game score from the received postMessage """
     try:
         score_value = request.POST["score"]
     except KeyError:
@@ -75,7 +75,7 @@ def save_score(request, game):
 
 
 def save_state(request, game):
-
+    """ Save game state from the received postMessage """
     try:
         game_state_data = json.loads(request.POST['gameState'])
     except KeyError:
