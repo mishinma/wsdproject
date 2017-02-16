@@ -5,12 +5,14 @@ $(document).ready(function () {
     window.addEventListener("message", function (evt) {
 
         switch (evt.data["messageType"]){
-            // ToDo: set options before the document is ready?
+
             case "SETTING":
+                // ToDo: set options before the document is ready?
                 var options = evt.data.options;
                 options.visibility = 'visible';
                 $("#playGameIframe").css(options);
                 break;
+
             case "SCORE":
                 $.ajax({
                     method: "POST",
@@ -21,6 +23,7 @@ $(document).ready(function () {
                     }
                 });
                 break;
+
             case "SAVE":
                 var data = {
                     messageType: evt.data.messageType,
@@ -34,6 +37,7 @@ $(document).ready(function () {
                     }
                 });
                 break;
+
             default:
                 console.log('Unrecognized message type');
         }
