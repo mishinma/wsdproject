@@ -1,4 +1,15 @@
 
+function send_error_message (jqXHR, exception)  {
+    // Send ERROR message
+    'use strict';
+    var msg = {
+        "messageType": "ERROR",
+        "info": jqXHR.responseText
+    };
+    $("#playGameIframe")[0].contentWindow.postMessage(msg, "*");
+}
+
+
 // Communication between the game and the service using window.postMessage.
 $(document).ready(function () {
     "use strict";
@@ -22,10 +33,7 @@ $(document).ready(function () {
                         $("#userHighScore").text(data.userHighScore);
                         $("#userLastScore").text(data.userLastScore);
                     },
-                    error: function (jqXHR, exception) {
-                        // Bad message
-                        console.log(jqXHR.responseText);
-                    }
+                    error: send_error_message
                 });
                 break;
 
@@ -37,13 +45,7 @@ $(document).ready(function () {
                 $.ajax({
                     method: "POST",
                     data: data,
-                    success: function () {
-                        console.log('State saved')
-                    },
-                    error: function (jqXHR, exception) {
-                        // Bad message
-                        console.log(jqXHR.responseText);
-                    }
+                    error: send_error_message
                 });
                 break;
 

@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.test import TestCase, RequestFactory
 from accounts.models import UserMethods
 from community import views
-from community.views import BAD_MESSAGE_RESPONSE
+from community.views import MESSAGE_SAVE_SCORE_ERROR
 from community.models import Game, GameCategory, GameScore
 from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400
 
@@ -219,7 +219,7 @@ class PlayGameViewTestCase(TestCase):
         response = views.save_score(request, self.game2)
 
         self.assertEqual(response.status_code, BAD_REQUEST_400)
-        self.assertEqual(response.content.decode('utf-8'), BAD_MESSAGE_RESPONSE)
+        self.assertEqual(response.content.decode('utf-8'), MESSAGE_SAVE_SCORE_ERROR)
 
     def test_save_state(self):
         test_game_state = dict(
