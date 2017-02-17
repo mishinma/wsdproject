@@ -2,7 +2,7 @@ import json
 from decimal import Decimal
 
 from django.urls import reverse
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 
 from accounts.models import UserMethods
 from community import views
@@ -289,5 +289,46 @@ class PlayGameViewTestCase(TestCase):
         self.assertEqual(response.content.decode('utf-8'), MESSAGE_LOAD_GAME_ERROR)
 
 
+class SearchByQueryViewTestCase(TestCase):
 
+    # Mind the order
+    fixtures = ['test_users',
+                'test_games']
 
+    def setUp(self):
+        self.game1 = Game.objects.get(name='The Battle of the Bastards')
+        self.game2 = Game.objects.get(name='The Test Game')
+        self.game3 = Game.objects.get(name='The Action Game')
+        self.game4 = Game.objects.get(name='The Second Action Game')
+        self.factory = RequestFactory()
+        self.client = Client()
+
+    def test_query_does_not_exist(self):
+        request = self.factory.get(
+            path=reverse('community:search-query'), data={'asdf': 'foo'}
+        )
+
+        response = views.search_by_query(request)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+
+    def test_search_for_exact_name(self):
+        response = self.client.get(
+            reverse('community:search-query'),
+            {'q': self.game1.name}
+        )
+
+        matches = response.context['matches']
+
+        self.assertEqual(matches[0].name, self.game1.name)
+
+    def test_search_with_query(self):
+        response = self.client.get(
+            reverse('community:search-query'),
+            {'q': 'game'}
+        )
+        
+        matches = response.context['matches']
+        matches_id_set = {match.id for match in matches}
+
+        self.assertEqual(matches_id_set, {self.game2.id, self.game3.id, self.game4.id})
