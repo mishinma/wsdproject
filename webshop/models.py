@@ -78,3 +78,4 @@ class PendingTransaction(models.Model):
                                         decimal_places=2,
                                         validators=[MinValueValidator(0.0),
                                                     MaxValueValidator(999.00)])
+    timestamp = models.DateTimeField(default=timezone.now)
