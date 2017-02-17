@@ -22,7 +22,7 @@ class TransactionManager(models.Manager):
         pending_transaction.delete()
         purchase = None
         if result == 'success':
-            purchase = Purchase.objects.create(pid=finished_transaction,
+            purchase = Purchase.objects.create(transaction=finished_transaction,
                                                payer=finished_transaction.user,
                                                game=pending_transaction.game)
         return finished_transaction, purchase

@@ -21,7 +21,8 @@
                     <h3 >Purchase "{{game.name}}"</h3>
                     <h4>Price: {{game.get_price}} </h4>
                     <h4>Developer: {{game.developer.username}}</h4>
-                    <form id="pending-transaction-form" class="form-horizontal" action="http://requestb.in/1022kox1" method="post" enctype="multipart/form-data">
+                    <form id="pending-transaction-form" class="form-horizontal" action="http://payments.webcourse.niksula.hut.fi/pay/"
+                          method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for field in form %}
                             <div class="form-group" style="display:none;">

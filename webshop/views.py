@@ -24,7 +24,7 @@ def purchase_game(request, game_id):
         return redirect('community:game-play', game_id=game_id)
 
     if request.is_ajax():
-        return purchase_pending(request, game)
+        response = purchase_pending(request, game)
 
     else:
         form = PendingTransactionForm()
@@ -33,7 +33,13 @@ def purchase_game(request, game_id):
             'game': game,
             'form': form,
             }
-        return render(request, 'webshop/purchase-form.html', context=context)
+        response = render(request, 'webshop/purchase-form.html', context=context)
+
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"  # HTTP 1.1.
+    response["Pragma"] = "no-cache"  # HTTP 1.0.
+    response["Expires"] = "0"  # Proxies.
+
+    return response
 
 
 def purchase_pending(request, game):
@@ -70,7 +76,7 @@ def purchase_callback(request):
     except KeyError:
         return defaults.bad_request(request=request, exception=KeyError)
 
-    pending_transaction = get_object_or_404(PendingTransaction, id=pid)
+    pending_transaction = get_object_or_404(PendingTransaction, pk=pid)
 
     checksum_valid = pending_transaction.validate_checksum(
         checksum=checksum_received, ref=ref, result=result)
@@ -84,7 +90,7 @@ def purchase_callback(request):
         )
         if result == 'success':
             purchased_game = pending_transaction.game
-            transaction.user.games.add(purchase_game)
+            transaction.user.games.add(purchased_game)
             return redirect('community:game-play', game_id=purchased_game.id)
         elif result == 'cancel' or result == 'error':
             return redirect(
