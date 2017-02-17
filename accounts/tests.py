@@ -12,7 +12,6 @@ class UserMethodsTestCase(TestCase):
 
     fixtures = [
         'test_users',
-        'test_game_categories',
         'test_games'
     ]
 
@@ -39,7 +38,6 @@ class RegisterViewTestCase(TestCase):
 
     fixtures = [
         'test_users',
-        'test_game_categories',
         'test_games'
     ]
 

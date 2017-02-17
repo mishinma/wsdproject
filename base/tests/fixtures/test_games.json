@@ -1,5 +1,19 @@
 [
   {
+    "model": "community.gamecategory",
+    "pk": 1,
+    "fields": {
+      "name": "RPG"
+    }
+  },
+  {
+    "model": "community.gamecategory",
+    "pk": 2,
+    "fields": {
+      "name": "Action"
+    }
+  },
+  {
     "model": "community.game",
     "pk": 1,
     "fields": {
@@ -12,7 +26,7 @@
       "name": "The Battle of the Bastards",
       "description": "The Battle of the Bastards is a battle late in the War of the Five Kings in which Jon Snow and Sansa Stark retake Winterfell from Lord Ramsay Bolton, the Warden of the North, and restore House Stark as the ruling house of the North. ",
       "logo": "",
-      "rating": 4.5,
+      "rating": "4.5",
       "players": [
         3
       ]
@@ -31,11 +45,45 @@
       "name": "The Test Game",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in felis odio. Suspendisse tristique vestibulum feugiat. Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ",
       "logo": "",
-      "rating": 3.5,
+      "rating": "3.5",
       "players": [
         3,
         4
       ]
+    }
+  },
+  {
+    "model": "community.game",
+    "pk": 3,
+    "fields": {
+      "slug": "the-action-game",
+      "developer": 1,
+      "category": 2,
+      "source_url": "http://test3.test",
+      "price": "15.00",
+      "sales_price": null,
+      "name": "The Action Game",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "logo": "",
+      "rating": "4.5",
+      "players": []
+    }
+  },
+  {
+    "model": "community.game",
+    "pk": 4,
+    "fields": {
+      "slug": "the-second-action-game",
+      "developer": 1,
+      "category": 2,
+      "source_url": "http://test4.test",
+      "price": "20.00",
+      "sales_price": "10.00",
+      "name": "The Second Action Game",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "logo": "",
+      "rating": "3.5",
+      "players": []
     }
   }
 ]
