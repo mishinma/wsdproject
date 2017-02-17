@@ -43,3 +43,11 @@ label {
     margin-top: 20px;
 }
 
+#gameframe {
+    width: inherit;
+    height: inherit;
+}
+
+#scoreLeaderboard {
+    margin-left: 30px;
+}
