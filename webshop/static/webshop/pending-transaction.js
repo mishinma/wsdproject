@@ -12,11 +12,9 @@ $(document).ready(function () {
     $("#pending-transaction-form").submit(function (evt) {
         evt.preventDefault();
         var form = this;
-        var amount = $.trim($("#game-price").text());
 
         $.ajax({
-            method: "POST",
-            data: {'amount': amount},
+            method: "GET",
             dataType: "json",
             success: function (data) {
                 populateForm(data);
