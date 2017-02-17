@@ -66,7 +66,7 @@ class PendingTransactionManager(models.Manager):
 
 
 class PendingTransaction(models.Model):
-    pid = models.fields.IntegerField(primary_key=True)
+    pid = models.fields.AutoField(primary_key=True)
     user = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     amount = models.fields.DecimalField(max_digits=5,
