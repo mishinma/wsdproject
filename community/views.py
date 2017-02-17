@@ -22,7 +22,11 @@ MESSAGE_LOAD_GAME_ERROR = "Sorry, we couldn't load your game."
 
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
-    return render(request, "community/game-info.html", {'game': game})
+
+    context = {
+        'game': game,
+    }
+    return render(request, "community/game-info.html", context=context)
 
 
 @login_required

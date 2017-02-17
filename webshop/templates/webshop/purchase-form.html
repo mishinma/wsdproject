@@ -1,0 +1,38 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+{% block title %} Purchase Game {% endblock %}
+{% block body %}
+<div class="container">
+    <div class="row">
+
+        <div class="col-sm-12 col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Purchase "{{game.name}}"</h3>
+                    <h4>Price: {{price}}</h4>
+                    <h4>Developer: {{game.developer.username}}</h4>
+                    <form id="pending-transaction-form" class="form-horizontal" action="http://requestb.in/1022kox1" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group" style="display:none;">
+                              {{ field }}
+                            </div>
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Purchase</button>
+                            </div>
+                        </div>
+                        <p id="ajax-error" class="text-danger" style="display:none;">
+                          An error occured while processing your request.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script href="{% static "webshop/utility.js" %}"></script>
+
+{% endblock %}
