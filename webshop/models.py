@@ -64,7 +64,7 @@ class Gift(models.Model):
 
 
 class Purchase(models.Model):
-    pid = models.ForeignKey(Transaction)
+    transaction = models.ForeignKey(Transaction)
     payer = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     gift = models.ForeignKey(Gift, null=True, blank=True)
