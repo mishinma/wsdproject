@@ -8,6 +8,10 @@ body {
     width: 200px;
 }
 
+#gamename {
+    height: 105px;
+}
+
 .btn-success {
     margin-bottom: 10px;
 }
@@ -38,3 +42,4 @@ label {
     margin-bottom: 20px;
     margin-top: 20px;
 }
+
