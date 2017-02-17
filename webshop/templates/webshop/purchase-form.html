@@ -1,7 +1,17 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
-{% block title %} Purchase Game {% endblock %}
+
+{% block title %}
+    Purchase Game
+{% endblock %}
+
+{% block header %}
+    <script type="text/javascript" src="{% static 'base/ajax-setup.js' %}"></script>
+    <script href="{% static 'webshop/utility.js' %}"></script>
+{% endblock %}
+
 {% block body %}
+
 <div class="container">
     <div class="row">
 
@@ -33,6 +43,6 @@
     </div>
 </div>
 
-<script href="{% static "webshop/utility.js" %}"></script>
+
 
 {% endblock %}
