@@ -71,6 +71,10 @@ class Game(models.Model):
     def get_user_last_state(self, user):
         return self.gamestate_set.filter(player=user).order_by('-timestamp').first()
 
+    def get_price(self):
+        """ Check if the game is on sale and return the price """
+        return self.price if not self.sales_price else self.sales_price
+
     def __str__(self):
         return self.name
 

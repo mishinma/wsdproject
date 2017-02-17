@@ -1,17 +1,28 @@
 {% extends 'base/base.html' %}
 {% load staticfiles %}
-{% block title %} Purchase Game {% endblock %}
+
+{% block title %}
+    Purchase Game
+{% endblock %}
+
+{% block header %}
+    <script type="text/javascript" src="{% static 'base/ajax-setup.js' %}"></script>
+    <script type="text/javascript" src="{% static 'webshop/pending-transaction.js' %}"></script>
+{% endblock %}
+
 {% block body %}
+
 <div class="container">
     <div class="row">
 
         <div class="col-sm-12 col-md-7">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h3>Purchase "{{game.name}}"</h3>
-                    <h4>Price: {{price}}</h4>
+                    <h3 >Purchase "{{game.name}}"</h3>
+                    <h4>Price: {{game.get_price}} </h4>
                     <h4>Developer: {{game.developer.username}}</h4>
-                    <form id="pending-transaction-form" class="form-horizontal" action="http://requestb.in/1022kox1" method="post" enctype="multipart/form-data">
+                    <form id="pending-transaction-form" class="form-horizontal" action="http://payments.webcourse.niksula.hut.fi/pay/"
+                          method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for field in form %}
                             <div class="form-group" style="display:none;">
@@ -33,6 +44,6 @@
     </div>
 </div>
 
-<script href="{% static "webshop/utility.js" %}"></script>
+
 
 {% endblock %}
