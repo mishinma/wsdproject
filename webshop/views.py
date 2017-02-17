@@ -1,25 +1,28 @@
 from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.urls import reverse
-from django.http import JsonResponse
-from django.core.exceptions import SuspiciousOperation
-from django.views import defaults
+from django.http import JsonResponse, HttpResponseBadRequest
 
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
 from community.models import Game
 from haze.settings import PAYMENT_SID
 
+MESSAGE_PURCHASE_PENDING_ERROR = "Sorry, we couldn't process your request."
+
 
 @login_required
 @permission_required('community.buy_game', raise_exception=True)
 def purchase_game(request, game_id):
-    user = request.user
+
     game = get_object_or_404(Game, id=game_id)
 
-    if user.plays_game(game):
+    if request.user.plays_game(game):
         # User owns game already
         return redirect('community:game-play', game_id=game_id)
+
+    if request.is_ajax():
+        return purchase_pending(request, game)
 
     else:
         # Determine price
@@ -38,40 +41,31 @@ def purchase_game(request, game_id):
         return render(request, 'webshop/purchase-form.html', context=context)
 
 
-@login_required
-@permission_required('community.buy_game', raise_exception=True)
-def purchase_pending(request):
+def purchase_pending(request, game):
+
     try:
-        game_id, amount = extract_post_callback_data(request)
+        amount = request.POST['amount']
     except KeyError:
-        return defaults.bad_request(request=request, exception=KeyError)
+        return HttpResponseBadRequest(MESSAGE_PURCHASE_PENDING_ERROR)
 
-    if request.is_ajax():
-        user = request.user
-        game = Game.objects.get(id=game_id)
+    new_pt = PendingTransaction.objects.create_new_pending(
+        user=request.user, game=game, amount=amount)
 
-        new_pt = PendingTransaction.objects.create_new_pending(
-            user=user, game=game, amount=amount)
+    callback_url = request.build_absolute_uri(
+        reverse('webshop:purchase-callback')
+    )
 
-        callback_url = request.build_absolute_uri(
-            reverse('webshop:purchase-callback')
-        )
-
-        response_data = {
-            'pid': new_pt.pid,
-            'sid': PAYMENT_SID,
-            'amount': amount,
-            'success_url': callback_url,
-            'cancel_url': callback_url,
-            'error_url': callback_url,
-            'checksum': new_pt.checksum
-        }
-        return JsonResponse(response_data)
-    else:
-        return defaults.bad_request(
-            request=request,
-            exception=SuspiciousOperation
-        )
+    response_data = {
+        'pid': new_pt.pid,
+        'sid': PAYMENT_SID,
+        'amount': amount,
+        'success_url': callback_url,
+        'cancel_url': callback_url,
+        'error_url': callback_url,
+        'checksum': new_pt.checksum
+    }
+    
+    return JsonResponse(response_data)
 
 
 @login_required
