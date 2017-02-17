@@ -60,7 +60,7 @@ class PendingTransactionManager(models.Manager):
     def create_new_pending(self, user, game, amount):
         """ Create new pending transaction and compute checksum """
         new_pt = PendingTransaction.objects.create(user=user, game=game, amount=amount)
-        checksum = PendingTransaction.generate_checksum()
+        checksum = new_pt.generate_checksum()
         new_pt.checksum = checksum
         return new_pt
 
