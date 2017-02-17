@@ -5,7 +5,7 @@
 539940 - Ekaterina Dorrer 
 
 ## 2. Goal
-Create an online game store for JavaScript games. The
+Create an online game store for JavaScript games
 
 ## 3. Features
 *Minimum functional requirements*:
@@ -15,7 +15,7 @@ Create an online game store for JavaScript games. The
 
 ### Authentication:
 * Register with email, pick a username
-* Login and logout with email/username and password. 
+* Login and logout with email/username and password
 * Use email to login
 * Use Django auth  
 
