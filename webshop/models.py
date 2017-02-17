@@ -9,6 +9,7 @@ import time
 
 
 class TransactionManager(models.Manager):
+
     def create_from_pending(self, pending_transaction, ref, result):
         finished_transaction = Transaction(
             user=pending_transaction.user,
@@ -20,7 +21,7 @@ class TransactionManager(models.Manager):
         finished_transaction.save()
         PendingTransaction.objects.get(pid=pending_transaction.pid).delete()
         purchase = None
-        if(result == 'success'):
+        if result == 'success':
             purchase = Purchase.objects.create(pid=finished_transaction,
                                                payer=finished_transaction.user,
                                                game=pending_transaction.game)

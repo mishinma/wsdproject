@@ -16,12 +16,14 @@ from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
 def purchase_game(request, game_id):
     user = request.user
     game = get_object_or_404(Game, id=game_id)
+
     if user.plays_game(game):
         # User owns game already
         return redirect('community:game-play', game_id=game_id)
+
     else:
         # Determine price
-        if(game.sales_price is not None and game.sales_price < game.price):
+        if game.sales_price is not None and game.sales_price < game.price:
             amount = game.sales_price
         else:
             amount = game.price
@@ -44,7 +46,7 @@ def purchase_pending(request):
     except KeyError:
         return defaults.bad_request(request=request, exception=KeyError)
 
-    if(request.is_ajax()):
+    if request.is_ajax():
         user = request.user
         game = Game.objects.get(id=game_id)
         pid = Transaction.generate_new_pid(game=game, user=user)
@@ -65,7 +67,7 @@ def purchase_pending(request):
             game=game,
             amount=amount
         )
-        responseData = {
+        response_data = {
             'pid': pid,
             'sid': PAYMENT_SID,
             'amount': amount,
@@ -74,7 +76,7 @@ def purchase_pending(request):
             'error_url': callback_url,
             'checksum': checksum
         }
-        return JsonResponse(responseData)
+        return JsonResponse(response_data)
     else:
         return defaults.bad_request(
             request=request,
@@ -107,22 +109,22 @@ def purchase_callback(request):
         token=PAYMENT_SECRET_KEY
     )
     # Handle callback according to result
-    if(valid_checksum):
+    if valid_checksum:
         transaction, purchase = Transaction.objects.create_from_pending(
             pending_transaction=pending_transaction,
             ref=ref,
             result=result
         )
-        if(result == 'success'):
+        if result == 'success':
             purchased_game = pending_transaction.game
             transaction.user.games.add(purchase_game)
             return redirect('community:game-play', game_id=purchased_game.id)
-        elif(result == 'cancel'):
+        elif result == 'cancel':
             return redirect(
                 'webshop:purchase-game',
                 game_id=pending_transaction.game.id
             )
-        elif(result == 'error'):
+        elif result == 'error':
             return redirect(
                 'webshop:purchase-game',
                 game_id=pending_transaction.game.id
