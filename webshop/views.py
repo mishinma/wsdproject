@@ -8,7 +8,7 @@ from django.views import defaults
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
 from community.models import Game
-from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
+from haze.settings import PAYMENT_SID
 
 
 @login_required
@@ -49,32 +49,22 @@ def purchase_pending(request):
     if request.is_ajax():
         user = request.user
         game = Game.objects.get(id=game_id)
-        pid = Transaction.generate_new_pid(game=game, user=user)
-        checksum = Transaction.generate_checksum(
-            pid=pid,
-            sid=PAYMENT_SID,
-            amount=amount,
-            token=PAYMENT_SECRET_KEY
-        )
+
+        new_pt = PendingTransaction.objects.create_new_pending(
+            user=user, game=game, amount=amount)
 
         callback_url = request.build_absolute_uri(
             reverse('webshop:purchase-callback')
         )
 
-        PendingTransaction.objects.create(
-            user=user,
-            pid=pid,
-            game=game,
-            amount=amount
-        )
         response_data = {
-            'pid': pid,
+            'pid': new_pt.pid,
             'sid': PAYMENT_SID,
             'amount': amount,
             'success_url': callback_url,
             'cancel_url': callback_url,
             'error_url': callback_url,
-            'checksum': checksum
+            'checksum': new_pt.checksum
         }
         return JsonResponse(response_data)
     else:
@@ -100,21 +90,18 @@ def purchase_callback(request):
             request=request,
             exception=PendingTransaction.DoesNotExist
         )
-    # Compute checksum
-    valid_checksum = Transaction.validate_received_checksum(
-        checksum=checksum_received,
-        pid=pid,
-        ref=ref,
-        result=result,
-        token=PAYMENT_SECRET_KEY
-    )
+
+    checksum_valid = pending_transaction.validate_checksum(
+        checksum=checksum_received, ref=ref, result=result)
+
     # Handle callback according to result
-    if valid_checksum:
+    if checksum_valid:
         transaction, purchase = Transaction.objects.create_from_pending(
             pending_transaction=pending_transaction,
             ref=ref,
             result=result
         )
+
         if result == 'success':
             purchased_game = pending_transaction.game
             transaction.user.games.add(purchase_game)

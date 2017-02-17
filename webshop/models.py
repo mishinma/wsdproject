@@ -5,7 +5,7 @@ from django.utils import timezone
 from hashlib import md5
 from community.models import Game
 from django.contrib.auth.models import User
-import time
+from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
 
 
 class TransactionManager(models.Manager):
@@ -30,7 +30,7 @@ class TransactionManager(models.Manager):
 
 class Transaction(models.Model):
     # Should the length be fixed?
-    pid = models.fields.CharField(max_length=100, primary_key=True)
+    pid = models.fields.IntegerField(primary_key=True)
     user = models.ForeignKey(User)
     ref = models.fields.CharField(max_length=100)
     amount = models.fields.DecimalField(max_digits=5,
@@ -41,21 +41,6 @@ class Transaction(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     objects = TransactionManager()
-
-    @staticmethod
-    def generate_new_pid(game, user):
-        return '{}{}{}'.format(game.id, user.username, int(time.time()))
-
-    @staticmethod
-    def generate_checksum(pid, sid, amount, token):
-        checksum_str = "pid={}&sid={}&amount={}&token={}".format(pid, sid, amount, token)
-        return md5(checksum_str.encode('ascii')).hexdigest()
-
-    @staticmethod
-    def validate_received_checksum(checksum, pid, ref, result, token):
-        checksum_str = "pid={}&ref={}&result={}&token={}".format(pid, ref, result, token)
-        checksum_computed = md5(checksum_str.encode('ascii')).hexdigest()
-        return checksum_computed == checksum
 
 
 class Gift(models.Model):
@@ -70,12 +55,35 @@ class Purchase(models.Model):
     gift = models.ForeignKey(Gift, null=True, blank=True)
 
 
+class PendingTransactionManager(models.Manager):
+
+    def create_new_pending(self, user, game, amount):
+        """ Create new pending transaction and compute checksum """
+        new_pt = PendingTransaction.objects.create(user=user, game=game, amount=amount)
+        checksum = PendingTransaction.generate_checksum()
+        new_pt.checksum = checksum
+        return new_pt
+
+
 class PendingTransaction(models.Model):
+    pid = models.fields.IntegerField(primary_key=True)
     user = models.ForeignKey(User)
-    pid = models.fields.CharField(max_length=100, primary_key=True)
     game = models.ForeignKey(Game)
     amount = models.fields.DecimalField(max_digits=5,
                                         decimal_places=2,
                                         validators=[MinValueValidator(0.0),
                                                     MaxValueValidator(999.00)])
     timestamp = models.DateTimeField(default=timezone.now)
+
+    objects = PendingTransactionManager()
+
+    def generate_checksum(self):
+        checksum_str = "pid={}&sid={}&amount={}&token={}".format(
+            self.pid, PAYMENT_SID, self.amount, PAYMENT_SECRET_KEY)
+        return md5(checksum_str.encode('ascii')).hexdigest()
+
+    def validate_checksum(self, checksum, ref, result):
+        checksum_str = "pid={}&ref={}&result={}&token={}".format(
+            self.pid, ref, result, PAYMENT_SECRET_KEY)
+        checksum_computed = md5(checksum_str.encode('ascii')).hexdigest()
+        return checksum_computed == checksum
