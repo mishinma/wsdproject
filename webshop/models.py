@@ -19,7 +19,7 @@ class TransactionManager(models.Manager):
             result=result
         )
         finished_transaction.save()
-        PendingTransaction.objects.get(pid=pending_transaction.pid).delete()
+        pending_transaction.delete()
         purchase = None
         if result == 'success':
             purchase = Purchase.objects.create(pid=finished_transaction,
