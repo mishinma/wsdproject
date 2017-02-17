@@ -16,7 +16,6 @@ class GameModelTestCase(TestCase):
 
     # Mind the order
     fixtures = ['test_users',
-                'test_game_categories',
                 'test_games',
                 'test_game_scores',
                 'test_game_states']
@@ -25,8 +24,7 @@ class GameModelTestCase(TestCase):
         self.sansa_player = UserMethods.objects.get(username='sansa')
         self.ned_player = UserMethods.objects.get(username='ned')
         self.bran_developer = UserMethods.objects.get(username='bran')
-        self.game1 = Game.objects.get(name='The Battle of the Bastards')
-        self.game2 = Game.objects.get(name='The Test Game')
+        self.game2 = Game.objects.get(id=2)
 
     def test_game_get_user_highest_score(self):
         sansa_game_highest_score = self.game2.get_user_high_score(self.sansa_player)
@@ -48,22 +46,21 @@ class GameModelTestCase(TestCase):
 
     def test_game_manager_games_for_developer(self):
         bran_develops_games = {game.id for game in Game.objects.games_for_developer(self.bran_developer)}
-        self.assertEqual(bran_develops_games, {self.game1.id,})
+        self.assertEqual(bran_develops_games, {1, 3, 4})
 
     def test_game_manager_games_for_player_multiple_games(self):
         sansa_playes_games = {game.id for game in Game.objects.games_for_player(self.sansa_player)}
-        self.assertEqual(sansa_playes_games, {self.game1.id, self.game2.id})
+        self.assertEqual(sansa_playes_games, {1, 2})
 
     def test_game_manager_games_for_player_one_game(self):
         ned_playes_games = {game.id for game in Game.objects.games_for_player(self.ned_player)}
-        self.assertEqual(ned_playes_games, {self.game2.id})
+        self.assertEqual(ned_playes_games, {2})
 
 
 class GameCreateEditViewTestCase(TestCase):
 
     # Mind the order
     fixtures = ['test_users',
-                'test_game_categories',
                 'test_games']
 
     def setUp(self):
@@ -197,7 +194,6 @@ class PlayGameViewTestCase(TestCase):
 
     # Mind the order
     fixtures = ['test_users',
-                'test_game_categories',
                 'test_games']
 
     def setUp(self):
