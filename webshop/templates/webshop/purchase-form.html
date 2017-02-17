@@ -7,7 +7,7 @@
 
 {% block header %}
     <script type="text/javascript" src="{% static 'base/ajax-setup.js' %}"></script>
-    <script href="{% static 'webshop/utility.js' %}"></script>
+    <script type="text/javascript" src="{% static 'webshop/pending-transaction.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -18,8 +18,8 @@
         <div class="col-sm-12 col-md-7">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <h3>Purchase "{{game.name}}"</h3>
-                    <h4>Price: {{price}}</h4>
+                    <h3 >Purchase "{{game.name}}"</h3>
+                    <h4>Price: {{game.get_price}} </h4>
                     <h4>Developer: {{game.developer.username}}</h4>
                     <form id="pending-transaction-form" class="form-horizontal" action="http://requestb.in/1022kox1" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
