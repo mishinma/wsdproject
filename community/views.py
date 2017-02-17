@@ -36,7 +36,7 @@ def play_game(request, game_id):
 
     # Redirect if the user hasn't purchased the game
     if not request.user.plays_game(game):
-        return redirect('community:game-info', game_id=game_id)
+        return redirect('webshop:purchase-game', game_id=game_id)
 
     if request.is_ajax():
         message_type = request.POST.get("messageType")
