@@ -32,6 +32,29 @@ class GameManager(models.Manager):
         """ Return a queryset of games that `player` plays in """
         return super(GameManager, self).get_queryset().filter(players__id=player.id)
 
+    @staticmethod
+    def attach_buttons(games, user):
+        games_w_buttons = []
+        if not user.is_authenticated():
+            for game in games:
+                game.buttons = ['buy']
+                games_w_buttons.append(game)
+        elif user.has_perm('community.play_game'):
+            for game in games:
+                if user.plays_game(game):
+                    game.buttons = ['play']
+                else:
+                    game.buttons = ['buy']
+                games_w_buttons.append(game)
+        else:
+            for game in games:
+                if user.develops_game(game):
+                    game.buttons = ['edit']
+                else:
+                    game.buttons = list()
+                games_w_buttons.append(game)
+        return games_w_buttons
+
 
 class Game(models.Model):
     # Use unique slug for game URL?
