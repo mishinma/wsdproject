@@ -15,10 +15,23 @@
     <div>
         <!-- Details -->
         <a class="btn btn-primary btn-sm" href={% url 'community:game-info' game_id=game.id %}>Details</a>
-        {% if not user|has_group:"developer" %}
-            <a class="btn btn-success btn-sm playbtn" href={% url 'community:game-play' game_id=game.id %}>
-            <span class="glyphicon glyphicon-play"></span> Play now!</a>
-        {% endif %}
+
+        {% for btn in game.buttons %}
+
+
+            {% if btn == 'buy' %}
+            <a class="btn btn-warning btn-sm playbtn" href={% url 'webshop:purchase-game' game_id=game.id %}>
+            <span class="glyphicon glyphicon-tag"></span> Buy Now!</a>
+            {% elif btn == 'play' %}
+            <a class="btn btn-success btn-sm" href={% url 'community:game-play' game_id=game.id %}>
+            <span class="glyphicon glyphicon-play"></span> Play Now!</a>
+            {% elif btn == 'edit' %}
+            <a class="btn btn-warning btn-sm" href={% url 'community:game-edit' game_id=game.id %}>
+            <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+
+            {% endif %}
+
+        {% endfor %}
     </div>
 </div>
 

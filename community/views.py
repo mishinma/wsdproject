@@ -145,6 +145,7 @@ def edit_game(request, game_id):
 @permission_required('community.add_game', raise_exception=True)
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
+    games = Game.objects.attach_buttons(games, request.user)
     return render(request, 'community/my-inventory.html', context={'games': games})
 
 
@@ -152,6 +153,7 @@ def my_inventory(request):
 @permission_required('community.play_game', raise_exception=True)
 def my_games(request):
     games = Game.objects.games_for_player(request.user)
+    games = Game.objects.attach_buttons(games, request.user)
     return render(request, 'community/my-games.html', context={'games': games})
 
 
