@@ -8,7 +8,7 @@ from webshop.forms import PendingTransactionForm
 from community.models import Game
 from haze.settings import PAYMENT_SID
 
-MESSAGE_PURCHASE_PENDING_ERROR = "Sorry, we couldn't process your request."
+MESSAGE_PURCHASE_PENDING_ERROR = "An error occurred while processing your request."
 
 
 @login_required
@@ -43,6 +43,8 @@ def purchase_game(request, game_id):
 
 def purchase_pending(request, game):
 
+    # Get amount from request, so that the user gets charged exactly
+    # that was shown to him.
     try:
         amount = request.POST['amount']
     except KeyError:
@@ -71,9 +73,13 @@ def purchase_pending(request, game):
 @login_required
 @permission_required('community.buy_game', raise_exception=True)
 def purchase_callback(request):
+    pass
     # Get passed parameters
     try:
-        pid, ref, result, checksum_received = extract_get_callback_data(request)
+        pid = request.GET['pid']
+        ref = request.GET['ref']
+        result = request.GET['result']
+        checksum = request.GET['checksum']
     except KeyError:
         return defaults.bad_request(request=request, exception=KeyError)
     # Get referenced pending transaction
@@ -117,19 +123,3 @@ def purchase_callback(request):
         request=request,
         exception=SuspiciousOperation
     )
-
-
-def extract_post_callback_data(request):
-    game_id = request.POST['game']
-    amount = request.POST['amount']
-
-    return game_id, amount
-
-
-def extract_get_callback_data(request):
-    pid = request.GET['pid']
-    ref = request.GET['ref']
-    result = request.GET['result']
-    checksum = request.GET['checksum']
-
-    return pid, ref, result, checksum
