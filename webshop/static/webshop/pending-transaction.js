@@ -8,16 +8,15 @@
 // });
 
 $(document).ready(function () {
+    'use strict';
     $("#pending-transaction-form").submit(function (evt) {
         evt.preventDefault();
         var form = this;
-        // if($('#id_is_gift').is(':checked')) {
-        //   alert('Gift to ' + $('select[name=gift_recipient]').val())
-        // }
-        var data = {'amount': {{price}} };
+        var amount = $.trim($("#game-price").text());
+
         $.ajax({
             method: "POST",
-            data: data,
+            data: {'amount': amount},
             dataType: "json",
             success: function (data) {
                 populateForm(data);
@@ -31,6 +30,7 @@ $(document).ready(function () {
 });
 
 function populateForm(data) {
+    'use strict';
     $("#id_pid").val(data.pid);
     $("#id_sid").val(data.sid);
     $("#id_amount").val(data.amount);
