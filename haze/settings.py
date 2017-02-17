@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'haze.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hazef',
+        'NAME': 'haze',
         'USER': 'wsd',
         'PASSWORD': 'mkmWSD2017',
         'HOST': 'localhost',
