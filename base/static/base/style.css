@@ -15,3 +15,10 @@ body {
     visibility: hidden;
 }
 
+.panel-body {
+    margin: 25px;
+}
+
+label {
+    padding-bottom: 5px;
+}

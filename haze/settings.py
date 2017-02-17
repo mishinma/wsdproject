@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles'
+    'django.contrib.staticfiles',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,8 @@ FIXTURE_DIRS = (
 LOGIN_URL = 'accounts:login-user'
 LOGIN_REDIRECT_URL = 'base:index'
 LOGOUT_REDIRECT_URL = 'base:index'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
