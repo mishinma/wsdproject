@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState, GameCategory
 from community.forms import GameForm
-
+from django.views import defaults
 
 MESSAGE_TYPE_SCORE = 'SCORE'
 MESSAGE_TYPE_SAVE = 'SAVE'
@@ -165,5 +165,17 @@ def search_by_category(request, category):
     return render(request, 'community/search-category.html', context=context)
 
 
-def search_by_query(request, query):
-    pass
+def search_by_query(request):
+    try:
+        query = request.GET['q']
+    except KeyError:
+        return defaults.bad_request(request=request, exception=KeyError)
+
+    matches = Game.objects.filter(name__search=query)
+
+    context = {
+        'query': query,
+        'matches': matches
+    }
+
+    return render(request, 'community/search-query.html', context=context)
