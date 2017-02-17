@@ -3,8 +3,7 @@ import json
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
-from community.models import Game, GameScore, GameState
-from django.contrib.auth.models import User
+from community.models import Game, GameScore, GameState, GameCategory
 from community.forms import GameForm
 
 
@@ -154,3 +153,17 @@ def my_inventory(request):
 def my_games(request):
     games = Game.objects.games_for_player(request.user)
     return render(request, 'community/my-games.html', context={'games': games})
+
+
+def search_by_category(request, category):
+    category = get_object_or_404(GameCategory, name=category)
+    games = Game.objects.filter(category=category)
+    context = {
+        'category': category.name,
+        'games': games,
+    }
+    return render(request, 'community/search-category.html', context=context)
+
+
+def search_by_query(request, query):
+    pass
