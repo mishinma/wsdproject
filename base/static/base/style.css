@@ -1,5 +1,7 @@
 body {
+    /*
     background: url("images/006-fine-plaster.png");
+    */
 }
 
 #rating {
@@ -21,4 +23,9 @@ body {
 
 label {
     padding-bottom: 5px;
+}
+
+#content {
+    margin-left: 80px;
+    margin-right: 80px;
 }
