@@ -1,13 +1,23 @@
 body {
+    /*
     background: url("images/006-fine-plaster.png");
+    */
 }
 
 #rating {
     width: 200px;
 }
 
-#playbtn {
-    margin: 10px;
+#gamename {
+    height: 105px;
+}
+
+.btn-success {
+    margin-bottom: 10px;
+}
+
+#description {
+    margin-top: 20px;
 }
 
 /* TODO: figure out how to set width and height*/
@@ -22,3 +32,14 @@ body {
 label {
     padding-bottom: 5px;
 }
+
+#content {
+    margin-left: 80px;
+    margin-right: 80px;
+}
+
+#game-details-block {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+

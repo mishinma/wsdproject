@@ -16,14 +16,14 @@
         <div class="col-xs-8 col-md-5">
             <h3> Rating: {{ game.rating }}</h3>
             {% if game.sales_price != None %}
-              <h3 class="text-danger">Sale! <del>{{game.price}}&euro;</del> {{game.sales_price}}&euro;</h3>
+              <h3 class="text-danger">Sale! <del>{{game.price}} &euro;</del> {{game.sales_price}}&euro;</h3>
             {% else %}
-              <h3>{{game.price}}</h3>
+              <h3>{{game.price}} &euro;</h3>
             {% endif %}
-            <a href={% url 'community:game-play' game_id=game.id %}>
-              <button id="playbtn" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
+            <a href={% url 'community:game-play' game_id=game.id %} class="playbtn">
+              <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
             </a>
-            <p>{{game.description}}</p>
+            <p id="description">{{game.description}}</p>
         </div>
     </div>
 </div>
