@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 
 from django.urls import reverse
 from django.test import TestCase, RequestFactory
@@ -7,6 +8,7 @@ from accounts.models import UserMethods
 from haze.settings import PAYMENT_SID
 from community.models import Game
 from webshop import views
+from webshop.views import MESSAGE_PURCHASE_PENDING_ERROR
 from webshop.models import PendingTransaction
 from base.tests.status_codes import BAD_REQUEST_400
 
@@ -22,7 +24,7 @@ class PendingTransactionModelTestCase(TestCase):
     def test_create_new_pending(self):
 
         pending_transaction = PendingTransaction.objects.create_new_pending(
-            user=self.sansa_player, game=self.game3, amount=19.99
+            user=self.sansa_player, game=self.game3, amount=Decimal('19.99')
         )
 
         self.assertEqual(pending_transaction.pid, 1)
@@ -42,7 +44,7 @@ class PurchaseViewsTestCase(TestCase):
 
         request = self.factory.post(
             path=reverse('webshop:purchase-game', kwargs={'game_id': self.game3.id}),
-            data={'amount': 15.0}
+            data={'amount': '15.00'}
         )
         request.user = self.ned_player
 
@@ -52,8 +54,8 @@ class PurchaseViewsTestCase(TestCase):
         test_response_data = {
             'pid': 2,
             'sid': PAYMENT_SID,
-            'amount': '15.0',
-            'checksum': '8321ae6b5f68c73f7a25096a459b2ece',
+            'amount': '15.00',
+            'checksum': 'ceeb9afd59957bbfb50bfe270909dcda',
             'success_url': 'http://testserver/shop/buy/callback',
             'cancel_url': 'http://testserver/shop/buy/callback',
             'error_url': 'http://testserver/shop/buy/callback',
@@ -61,3 +63,13 @@ class PurchaseViewsTestCase(TestCase):
 
         self.assertEqual(response_data, test_response_data)
 
+    def test_view_puchase_pending_amount_not_sent(self):
+        request = self.factory.post(
+            path=reverse('webshop:purchase-game', kwargs={'game_id': self.game3.id}),
+            data={'not-an-amount': '15.00'}
+        )
+        request.user = self.ned_player
+        response = views.purchase_pending(request, self.game3)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+        self.assertEqual(response.content.decode('utf-8'), MESSAGE_PURCHASE_PENDING_ERROR)
