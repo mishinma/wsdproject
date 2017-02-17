@@ -1,7 +1,7 @@
 [
   {
     "model": "webshop.transaction",
-    "pk": "1sansa1487306938",
+    "pk": 1,
     "fields": {
       "user": 3,
       "ref": "1234431",
@@ -12,7 +12,7 @@
   },
   {
     "model": "webshop.transaction",
-    "pk": "3ned1487351238",
+    "pk": 2,
     "fields": {
       "user": 4,
       "ref": "1234429",
@@ -23,7 +23,7 @@
   },
   {
     "model": "webshop.transaction",
-    "pk": "3sansa1487389372",
+    "pk": 3,
     "fields": {
       "user": 3,
       "ref": "1234837",
@@ -36,7 +36,7 @@
     "model": "webshop.purchase",
     "pk": 1,
     "fields": {
-      "transaction": "1sansa1487306938",
+      "transaction": 1,
       "payer": 3,
       "game": 1,
       "gift": null
@@ -44,12 +44,12 @@
   },
   {
     "model": "webshop.pendingtransaction",
-    "pk": "3ned1487317570",
+    "pk": 5,
     "fields": {
       "user": 4,
       "game": 3,
       "amount": "15.00",
-      "timestamp": "2017-02-17T08:56:14.478Z"
+      "timestamp": "2017-02-17T09:26:05.070Z"
     }
   }
 ]
