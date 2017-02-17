@@ -58,6 +58,7 @@ def play_game(request, game_id):
         'game': game,
         'user_high_score': game.get_user_high_score(request.user),
         'user_last_score': game.get_user_last_score(request.user),
+        'top3_scores': game.get_top3_scores()
     }
 
     return render(request, "community/game-play.html", context)
@@ -76,10 +77,16 @@ def save_score(request, game):
     # Fetch the scores and update them
     user_high_score = game.get_user_high_score(request.user)
     user_last_score = game.get_user_last_score(request.user)
+    # top3_scores = game.get_top3_scores()
 
     return JsonResponse({
         'userHighScore': user_high_score,
-        'userLastScore': user_last_score
+        'userLastScore': user_last_score,
+        # 'topScores': {
+        #     top3_scores[0].player: top3_scores[0].score,
+        #     top3_scores[1].player: top3_scores[1].score,
+        #     top3_scores[2].player: top3_scores[2].score,
+        # }
     })
 
 

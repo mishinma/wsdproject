@@ -15,6 +15,8 @@ function update_scores (data) {
     'use strict';
     $("#userHighScore").text(data.userHighScore);
     $("#userLastScore").text(data.userLastScore);
+    var topScores = data.top3_scores;
+    $("#leaderList").text(topScores);
 }
 
 
