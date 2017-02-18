@@ -12,5 +12,11 @@ class UserMethods(User):
     def develops_game(self, game):
         return game.developer.id == self.id
 
+    def is_player(self):
+        return self.groups.filter(name='player').exists()
+
+    def is_developer(self):
+        return self.groups.filter(name='developer').exists()
+
     class Meta:
         proxy = True
