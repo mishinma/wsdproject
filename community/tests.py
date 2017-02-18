@@ -9,7 +9,7 @@ from community import views
 from community.views import MESSAGE_SAVE_SCORE_ERROR, MESSAGE_LOAD_GAME_ERROR, \
     MESSAGE_SAVE_STATE_ERROR
 from community.models import Game, GameCategory, GameScore, GameState
-from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400
+from base.tests.status_codes import FORBIDDEN_403, FOUND_302, BAD_REQUEST_400, OK_200
 
 
 class GameModelTestCase(TestCase):
@@ -88,7 +88,7 @@ class GameCreateEditViewTestCase(TestCase):
             data=dict(category=self.rpg_cat.id,
                       source_url='http://test2.test',
                       price=11.11,
-                      sales_price=22.22,
+                      sales_price='',
                       name='The Test Game 2',
                       description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc '
                                   'in felis odio. Suspendisse tristique vestibulum feugiat. '
@@ -101,7 +101,7 @@ class GameCreateEditViewTestCase(TestCase):
         # Check data
         test_game = Game.objects.get(name='The Test Game 2')
         self.assertEqual(test_game.price, Decimal('11.11'))
-        self.assertEqual(test_game.sales_price, Decimal('22.22'))
+        self.assertEqual(test_game.sales_price, None)
         self.assertEqual(test_game.source_url, 'http://test2.test')
         self.assertEqual(test_game.developer.id, self.bran_developer.id)
         self.assertEqual(test_game.rating, Decimal('0.0'))
@@ -131,7 +131,6 @@ class GameCreateEditViewTestCase(TestCase):
                                   'in felis odio. Suspendisse tristique vestibulum feugiat. '
                                   'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ')
         )
-
         self.assertEqual(response.status_code, FOUND_302)
         self.assertEqual(response.url, reverse('community:my-inventory'))
 
@@ -202,6 +201,50 @@ class GameCreateEditViewTestCase(TestCase):
                                   'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. '),
         )
         self.assertEqual(response.status_code, FORBIDDEN_403)
+
+    def test_sales_price_must_be_lower_than_price(self):
+        game = Game.objects.create(
+            developer=self.bran_developer,
+            category=self.rpg_cat,
+            source_url='http://test3.test',
+            price=11.20,
+            sales_price=10.01,
+            name='The Test Game 3',
+            description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc '
+                        'in felis odio. Suspendisse tristique vestibulum feugiat. '
+                        'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ',
+            rating=3.1
+        )
+        success = self.client.login(username='bran', password='bran')
+        response = self.client.post(
+            path=reverse('community:game-edit', kwargs={'game_id': game.id}),
+            data=dict(category=self.rpg_cat.id,
+                      source_url='http://test3.test',
+                      price=0.01,
+                      sales_price=1.00,
+                      name='The Test Game 3',
+                      description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc '
+                                  'in felis odio. Suspendisse tristique vestibulum feugiat. '
+                                  'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. '),
+        )
+        self.assertEqual(response.status_code, OK_200)
+        form = response.context['form']
+        self.assertEqual(len(form.errors), 1)
+
+        response = self.client.post(
+            path=reverse('community:game-edit', kwargs={'game_id': game.id}),
+            data=dict(category=self.rpg_cat.id,
+                      source_url='http://test3.test',
+                      price=1.00,
+                      sales_price=1.00,
+                      name='The Test Game 3',
+                      description='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc '
+                                  'in felis odio. Suspendisse tristique vestibulum feugiat. '
+                                  'Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. '),
+        )
+        self.assertEqual(response.status_code, OK_200)
+        form = response.context['form']
+        self.assertEqual(len(form.errors), 1)
 
 
 class PlayGameViewTestCase(TestCase):
@@ -341,7 +384,7 @@ class SearchByQueryViewTestCase(TestCase):
             reverse('community:search-query'),
             {'q': 'game'}
         )
-        
+
         matches = response.context['matches']
         matches_id_set = {match.id for match in matches}
 
