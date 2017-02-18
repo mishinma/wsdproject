@@ -8,6 +8,9 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.db.models import Max
 
+ACTION_BUY = 'buy'
+ACTION_PLAY = 'play'
+ACTION_DEVELOP = 'develop'
 
 class GameCategory(models.Model):
     name = models.fields.CharField(max_length=50, unique=True)
@@ -31,6 +34,34 @@ class GameManager(models.Manager):
     def games_for_player(self, player):
         """ Return a queryset of games that `player` plays in """
         return super(GameManager, self).get_queryset().filter(players__id=player.id)
+
+    @staticmethod
+    def add_action(games, user):
+        games_w_actions = []
+        if not user.is_authenticated():
+            for game in games:
+                game.action = ACTION_BUY
+                games_w_actions.append(game)
+        elif user.is_player():
+            for game in games:
+                if user.plays_game(game):
+                    game.action = ACTION_PLAY
+                else:
+                    game.action = ACTION_BUY
+                games_w_actions.append(game)
+        elif user.is_developer():
+            for game in games:
+                if user.develops_game(game):
+                    game.action = ACTION_DEVELOP
+                else:
+                    game.action = None
+                games_w_actions.append(game)
+        else:
+            for game in games:
+                game.action = None
+                games_w_actions.append(game)
+
+        return games_w_actions
 
 
 class Game(models.Model):
