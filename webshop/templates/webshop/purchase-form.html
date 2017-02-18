@@ -25,15 +25,11 @@
                           method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for field in form %}
-                            <div class="form-group" style="display:none;">
+                            <div class="" style="display:none;">
                               {{ field }}
                             </div>
                         {% endfor %}
-                        <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-success">Purchase</button>
-                            </div>
-                        </div>
+                        <button type="submit" class="btn btn-success">Purchase</button>
                         <p id="ajax-error" class="text-danger" style="display:none;">
                           An error occured while processing your request.
                         </p>
