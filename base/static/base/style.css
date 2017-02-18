@@ -4,6 +4,10 @@ body {
     */
 }
 
+#navbar{
+    border-radius: 0;
+}
+
 #rating {
     width: 200px;
 }
