@@ -2,7 +2,7 @@ import json
 from decimal import Decimal
 
 from django.urls import reverse
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 
 from accounts.models import UserMethods
 from community import views
@@ -25,6 +25,8 @@ class GameModelTestCase(TestCase):
         self.ned_player = UserMethods.objects.get(username='ned')
         self.bran_developer = UserMethods.objects.get(username='bran')
         self.game2 = Game.objects.get(id=2)
+        self.game3 = Game.objects.get(id=3)
+        self.game4 = Game.objects.get(id=4)
 
     def test_game_get_user_highest_score(self):
         sansa_game_highest_score = self.game2.get_user_high_score(self.sansa_player)
@@ -44,9 +46,9 @@ class GameModelTestCase(TestCase):
         last_state = self.game2.get_user_last_state(self.sansa_player)
         self.assertEqual(last_state.state_data, test_sansa_game2_last_state)
 
-    def test_game_get_top3_scores(self):
-        test_game_top3_scores = self.game2.get_top3_scores()
-        self.assertEqual(test_game_top3_scores, [54, 25, 12])
+    # def test_game_get_top3_scores(self):
+    #     test_game_top3_scores = self.game2.get_top3_scores()
+    #     self.assertEqual(test_game_top3_scores, [54, 25, 12])
 
 
     def test_game_manager_games_for_developer(self):
@@ -60,6 +62,14 @@ class GameModelTestCase(TestCase):
     def test_game_manager_games_for_player_one_game(self):
         ned_playes_games = {game.id for game in Game.objects.games_for_player(self.ned_player)}
         self.assertEqual(ned_playes_games, {2})
+
+    def test_game_get_price_no_sale(self):
+        real_price = self.game3.get_price()
+        self.assertEqual(real_price, Decimal("15.00"))
+
+    def test_game_get_price_on_sale(self):
+        real_price = self.game4.get_price()
+        self.assertEqual(real_price, Decimal("10.00"))  # Real price 20.00
 
 
 class GameCreateEditViewTestCase(TestCase):
@@ -294,5 +304,46 @@ class PlayGameViewTestCase(TestCase):
         self.assertEqual(response.content.decode('utf-8'), MESSAGE_LOAD_GAME_ERROR)
 
 
+class SearchByQueryViewTestCase(TestCase):
 
+    # Mind the order
+    fixtures = ['test_users',
+                'test_games']
 
+    def setUp(self):
+        self.game1 = Game.objects.get(name='The Battle of the Bastards')
+        self.game2 = Game.objects.get(name='The Test Game')
+        self.game3 = Game.objects.get(name='The Action Game')
+        self.game4 = Game.objects.get(name='The Second Action Game')
+        self.factory = RequestFactory()
+        self.client = Client()
+
+    def test_query_does_not_exist(self):
+        request = self.factory.get(
+            path=reverse('community:search-query'), data={'asdf': 'foo'}
+        )
+
+        response = views.search_by_query(request)
+
+        self.assertEqual(response.status_code, BAD_REQUEST_400)
+
+    def test_search_for_exact_name(self):
+        response = self.client.get(
+            reverse('community:search-query'),
+            {'q': self.game1.name}
+        )
+
+        matches = response.context['matches']
+
+        self.assertEqual(matches[0].name, self.game1.name)
+
+    def test_search_with_query(self):
+        response = self.client.get(
+            reverse('community:search-query'),
+            {'q': 'game'}
+        )
+        
+        matches = response.context['matches']
+        matches_id_set = {match.id for match in matches}
+
+        self.assertEqual(matches_id_set, {self.game2.id, self.game3.id, self.game4.id})

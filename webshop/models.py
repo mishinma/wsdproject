@@ -19,10 +19,10 @@ class TransactionManager(models.Manager):
             result=result
         )
         finished_transaction.save()
-        PendingTransaction.objects.get(pid=pending_transaction.pid).delete()
+        pending_transaction.delete()
         purchase = None
         if result == 'success':
-            purchase = Purchase.objects.create(pid=finished_transaction,
+            purchase = Purchase.objects.create(transaction=finished_transaction,
                                                payer=finished_transaction.user,
                                                game=pending_transaction.game)
         return finished_transaction, purchase
@@ -57,16 +57,17 @@ class Purchase(models.Model):
 
 class PendingTransactionManager(models.Manager):
 
-    def create_new_pending(self, user, game, amount):
+    def create_new_pending(self, user, game):
         """ Create new pending transaction and compute checksum """
+        amount = game.get_price()
         new_pt = PendingTransaction.objects.create(user=user, game=game, amount=amount)
-        checksum = PendingTransaction.generate_checksum()
+        checksum = new_pt.generate_checksum()
         new_pt.checksum = checksum
         return new_pt
 
 
 class PendingTransaction(models.Model):
-    pid = models.fields.IntegerField(primary_key=True)
+    pid = models.fields.AutoField(primary_key=True)
     user = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     amount = models.fields.DecimalField(max_digits=5,

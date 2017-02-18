@@ -6,7 +6,7 @@ function send_error_message (jqXHR, exception)  {
         "messageType": "ERROR",
         "info": jqXHR.responseText
     };
-    var gameIframe = $("#playGameIframe")[0];
+    var gameIframe = $("#gameframe")[0];
     gameIframe.contentWindow.postMessage(msg, gameIframe.src);
 }
 
@@ -15,8 +15,11 @@ function update_scores (data) {
     'use strict';
     $("#userHighScore").text(data.userHighScore);
     $("#userLastScore").text(data.userLastScore);
-    var topScores = data.top3_scores;
-    $("#leaderList").text(topScores);
+    $("#leaderList").html("");
+    for (var i=0; i < data.topScores.length; i++) {
+        $("#leaderList").append("<li>" + data.topScores[i][0] + " " + data.topScores[i][1] + "</li>");
+    }
+
 }
 
 
@@ -27,7 +30,7 @@ function load_game (data) {
          "messageType": "LOAD",
          "gameState": data
      };
-     var gameIframe = $("#playGameIframe")[0];
+     var gameIframe = $("#gameframe")[0];
      gameIframe.contentWindow.postMessage(msg, gameIframe.src);
 }
 
@@ -43,7 +46,7 @@ $(document).ready(function () {
                 // ToDo: set options before the document is ready?
                 var options = evt.data.options;
                 options.visibility = 'visible';
-                $("#playGameIframe").css(options);
+                $("#gameframe").css(options);
                 break;
 
             case "SCORE":
