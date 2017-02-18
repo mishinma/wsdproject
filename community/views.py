@@ -49,15 +49,14 @@ def play_game(request, game_id):
         else:
             return HttpResponseBadRequest()
 
-        response = action_func(request, game)
-        return response
+        return action_func(request, game)
 
     # TODO: add top scores
     context = {
         'game': game,
         'user_high_score': game.get_user_high_score(request.user),
         'user_last_score': game.get_user_last_score(request.user),
-        'top3_scores': game.get_top3_scores()
+        'top_scores': game.get_top_scores(5)
     }
 
     return render(request, "community/game-play.html", context)
@@ -77,12 +76,12 @@ def save_score(request, game):
     # Fetch the scores and update them
     user_high_score = game.get_user_high_score(request.user)
     user_last_score = game.get_user_last_score(request.user)
-    top3_scores = game.get_top3_scores()
+    top_scores = [[score.player.username, score.score] for score in game.get_top_scores(5)]
 
     return JsonResponse({
         'userHighScore': user_high_score,
         'userLastScore': user_last_score,
-        'topScores': [[item.player.username, item.score] for item in top3_scores]
+        'topScores': top_scores
     })
 
 
@@ -110,6 +109,7 @@ def load_game(request, game):
     else:
         return JsonResponse(last_state.state_data)
 
+
 @login_required
 @permission_required('community.add_game', raise_exception=True)
 def create_game(request):
@@ -123,6 +123,7 @@ def create_game(request):
         form = GameForm()
 
     return render(request, 'community/game-form.html', context={'form': form, 'create': True})
+
 
 @login_required
 @permission_required('community.change_game', raise_exception=True)
@@ -142,11 +143,13 @@ def edit_game(request, game_id):
 
     return render(request, 'community/game-form.html', context={'form': form})
 
+
 @login_required
 @permission_required('community.add_game', raise_exception=True)
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
     return render(request, 'community/my-inventory.html', context={'games': games})
+
 
 @login_required
 @permission_required('community.play_game', raise_exception=True)
