@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from community.models import Game, GameCategory
+from accounts.models import EmailConfirmed
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import Group
@@ -31,6 +32,7 @@ class Command(BaseCommand):
         user.set_password(password)
         user.groups.add(user_group)
         user.save()
+        EmailConfirmed.objects.update_or_create(user=user, email_confirmed=True)
         return user
 
     # Helper function to deal with existing game names
