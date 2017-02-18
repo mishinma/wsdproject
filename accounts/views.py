@@ -84,7 +84,7 @@ def login(request):
         password = request.POST['password']
         if UserMethods.objects.filter(username=username).exists():
             user = UserMethods.objects.get(username=username)
-            if not user.confirmed() and user.check_password(password):
+            if not user.is_staff and not user.confirmed() and user.check_password(password):
                 form = AuthenticationForm(data=request.POST)
                 form.add_error(None, 'Please confirm your email address before trying to log in')
                 context = {
