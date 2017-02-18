@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load extra_template_tags %}
 {% block title %}{{game.name}}{% endblock %}
 
 {% block body %}
@@ -15,14 +16,21 @@
         </div>
         <div class="col-xs-8 col-md-5">
             <h3> Rating: {{ game.rating }}</h3>
-            {% if game.sales_price != None %}
+            {% if game.sales_price %}
               <h3 class="text-danger">Sale! <del>{{game.price}} &euro;</del> {{game.sales_price}}&euro;</h3>
             {% else %}
               <h3>{{game.price}} &euro;</h3>
             {% endif %}
+            {% plays_game user game as owns_game %}
+            {% if owns_game %}
             <a href={% url 'community:game-play' game_id=game.id %} class="playbtn">
               <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
             </a>
+            {% else %}
+            <a href={% url 'webshop:purchase-game' game_id=game.id %} class="playbtn">
+              <button class="btn btn-warning"><span class="glyphicon glyphicon-tag"></span> Buy now!</button>
+            </a>
+            {% endif %}
             <p id="description">{{game.description}}</p>
         </div>
     </div>
