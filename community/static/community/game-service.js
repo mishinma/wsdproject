@@ -15,6 +15,11 @@ function update_scores (data) {
     'use strict';
     $("#userHighScore").text(data.userHighScore);
     $("#userLastScore").text(data.userLastScore);
+    $("#leaderList").html("");
+    for (var i=0; i < data.topScores.length; i++) {
+        $("#leaderList").append("<li>" + data.topScores[i][0] + " " + data.topScores[i][1] + "</li>");
+    }
+
 }
 
 

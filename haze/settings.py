@@ -32,6 +32,8 @@ PAYMENT_SECRET_KEY = '***REMOVED***'
 # PAYMENT_SID = 'mTahcJJXwbA9AybTFv4Z'
 # PAYMENT_SECRET_KEY = 'a4b5b9158b6bef0fd157548f383e7b73'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # Application definition
 

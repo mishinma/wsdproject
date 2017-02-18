@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Registration Complete{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <h1> Thank you for activating your account </h1>
+
+    <div class="row">
+        <div class="col-xs-8 col-md-5">
+          <p>You can now login and play games!<p>
+          <a class="btn btn-primary btn-sm" href={% url 'accounts:login-user' %}>
+            Continue to login
+          </a>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}
