@@ -39,20 +39,25 @@ class GameManager(models.Manager):
             for game in games:
                 game.buttons = ['buy']
                 games_w_buttons.append(game)
-        elif user.has_perm('community.play_game'):
+        elif user.is_player():
             for game in games:
                 if user.plays_game(game):
                     game.buttons = ['play']
                 else:
                     game.buttons = ['buy']
                 games_w_buttons.append(game)
-        else:
+        elif user.is_developer():
             for game in games:
                 if user.develops_game(game):
                     game.buttons = ['edit']
                 else:
                     game.buttons = list()
                 games_w_buttons.append(game)
+        else:
+            for game in games:
+                game.buttons = list()
+                games_w_buttons.append(game)
+
         return games_w_buttons
 
 
