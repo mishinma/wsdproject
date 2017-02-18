@@ -1,9 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from accounts.models import UserMethods
+from accounts.models import UserMethods, PendingRegistration, EmailConfirmed
 from community.models import Game, GameCategory
 from base.tests.status_codes import OK_200, FOUND_302
+from django.contrib import auth
 
 # Any resemblance to Game of Thrones characters is purely coincidental
 
@@ -102,3 +103,75 @@ class RegisterViewTestCase(TestCase):
         with self.assertRaises(User.DoesNotExist):
             ramsey_player = User.objects.get(username='ramsey')
 
+
+class EmailConfirmationTestCase(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+        self.client.post(
+            path=reverse('accounts:register-user'),
+            data={
+                'username': 'sansa',
+                'email': 'sansa.snow@aalto.fi',
+                'password': 'asdf',
+                'confirm_password': 'asdf',
+                'is_developer': False
+            })
+
+    def test_cannot_login_after_registration(self):
+        self.client.post(
+            path=reverse('accounts:login-user'),
+            data={
+                'username': 'sansa',
+                'password': 'asdf'
+            })
+        user = auth.get_user(self.client)
+        self.assertTrue(not user.is_authenticated())
+
+    def test_database_state_after_registration(self):
+        user = UserMethods.objects.get(username='sansa')
+        self.assertTrue(not user.confirmed())
+        self.assertTrue(PendingRegistration.objects.filter(user=user).exists())
+        self.assertEquals(
+            UserMethods.objects.all().count(),
+            EmailConfirmed.objects.all().count()
+            )
+
+    def test_visit_activation_link(self):
+        user = UserMethods.objects.get(username='sansa')
+        link = PendingRegistration.objects.get(user=user).link
+        response = self.client.get(link)
+        # Check link validity
+        self.assertEqual(response.status_code, FOUND_302)
+        # Check if database updated
+        self.assertTrue(not PendingRegistration.objects.filter(user=user).exists())
+        self.assertTrue(UserMethods.objects.get(username='sansa').confirmed())
+        # Check if user can login
+        self.client.post(
+            path=reverse('accounts:login-user'),
+            data={
+                'username': 'sansa',
+                'password': 'asdf'
+            })
+        user = auth.get_user(self.client)
+        self.assertTrue(user.is_authenticated())
+
+    def test_login_form_error_messages(self):
+        # Shows error?
+        response = self.client.post(
+            path=reverse('accounts:login-user'),
+            data={
+                'username': 'sansa',
+                'password': 'asdf'
+            })
+        form = response.context['form']
+        self.assertEqual(len(form.errors), 1)
+        # Only shows error if login correct?
+        response = self.client.post(
+            path=reverse('accounts:login-user'),
+            data={
+                'username': 'sansa',
+                'password': '1234'
+            })
+        form = response.context['form']
+        self.assertEqual(len(form.errors), 1)
