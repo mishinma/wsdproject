@@ -154,6 +154,7 @@ def my_games(request):
     games = Game.objects.games_for_player(request.user)
     return render(request, 'community/my-games.html', context={'games': games})
 
+
 def search_by_category(request, category):
     category = get_object_or_404(GameCategory, name=category)
     games = Game.objects.filter(category=category)
@@ -162,6 +163,7 @@ def search_by_category(request, category):
         'games': games,
     }
     return render(request, 'community/search-category.html', context=context)
+
 
 def search_by_query(request):
     try:
