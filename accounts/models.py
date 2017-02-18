@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
 from hashlib import md5
 from haze.settings import SECRET_KEY
 
@@ -18,16 +17,16 @@ class UserMethods(User):
     def develops_game(self, game):
         return game.developer.id == self.id
 
-    def verified(self):
-        return UserVerified.objects.filter(user=self).exists()
+    def confirmed(self):
+        return self.emailconfirmed.email_confirmed
 
     class Meta:
         proxy = True
 
 
-class UserVerified(models.Model):
+class EmailConfirmed(models.Model):
     user = models.OneToOneField(User)
-    verified = models.fields.BooleanField(default=False)
+    email_confirmed = models.fields.BooleanField(default=False)
 
 
 class PendingRegistrationManager(models.Manager):
@@ -42,7 +41,7 @@ class PendingRegistrationManager(models.Manager):
             timestamp=timestamp
         ).save()
 
-        UserVerified.objects.create(user)
+        EmailConfirmed.objects.create(user=user)
 
         return link
 
