@@ -46,6 +46,10 @@ class GameModelTestCase(TestCase):
         last_state = self.game2.get_user_last_state(self.sansa_player)
         self.assertEqual(last_state.state_data, test_sansa_game2_last_state)
 
+    def test_game_get_top3_scores(self):
+        test_game_top3_scores = [score.score for score in self.game2.get_top_scores(3)]
+        self.assertEqual(test_game_top3_scores, [54, 25, 12])
+
     def test_game_manager_games_for_developer(self):
         bran_develops_games = {game.id for game in Game.objects.games_for_developer(self.bran_developer)}
         self.assertEqual(bran_develops_games, {1, 3, 4})

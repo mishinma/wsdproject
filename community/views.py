@@ -49,14 +49,14 @@ def play_game(request, game_id):
         else:
             return HttpResponseBadRequest()
 
-        response = action_func(request, game)
-        return response
+        return action_func(request, game)
 
     # TODO: add top scores
     context = {
         'game': game,
         'user_high_score': game.get_user_high_score(request.user),
         'user_last_score': game.get_user_last_score(request.user),
+        'top_scores': game.get_top_scores(5)
     }
 
     return render(request, "community/game-play.html", context)
@@ -64,6 +64,7 @@ def play_game(request, game_id):
 
 def save_score(request, game):
     """ Save game score from the received postMessage """
+
     try:
         score_value = request.POST["score"]
     except KeyError:
@@ -75,10 +76,12 @@ def save_score(request, game):
     # Fetch the scores and update them
     user_high_score = game.get_user_high_score(request.user)
     user_last_score = game.get_user_last_score(request.user)
+    top_scores = [[score.player.username, score.score] for score in game.get_top_scores(5)]
 
     return JsonResponse({
         'userHighScore': user_high_score,
-        'userLastScore': user_last_score
+        'userLastScore': user_last_score,
+        'topScores': top_scores
     })
 
 
