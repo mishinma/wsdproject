@@ -163,6 +163,7 @@ def my_games(request):
 def search_by_category(request, category):
     category = get_object_or_404(GameCategory, name=category)
     games = Game.objects.filter(category=category)
+    games = Game.objects.add_action(games, request.user)
     context = {
         'category': category.name,
         'games': games,
@@ -177,6 +178,7 @@ def search_by_query(request):
         return defaults.bad_request(request=request, exception=KeyError)
 
     matches = Game.objects.filter(name__search=query)
+    matches = Game.objects.add_action(matches, request.user)
 
     context = {
         'query': query,
