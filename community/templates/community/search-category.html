@@ -10,29 +10,7 @@
 
     <div class="row">
         {% for game in games %}
-
-        <div class="col-sm-3">
-
-            {% if game.logo %}
-            <img src={{ game.logo }} class="img-responsive" width="300" height="auto">
-            {% else %}
-            <img src="{% static 'base/images/placeholder-pacman-grey.jpg' %}" class="img-responsive"
-                 alt="img unavailable" width="300"
-                 height="auto"/>
-            {% endif %}
-            <h3>{{ game.name }}</h3>
-            <h3> Rating: {{ game.rating }}</h3>
-            <div>
-                <!-- Details -->
-                <a href={% url 'community:game-info' game_id=game.id %} class="btn btn-primary btn-sm">Details</a>
-
-                <a href={% url 'community:game-play' game_id=game.id %}>
-                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span> Play now!
-                </button>
-                </a>
-            </div>
-        </div>
-
+        {% include 'community/game-details-block.html' %}
         {% endfor %}
     </div> <br>
 
