@@ -1,0 +1,14 @@
+{% load staticfiles %}
+
+{% block header %}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js" integrity="sha256-GcknncGKzlKm69d+sp+k3A2NyQE+jnu43aBl6rrDN2I="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'community/statistics.js' %}"></script>
+{% endblock %}
+
+<h3> Sales statistics:</h3>
+
+
+<div id="statistics-block" class="col-lg-8">
+    <canvas id="allGamesStats" ></canvas>
+</div>
