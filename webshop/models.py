@@ -1,10 +1,15 @@
 from __future__ import unicode_literals
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils import timezone
 from hashlib import md5
-from community.models import Game
+
+
+from django.db import models
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from django.utils import timezone
+
+from community.models import Game
 from haze.settings import PAYMENT_SID, PAYMENT_SECRET_KEY
 
 
@@ -48,11 +53,21 @@ class Gift(models.Model):
     message = models.fields.TextField(blank=True)
 
 
+class PurchaseManager(models.Manager):
+
+    def get_sales_statistics_all_games(self, developer):
+        return super(PurchaseManager, self).get_queryset().\
+            filter(game__developer=developer).\
+            annotate(month=TruncMonth('transaction__timestamp')).values('month').\
+            annotate(num_purchases=Count('id'))
+
+
 class Purchase(models.Model):
     transaction = models.ForeignKey(Transaction)
     payer = models.ForeignKey(User)
     game = models.ForeignKey(Game)
     gift = models.ForeignKey(Gift, null=True, blank=True)
+    objects = PurchaseManager()
 
 
 class PendingTransactionManager(models.Manager):

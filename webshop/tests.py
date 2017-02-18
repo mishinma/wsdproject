@@ -9,7 +9,7 @@ from haze.settings import PAYMENT_SID
 from community.models import Game
 from webshop import views
 from webshop.views import MESSAGE_PURCHASE_PENDING_ERROR
-from webshop.models import PendingTransaction
+from webshop.models import PendingTransaction, Purchase
 from base.tests.status_codes import BAD_REQUEST_400
 
 from django.db import connection
@@ -31,6 +31,21 @@ class PendingTransactionModelTestCase(TestCase):
 
         self.assertEqual(pending_transaction.pid, 1)
         self.assertEqual(pending_transaction.checksum, '86ed38f96b26bdb65ed9307109c37cf2')
+
+
+class PurchaseManagerTestCase(TestCase):
+    fixtures = ['test_users', 'test_games', 'test_transactions']
+
+    def setUp(self):
+        self.bran_developer = UserMethods.objects.get(username='bran')
+        self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.game3 = Game.objects.get(id=3)
+
+    def test_get_sales_statistics_all_games(self):
+        stats = Purchase.objects.get_sales_statistics_all_games(self.bran_developer)
+        first_entry = stats[0]
+        self.assertEqual(first_entry['num_purchases'], 2)
+        self.assertEqual(first_entry['month'].month, 7)
 
 
 def restart_pending_transaction_pk(func):
