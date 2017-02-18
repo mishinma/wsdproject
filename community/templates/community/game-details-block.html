@@ -16,26 +16,25 @@
         <!-- Details -->
         <a class="btn btn-primary btn-sm" href={% url 'community:game-info' game_id=game.id %}>Details</a>
 
-        {% for btn in game.buttons %}
 
 
-            {% if btn == 'buy' %}
-            {% if game.sales_price %}
-            <a class="btn btn-danger btn-sm" href={% url 'webshop:purchase-game' game_id=game.id %}>
-            <span class="glyphicon glyphicon-fire"></span> On Sale!</a>
-            {% else %}
-            <a class="btn btn-warning btn-sm playbtn" href={% url 'webshop:purchase-game' game_id=game.id %}>
-            <span class="glyphicon glyphicon-tag"></span> Buy Now!</a>
-            {% endif %}
-            {% elif btn == 'play' %}
-            <a class="btn btn-success btn-sm" href={% url 'community:game-play' game_id=game.id %}>
-            <span class="glyphicon glyphicon-play"></span> Play Now!</a>
-            {% elif btn == 'edit' %}
-            <a class="btn btn-warning btn-sm" href={% url 'community:game-edit' game_id=game.id %}>
-            <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+        {% if game.action == 'buy' %}
+        {% if game.sales_price %}
+        <a class="btn btn-danger btn-sm" href={% url 'webshop:purchase-game' game_id=game.id %}>
+        <span class="glyphicon glyphicon-fire"></span> On Sale!</a>
+        {% else %}
+        <a class="btn btn-warning btn-sm playbtn" href={% url 'webshop:purchase-game' game_id=game.id %}>
+        <span class="glyphicon glyphicon-tag"></span> Buy Now!</a>
+        {% endif %}
+        {% elif game.action == 'play' %}
+        <a class="btn btn-success btn-sm" href={% url 'community:game-play' game_id=game.id %}>
+        <span class="glyphicon glyphicon-play"></span> Play Now!</a>
+        {% elif game.action == 'develop' %}
+        <a class="btn btn-warning btn-sm" href={% url 'community:game-edit' game_id=game.id %}>
+        <span class="glyphicon glyphicon-pencil"></span> Edit</a>
 
-            {% endif %}
+        {% endif %}
 
-        {% endfor %}
+
     </div>
 </div>

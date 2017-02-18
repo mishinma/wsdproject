@@ -19,8 +19,13 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <h3 >Purchase "{{game.name}}"</h3>
-                    <h4>Price: {{game.get_price}} </h4>
+                    {% if game.sales_price %}
+                    <h3 class="text-danger">Sale! <del>{{game.price}} &euro;</del> {{game.sales_price}}&euro;</h3>
+                    {% else %}
+                    <h3>{{game.price}} &euro;</h3>
+                    {% endif %}
                     <h4>Developer: {{game.developer.username}}</h4>
+                    <br>
                     <form id="pending-transaction-form" class="form-horizontal" action="http://payments.webcourse.niksula.hut.fi/pay/"
                           method="post" enctype="multipart/form-data">
                         {% csrf_token %}
