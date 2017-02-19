@@ -36,6 +36,26 @@ class GameManager(models.Manager):
         return super(GameManager, self).get_queryset().filter(players__id=player.id)
 
     @staticmethod
+    def add_action_single(game, user):
+        if not user.is_authenticated():
+            game.action = ACTION_BUY
+        elif user.is_player():
+            if user.plays_game(game):
+                game.action = ACTION_PLAY
+            else:
+                game.action = ACTION_BUY
+        elif user.is_developer():
+            if user.develops_game(game):
+                game.action = ACTION_DEVELOP
+            else:
+                game.action = None
+        else:
+            game.action = None
+
+        return game
+
+
+    @staticmethod
     def add_action(games, user):
         games_w_actions = []
         if not user.is_authenticated():
