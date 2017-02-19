@@ -8,6 +8,10 @@ body {
     font-family: 'Play', sans-serif;
 }
 
+.container-fluid > h1 {
+    font-weight: bold;
+}
+
 .navbar-brand {
     padding: 0;
 }
@@ -15,8 +19,20 @@ body {
 .navbar-brand > img {
   margin-top: -11px;
   margin-left: -6px;
-  width: 70px;
+  width: inherit;
   height: auto;
+}
+@media screen and (max-device-width: 760px) {
+  #content {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 100px;
+  }
+}
+#content {
+    margin-left: 80px;
+    margin-right: 80px;
+    margin-bottom: 100px;
 }
 
 .btn-success {
@@ -40,11 +56,6 @@ label {
     padding-bottom: 5px;
 }
 
-#content {
-    margin-left: 80px;
-    margin-right: 80px;
-    margin-bottom: 100px;
-}
 
 #game-details-block {
     margin-bottom: 20px;
@@ -69,8 +80,9 @@ label {
     margin-left: 15px;
 }
 
-canvas {
+#statisticsBlock {
     margin-top: 30px;
+    min-width: 500px;
 }
 
 .footer {
@@ -88,7 +100,6 @@ canvas {
 .containerFooter .text-muted {
   margin: 20px 0;
 }
-
 
 
 
