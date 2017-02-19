@@ -77,8 +77,22 @@ def get_scores_of_game(request, game_id):
     else:
         return HttpResponse(data, 'application/json')
 
-def get_categories(reuest):
-    pass
+
+def get_categories(request):
+    categories = GameCategory.objects.all().values('id', 'name')
+    data = json.dumps([cat for cat in categories], cls=DjangoJSONEncoder)
+    if 'callback' in request.GET:
+        data = '%s(%s)' % (request.GET['callback'], data)
+        return HttpResponse(data, 'text/javascript')
+    else:
+        return HttpResponse(data, 'application/json')
+
 
 def get_developers(request):
-    pass
+    devs = UserMethods.objects.filter(groups__name='developer').values('id', 'username')
+    data = json.dumps([dev for dev in devs], cls=DjangoJSONEncoder)
+    if 'callback' in request.GET:
+        data = '%s(%s)' % (request.GET['callback'], data)
+        return HttpResponse(data, 'text/javascript')
+    else:
+        return HttpResponse(data, 'application/json')
