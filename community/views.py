@@ -2,6 +2,7 @@ import json
 
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState, GameCategory
 from community.forms import GameForm
@@ -22,6 +23,7 @@ MESSAGE_LOAD_GAME_ERROR = "Sorry, we couldn't load your game."
 CHART_ALL_GAMES_SOLD_MONTH = 'allGamesSoldMonth'
 CHART_REVENUE_PER_GAME = 'allRevenuePerGame'
 
+
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
 
@@ -32,6 +34,7 @@ def game_info(request, game_id):
 
 
 @login_required
+@never_cache
 @permission_required('community.play_game', raise_exception=True)
 def play_game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
@@ -148,6 +151,7 @@ def edit_game(request, game_id):
 
 
 @login_required
+@never_cache
 @permission_required('community.add_game', raise_exception=True)
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
