@@ -107,6 +107,9 @@ class Game(models.Model):
                                         validators=[MinValueValidator(0.0),
                                                     MaxValueValidator(5.0)])
 
+    created = models.DateField(auto_now_add=True)
+    last_modified = models.DateField(auto_now=True)
+
     objects = GameManager()
 
     def get_user_high_score(self, user):
@@ -143,6 +146,7 @@ class Game(models.Model):
         super(Game, self).save(*args, **kwargs)
 
     class Meta:
+        ordering = ['-created']
         permissions = (
             ("play_game", "Can play the game"),
             ("test_game", "Can test games"),
