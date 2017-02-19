@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'community.apps.CommunityConfig',
     'webshop.apps.WebshopConfig',
+    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
