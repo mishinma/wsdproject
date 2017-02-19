@@ -57,7 +57,14 @@ function plot_revenue_per_game(game_names, revenues){
             },
             legend: {
                 display: false
-            }
+            },
+            scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
         }
     });
 }
