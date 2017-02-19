@@ -45,7 +45,7 @@ def register(request):
                 base_url=base_url
             )
             send_email(new_user, verification_link)
-            return redirect('base:index')
+            return redirect('accounts:registration-link-sent')
     else:
         form = RegistrationForm()
     return render(request, 'accounts/registration-form.html', context={'form': form})
@@ -73,6 +73,10 @@ def registration_complete(request):
 
 def registration_success(request):
     return render(request, 'accounts/registration-success.html')
+
+
+def registration_link_sent(request):
+    return render(request, 'accounts/registration-link-sent.html')
 
 
 @sensitive_post_parameters()
