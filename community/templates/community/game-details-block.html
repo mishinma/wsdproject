@@ -10,20 +10,23 @@
              alt="img unavailable" width="300"
              height="auto"/>
     {% endif %}
-    <div id="gamename"><h4>{{ game.name|slice:"28" }}{% if game.name|length > 25 %}...{% endif %}</h4></div>
+
+    <div id="gamename"><h4>{{ game.name|slice:"28" }}{% if game.name|length > 28 %}...{% endif %}</h4></div>
+
     <div>
         <!-- Details -->
         <a class="btn btn-primary btn-sm" href={% url 'community:game-info' game_id=game.id %}>Details</a>
 
         {% if game.action == 'buy' %}
-        {% if game.sales_price %}
-        <a class="btn btn-danger btn-sm" href={% url 'webshop:purchase-game' game_id=game.id %}>
-        <span class="glyphicon glyphicon-fire"></span> On Sale!</a>
-        {% else %}
-        <a class="btn btn-warning btn-sm playbtn" href={% url 'webshop:purchase-game' game_id=game.id %}>
-        <span class="glyphicon glyphicon-tag"></span> Buy Now!</a>
-        {% endif %}
+            {% if game.sales_price %}
+                <a class="btn btn-danger btn-sm" href={% url 'webshop:purchase-game' game_id=game.id %}>
+                    <span class="glyphicon glyphicon-fire"></span> On Sale!</a>
+            {% else %}
+                <a class="btn btn-warning btn-sm playbtn" href={% url 'webshop:purchase-game' game_id=game.id %}>
+                    <span class="glyphicon glyphicon-tag"></span> Buy Now!</a>
+            {% endif %}
         {% elif game.action == 'play' %}
+
         <a class="btn btn-success btn-sm" href={% url 'community:game-play' game_id=game.id %}>
         <span class="glyphicon glyphicon-play"></span> Play Now!</a>
         {% else %}
@@ -33,6 +36,7 @@
         {% if game.action == 'develop' %}
         <a class="btn btn-warning btn-sm" href={% url 'community:game-edit' game_id=game.id %}>
         <span class="glyphicon glyphicon-pencil"></span> Edit</a>
+
         {% endif %}
 
     </div>

@@ -5,10 +5,18 @@ html {
 
 body {
     margin-bottom: 60px;
+    font-family: 'Play', sans-serif;
 }
 
-#navbar{
-    border-radius: 0;
+.navbar-brand {
+    padding: 0;
+}
+
+.navbar-brand > img {
+  margin-top: -11px;
+  margin-left: -6px;
+  width: 70px;
+  height: auto;
 }
 
 .btn-success {
@@ -61,6 +69,10 @@ label {
     margin-left: 15px;
 }
 
+canvas {
+    margin-top: 30px;
+}
+
 .footer {
     position: absolute;
     bottom: 0;
@@ -76,7 +88,6 @@ label {
 .containerFooter .text-muted {
   margin: 20px 0;
 }
-
 
 
 
