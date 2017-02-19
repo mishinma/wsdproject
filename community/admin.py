@@ -2,6 +2,6 @@ from django.contrib import admin
 
 # Register your models here.
 
-from community.models import Game, GameCategory
+from accounts.models import PendingRegistration
 
-admin.site.register([Game, GameCategory])
+admin.site.register([PendingRegistration])

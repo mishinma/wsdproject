@@ -80,12 +80,9 @@
                             Hello, {{ user.username }}!
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a type="button" href="#"{% comment %}{% url 'accounts:edit-profile' %}{% endcomment %}>Edit
-                                Profile</a></li>
-                            <li><a type="button" href="#"{% comment %}{% url 'accounts:change-password' %}{% endcomment %}>Change
-                                Password</a></li>
-                            <li><a type="button" href="#"{% comment %}{% url 'accounts:delete-profile' %}{% endcomment %}>Delete
-                                Profile</a></li>
+                            <li><a type="button" href="{% url 'accounts:edit-profile' %}">Edit Profile</a></li>
+                            <li><a type="button" href="{% url 'accounts:change-password' %}">Change Password</a></li>
+                            <li><a type="button" href="{% url 'accounts:delete-profile' %}">Delete Profile</a></li>
                         </ul>
                     </li>
 
@@ -94,7 +91,6 @@
                             <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp; Logout
                         </a>
                     </li>
-
 
                 {% else %}
                     <li class="">
