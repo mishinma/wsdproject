@@ -1,7 +1,8 @@
-from community.models import GameCategory, Game
+from community.models import GameCategory, Game, GameScore
 from accounts.models import UserMethods
 from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponse
-import simplejson as json
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 
 def get_games_of_category(request, category):
@@ -11,7 +12,7 @@ def get_games_of_category(request, category):
         message = json.dumps({'error': 404, 'message': 'category does not exist'})
         return HttpResponseNotFound(message, 'application/json')
     games = Game.objects.filter(category=category).values('id', 'name', 'developer', 'price')
-    data = json.dumps([game for game in games], use_decimal=True)
+    data = json.dumps([game for game in games], cls=DjangoJSONEncoder)
     if 'callback' in request.GET:
         data = '%s(%s)' % (request.GET['callback'], data)
         return HttpResponse(data, 'text/javascript')
@@ -30,7 +31,7 @@ def get_games_of_dev(request, dev_id):
         message = json.dumps({'error': 400, 'message': 'not a developer'})
         return HttpResponseBadRequest(message, 'application/json')
     games = Game.objects.filter(developer=dev).values('id', 'name', 'category', 'price')
-    data = json.dumps([game for game in games], use_decimal=True)
+    data = json.dumps([game for game in games], cls=DjangoJSONEncoder)
     if 'callback' in request.GET:
         data = '%s(%s)' % (request.GET['callback'], data)
         return HttpResponse(data, 'text/javascript')
@@ -53,15 +54,28 @@ def get_game_detail(request, game_id):
         'category_name': game.category.name,
         'price': game.price,
         'sales_price': game.sales_price
-        }, use_decimal=True)
+        }, cls=DjangoJSONEncoder)
     if 'callback' in request.GET:
         data = '%s(%s)' % (request.GET['callback'], data)
         return HttpResponse(data, 'text/javascript')
     else:
         return HttpResponse(data, 'application/json')
 
+
 def get_scores_of_game(request, game_id):
-    pass
+    try:
+        game = Game.objects.get(id=game_id)
+    except Game.DoesNotExist:
+        message = json.dumps({'error': 404, 'message': 'game does not exist'})
+        return HttpResponseNotFound(message, 'application/json')
+    scores = GameScore.objects.filter(game=game).values('player', 'player__username', 'score', 'timestamp')
+
+    data = json.dumps([score for score in scores], cls=DjangoJSONEncoder)
+    if 'callback' in request.GET:
+        data = '%s(%s)' % (request.GET['callback'], data)
+        return HttpResponse(data, 'text/javascript')
+    else:
+        return HttpResponse(data, 'application/json')
 
 def get_categories(reuest):
     pass
