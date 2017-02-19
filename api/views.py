@@ -7,7 +7,7 @@ import json
 
 def get_games_of_category(request, category):
     try:
-        category = GameCategory.objects.filter(name__iexact=category)
+        category = GameCategory.objects.get(name__iexact=category)
     except GameCategory.DoesNotExist:
         message = json.dumps({'error': 404, 'message': 'category does not exist'})
         return HttpResponseNotFound(message, 'application/json')
