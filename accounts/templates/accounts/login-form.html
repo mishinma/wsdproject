@@ -1,7 +1,10 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
 {% block title %}Login{% endblock %}
-
+{% block header %}
+<link rel="stylesheet" type="text/css" href="{% static 'base/login-btn.css' %}">
+{% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
@@ -24,13 +27,11 @@
                         </div>
                     </form>
                     <p>New to HAZE? <a href={% url 'accounts:register-user'%}>Register here</a></p>
-                    <p>
-                     <ul>
-                       <li>
-                         <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
-                       </li>
-                     </ul>
-                   </p>
+                    <form action="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">
+                      <button class="loginBtn loginBtn--google">
+                          Login with Google
+                      </button>
+                    </form>
                 </div>
             </div>
         </div>
