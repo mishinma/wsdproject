@@ -5,6 +5,5 @@ Pillow==4.0.0
 psycopg2==2.6.2
 whitenoise==3.3.0
 django-crispy-forms==1.6.1
-django-debug-toolbar==1.6
 social-auth-app-django==1.1.0
 social-auth-core==1.2.0
