@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^', include('community.urls')),
     url(r'^', include('accounts.urls')),
     url(r'^', include('webshop.urls')),
+    url(r'^', include('api.urls')),
     url(r'^soc/', include('social_django.urls', namespace='social'))
 ]
 
