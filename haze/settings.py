@@ -48,7 +48,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
     'accounts.pipeline.add_to_players'
-)
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
