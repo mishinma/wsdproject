@@ -84,6 +84,13 @@ class PurchaseManager(models.Manager):
 
         return sales_stats
 
+    def get_stats_games_sold(self, developer):
+
+        games_sold = super(PurchaseManager, self).get_queryset(). \
+            filter(game__developer=developer).count()
+
+        return games_sold
+
     def get_stats_revenue_per_game(self, developer):
 
         qry = Game.objects.filter(developer=developer).\
@@ -95,6 +102,14 @@ class PurchaseManager(models.Manager):
             revenue_stats[game.name] = game.revenue
 
         return revenue_stats
+
+    def get_stats_overall_revenue(self, developer):
+
+        qry = Game.objects.filter(developer=developer). \
+            aggregate(Sum('purchase__transaction__amount'))
+
+        return qry['purchase__transaction__amount__sum']
+
 
 class Purchase(models.Model):
     transaction = models.ForeignKey(Transaction)

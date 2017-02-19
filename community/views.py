@@ -156,6 +156,13 @@ def my_inventory(request):
     if request.is_ajax():
 
         data = dict()
+
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(request.user)
+        games_sold = Purchase.objects.get_stats_games_sold(request.user)
+
+        data['overall_revenue'] = overall_revenue
+        data['games_sold'] = games_sold
+
         # Get statistics for graphs
         stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(request.user)
         data["purchases_per_month_months"] = list(stats_purchases_per_month.keys())

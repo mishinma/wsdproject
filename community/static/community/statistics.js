@@ -68,6 +68,8 @@ $(document).ready(function () {
         method: "GET",
         dataType: 'json',
         success: function (data) {
+            $('#overallRevenue').text(data.overall_revenue);
+            $('#gamesSold').text(data.games_sold);
             plot_games_sold_month(data.purchases_per_month_months,
                 data.purchases_per_month_num_purchases);
             plot_revenue_per_game(data.revenue_per_game_game_names,
