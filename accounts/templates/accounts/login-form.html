@@ -24,6 +24,13 @@
                         </div>
                     </form>
                     <p>New to HAZE? <a href={% url 'accounts:register-user'%}>Register here</a></p>
+                    <p>
+                     <ul>
+                       <li>
+                         <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a>
+                       </li>
+                     </ul>
+                   </p>
                 </div>
             </div>
         </div>
