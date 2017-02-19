@@ -1,5 +1,4 @@
 {% extends 'base/base.html' %}
-{% load extra_template_tags %}
 {% block title %}{{game.name}}{% endblock %}
 
 {% block body %}
@@ -15,24 +14,32 @@
 
         </div>
         <div class="col-xs-8 col-md-5">
+
             {% if game.sales_price %}
               <h3 class="text-danger">Sale! <del>{{game.price}} &euro;</del> {{game.sales_price}}&euro;</h3>
             {% else %}
               <h3>{{game.price}} &euro;</h3>
             {% endif %}
-            {% plays_game user game as owns_game %}
-            {% if owns_game %}
+
+            {% if game.action == 'play' %}
             <a href={% url 'community:game-play' game_id=game.id %} class="playbtn">
               <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
             </a>
-            {% elif user|has_group:"developer" %}
-            <a class="playbtn">
-              <button class="btn btn-warning disabled"><span class="glyphicon glyphicon-tag"></span> Buy now!</button>
-            </a>
-            {% else %}
+
+            {% elif game.action == 'buy' %}
             <a href={% url 'webshop:purchase-game' game_id=game.id %} class="playbtn">
               <button class="btn btn-warning"><span class="glyphicon glyphicon-tag"></span> Buy now!</button>
             </a>
+
+            {% else %}
+            <a class="playbtn">
+              <button class="btn btn-warning disabled"><span class="glyphicon glyphicon-tag"></span> Buy now!</button>
+            </a>
+            {% if game.action == 'develop' %}
+            <a href={% url 'community:game-edit' game_id=game.id %} class="playbtn">
+              <button class="btn btn-warning"><span class="glyphicon glyphicon-pencil"></span> Edit </button>
+            </a>
+            {% endif %}
             {% endif %}
             <p id="description">{{game.description}}</p>
         </div>

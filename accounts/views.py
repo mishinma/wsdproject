@@ -1,20 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from accounts.forms import RegistrationForm
 from django.core.exceptions import SuspiciousOperation
+from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.models import Group
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import login as default_login
 from django.urls import reverse
 from django.views import defaults
 from django.core import mail
 from django.template.loader import get_template
 from django.template import Context
-from django.contrib.auth.views import login as default_login
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-from django.contrib.auth.forms import AuthenticationForm
 
 from accounts.models import PendingRegistration, UserMethods, EmailConfirmed
-
+from accounts.forms import RegistrationForm, EditProfileForm, ChangePasswordForm
 
 def register(request):
     if request.user.is_authenticated():
@@ -112,3 +112,68 @@ def send_email(user, link):
             to=[user.email],
             connection=connection,
         ).send()
+
+
+def edit_profile(request):
+    if request.method == "POST":
+        form = EditProfileForm(data=request.POST)
+        user = request.user
+        new_username = request.POST['new_username']
+        new_email = request.POST['new_email']
+        password = request.POST['password']
+        if not user.check_password(password):
+            form.add_error(None, 'Please provide correct password to apply changes.')
+
+        if form.is_valid():
+            if new_username:
+                user.username = new_username
+            if new_email:
+                user.email = new_email
+            user.save()
+            return redirect('base:index')
+
+    else:
+        form = EditProfileForm()
+    return render(request, 'accounts/edit-account-form.html', context={'form': form})
+
+
+def change_password(request):
+    if request.method == "POST":
+        form = ChangePasswordForm(data=request.POST)
+        user = request.user
+        new_password = request.POST['new_password']
+        current_password = request.POST['current_password']
+        if not user.check_password(current_password):
+            form.add_error(None, 'Please provide correct password to apply changes.')
+
+        if form.is_valid():
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+            return redirect('base:index')
+    else:
+        form = ChangePasswordForm()
+    return render(request, 'accounts/change-password-form.html', context={'form': form})
+
+
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
+def delete_profile(request):
+    user = request.user
+    form = AuthenticationForm(data=request.POST)
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        if username != user.username:
+            form.add_error(None, 'Please provide your username to delete your account')
+        if not user.check_password(password):
+            form.add_error(None, 'Please confirm your email address to delete your account')
+        if form.is_valid():
+            request.user.is_active = False
+            request.user.save()
+            logout(request)
+            return redirect('base:index')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'accounts/delete-profile-form.html', context={'form': form})

@@ -88,3 +88,6 @@ class PendingRegistration(models.Model):
         checksum = md5(checksum_str.encode('ascii')).hexdigest()
 
         return checksum == token
+
+    def __str__(self):
+        return "<Pending registration: {}>".format(self.user.username)
