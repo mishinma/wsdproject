@@ -1,15 +1,18 @@
 import json
+from datetime import datetime
 from decimal import Decimal
 
+from unittest.mock import patch
 from django.urls import reverse
 from django.test import TestCase, RequestFactory
+from django.utils import timezone
 
 from accounts.models import UserMethods
 from haze.settings import PAYMENT_SID
 from community.models import Game
 from webshop import views
 from webshop.views import MESSAGE_PURCHASE_PENDING_ERROR
-from webshop.models import PendingTransaction
+from webshop.models import PendingTransaction, Purchase
 from base.tests.status_codes import BAD_REQUEST_400
 
 from django.db import connection
@@ -31,6 +34,45 @@ class PendingTransactionModelTestCase(TestCase):
 
         self.assertEqual(pending_transaction.pid, 1)
         self.assertEqual(pending_transaction.checksum, '86ed38f96b26bdb65ed9307109c37cf2')
+
+
+class PurchaseManagerTestCase(TestCase):
+    fixtures = ['test_users', 'test_games', 'test_transactions']
+
+    def setUp(self):
+        self.bran_developer = UserMethods.objects.get(username='bran')
+        self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.game1 = Game.objects.get(id=1)
+        self.game2 = Game.objects.get(id=2)
+        self.game3 = Game.objects.get(id=3)
+        self.game4 = Game.objects.get(id=4)
+
+    def test_get_stats_purchases_per_month(self):
+        dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
+        with patch.object(timezone, 'now', return_value=dt):
+            stats = Purchase.objects.get_stats_purchases_per_month(self.bran_developer)
+            self.assertEqual(len(stats.keys()), 7)
+            self.assertEqual(stats['February'], 0)
+            self.assertEqual(stats['March'], 0)
+            self.assertEqual(stats['April'], 0)
+            self.assertEqual(stats['May'], 1)
+            self.assertEqual(stats['June'], 0)
+            self.assertEqual(stats['July'], 2)
+            self.assertEqual(stats['August'], 0)
+
+    def test_get_stats_revenue_per_game(self):
+        stats = Purchase.objects.get_stats_revenue_per_game(self.bran_developer)
+        self.assertEqual(stats[self.game1.name], Decimal("50.00"))
+        self.assertEqual(stats[self.game3.name], Decimal("30.00"))
+        self.assertEqual(stats[self.game4.name], Decimal("10.00"))
+
+    def test_get_stats_full_revenue(self):
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(self.bran_developer)
+        self.assertEqual(overall_revenue, Decimal("90.00"))
+
+    def test_get_stats_games_sold(self):
+        games_sold = Purchase.objects.get_stats_games_sold(self.bran_developer)
+        self.assertEqual(games_sold, 4)
 
 
 def restart_pending_transaction_pk(func):

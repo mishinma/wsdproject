@@ -4,6 +4,17 @@
     "pk": 2,
     "fields": {
       "user": 3,
+      "ref": "1222447",
+      "amount": "10.00",
+      "result": "success",
+      "timestamp": "2016-01-24T15:11:41.226Z"
+    }
+  },
+  {
+    "model": "webshop.transaction",
+    "pk": 3,
+    "fields": {
+      "user": 3,
       "ref": "1234431",
       "amount": "50.00",
       "result": "success",
@@ -12,18 +23,18 @@
   },
   {
     "model": "webshop.transaction",
-    "pk": 3,
+    "pk": 4,
     "fields": {
       "user": 4,
       "ref": "1234429",
       "amount": "20.00",
       "result": "cancel",
-      "timestamp": "2016-09-13T01:21:40.226Z"
+      "timestamp": "2016-06-13T01:21:40.226Z"
     }
   },
   {
     "model": "webshop.transaction",
-    "pk": 4,
+    "pk": 5,
     "fields": {
       "user": 3,
       "ref": "1234837",
@@ -33,12 +44,85 @@
     }
   },
   {
+    "model": "webshop.transaction",
+    "pk": 6,
+    "fields": {
+      "user": 3,
+      "ref": "1222447",
+      "amount": "15.00",
+      "result": "success",
+      "timestamp": "2016-07-24T15:11:41.226Z"
+    }
+  },
+  {
+    "model": "webshop.transaction",
+    "pk": 7,
+    "fields": {
+      "user": 4,
+      "ref": "1234343",
+      "amount": "50.00",
+      "result": "success",
+      "timestamp": "2016-05-15T23:21:41.226Z"
+    }
+  },
+  {
+    "model": "webshop.transaction",
+    "pk": 8,
+    "fields": {
+      "user": 4,
+      "ref": "1212334",
+      "amount": "15.00",
+      "result": "success",
+      "timestamp": "2016-05-11T11:21:41.226Z"
+    }
+  },
+  {
     "model": "webshop.purchase",
     "pk": 1,
     "fields": {
       "transaction": 2,
       "payer": 3,
+      "game": 4,
+      "gift": null
+    }
+  },
+  {
+    "model": "webshop.purchase",
+    "pk": 2,
+    "fields": {
+      "transaction": 3,
+      "payer": 3,
       "game": 1,
+      "gift": null
+    }
+  },
+  {
+    "model": "webshop.purchase",
+    "pk": 3,
+    "fields": {
+      "transaction": 6,
+      "payer": 3,
+      "game": 3,
+      "gift": null
+    }
+  },
+  {
+    "model": "webshop.purchase",
+    "pk": 4,
+    "fields": {
+      "transaction": 7,
+      "payer": 4,
+      "game": 2,
+      "gift": null
+    }
+  },
+  {
+    "model": "webshop.purchase",
+    "pk": 5,
+    "fields": {
+      "transaction": 8,
+      "payer": 4,
+      "game": 3,
       "gift": null
     }
   },
