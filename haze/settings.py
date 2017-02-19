@@ -32,6 +32,24 @@ PAYMENT_SECRET_KEY = '***REMOVED***'
 # PAYMENT_SID = 'mTahcJJXwbA9AybTFv4Z'
 # PAYMENT_SECRET_KEY = 'a4b5b9158b6bef0fd157548f383e7b73'
 
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '***REMOVED***'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '***REMOVED***'
+SOCIAL_AUTH_USER_MODEL = 'accounts.UserMethods'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'accounts.pipeline.add_to_players'
+)
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -49,7 +67,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'crispy_forms'
+    'crispy_forms',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -153,6 +172,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
         'accounts.backends.ModelBackend',
+        'social_core.backends.google.GoogleOAuth2',
     )
 
 
