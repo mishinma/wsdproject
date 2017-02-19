@@ -7,7 +7,7 @@ function plot_games_sold_month(data){
         labels: data.months,
         datasets: [
             {
-                label: "Games sold per month",
+                label: 'Number of purchases',
                 data: data.num_purchases
             }
         ]
@@ -15,7 +15,17 @@ function plot_games_sold_month(data){
     var ctx = document.getElementById("allGamesSoldMonth");
     var myLineChart = new Chart(ctx, {
         type: 'line',
-        data: plot_data
+        data: plot_data,
+        options: {
+            title: {
+                display: true,
+                text: 'Games sold per month',
+                fontSize: 18
+            },
+            legend: {
+                display: false
+            }
+        }
     });
 }
 
