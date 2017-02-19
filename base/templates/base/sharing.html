@@ -1,0 +1,12 @@
+
+{% if game %}
+<meta property="og:title" content="{{ game.name }}" />
+<meta property="og:description" content="{{ game.description }}" />
+<meta property="og:type" content="game" />
+{% else %}
+<meta property="og:title" content="HAZE Game Store" />
+<meta property="og:type" content="website" />
+{% endif %}
+<meta property="og:url" content={{ request.get_host|add:request.get_full_path }} />
+<meta property="og:image" content="https://www.aircon-servicing.sg/wp-content/uploads/2016/02/aircon-servicing-haze-singapore.jpg" />
+<meta property="og:site_name" content="HAZE"/>
