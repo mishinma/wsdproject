@@ -24,7 +24,10 @@ class UserMethods(User):
         return self.groups.filter(name='developer').exists()
 
     def confirmed(self):
-        return self.emailconfirmed.email_confirmed
+        try:
+            return self.emailconfirmed.email_confirmed
+        except EmailConfirmed.DoesNotExist:
+            return False
 
     class Meta:
         proxy = True
