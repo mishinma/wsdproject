@@ -19,7 +19,7 @@ body {
 .navbar-brand > img {
   margin-top: -11px;
   margin-left: -6px;
-  width: 70px;
+  width: inherit;
   height: auto;
 }
 @media screen and (max-device-width: 760px) {
