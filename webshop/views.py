@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views import defaults
 from django.core.exceptions import SuspiciousOperation
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.cache import never_cache
 
 from webshop.models import Transaction, PendingTransaction
 from webshop.forms import PendingTransactionForm
@@ -14,6 +15,7 @@ MESSAGE_PURCHASE_PENDING_ERROR = "An error occurred while processing your reques
 
 
 @login_required
+@never_cache
 @permission_required('community.buy_game', raise_exception=True)
 def purchase_game(request, game_id):
 
@@ -35,10 +37,6 @@ def purchase_game(request, game_id):
             }
         response = render(request, 'webshop/purchase-form.html', context=context)
 
-    response["Cache-Control"] = "no-cache, no-store, must-revalidate"  # HTTP 1.1.
-    response["Pragma"] = "no-cache"  # HTTP 1.0.
-    response["Expires"] = "0"  # Proxies.
-
     return response
 
 
@@ -59,7 +57,7 @@ def purchase_pending(request, game):
         'error_url': callback_url,
         'checksum': new_pt.checksum
     }
-    
+
     return JsonResponse(response_data)
 
 
