@@ -26,6 +26,7 @@ CHART_REVENUE_PER_GAME = 'allRevenuePerGame'
 
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
+    game = Game.objects.add_action_single(game, request.user)
 
     context = {
         'game': game,
