@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
-from hashlib import md5
 
+from collections import OrderedDict
+from dateutil.relativedelta import relativedelta
+from hashlib import md5
 
 from django.db import models
 from django.db.models import Count
@@ -56,10 +58,30 @@ class Gift(models.Model):
 class PurchaseManager(models.Manager):
 
     def get_sales_statistics_all_games(self, developer):
-        return super(PurchaseManager, self).get_queryset().\
+        """ Returns number of purchases per month for all games of the developer """
+
+        # By default take data for the last 6 months
+
+        time_now = timezone.now()
+        num_months_back = 6
+
+        first_month = time_now + relativedelta(months=-num_months_back)
+        first_month = first_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+        months = [(first_month + relativedelta(months=i)).strftime("%B")
+                    for i in range(num_months_back+1)]  # format as month
+        sales_stats = OrderedDict.fromkeys(months, 0)
+
+        sales_stats_qry = super(PurchaseManager, self).get_queryset().\
             filter(game__developer=developer).\
+            filter(transaction__timestamp__date__gte= first_month).\
             annotate(month=TruncMonth('transaction__timestamp')).values('month').\
             annotate(num_purchases=Count('id'))
+
+        for entry in sales_stats_qry:
+            sales_stats[entry['month'].strftime("%B")] = entry['num_purchases']
+
+        return sales_stats
 
 
 class Purchase(models.Model):

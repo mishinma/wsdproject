@@ -1,8 +1,11 @@
 import json
+from datetime import datetime
 from decimal import Decimal
 
+from unittest.mock import patch
 from django.urls import reverse
 from django.test import TestCase, RequestFactory
+from django.utils import timezone
 
 from accounts.models import UserMethods
 from haze.settings import PAYMENT_SID
@@ -42,10 +45,17 @@ class PurchaseManagerTestCase(TestCase):
         self.game3 = Game.objects.get(id=3)
 
     def test_get_sales_statistics_all_games(self):
-        stats = Purchase.objects.get_sales_statistics_all_games(self.bran_developer)
-        first_entry = stats[0]
-        self.assertEqual(first_entry['num_purchases'], 2)
-        self.assertEqual(first_entry['month'].month, 7)
+        dt = datetime(2016, 7, 1, tzinfo=timezone.utc)
+        with patch.object(timezone, 'now', return_value=dt):
+            stats = Purchase.objects.get_sales_statistics_all_games(self.bran_developer)
+            self.assertEqual(len(stats.keys()), 7)
+            self.assertEqual(stats['February'], 0)
+            self.assertEqual(stats['March'], 0)
+            self.assertEqual(stats['April'], 0)
+            self.assertEqual(stats['May'], 0)
+            self.assertEqual(stats['June'], 0)
+            self.assertEqual(stats['July'], 2)
+            self.assertEqual(stats['August'], 0)
 
 
 def restart_pending_transaction_pk(func):

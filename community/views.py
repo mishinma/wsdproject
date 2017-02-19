@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
 from community.models import Game, GameScore, GameState, GameCategory
 from community.forms import GameForm
+from webshop.models import Purchase
 from django.views import defaults
 
 MESSAGE_TYPE_SCORE = 'SCORE'
@@ -149,6 +150,14 @@ def edit_game(request, game_id):
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
     games = Game.objects.add_action(games, request.user)
+
+    if request.is_ajax():
+        # Get statistics for graphs
+        stats = Purchase.objects.get_sales_statistics_all_games(request.user)
+        months = list(stats.keys())
+        num_purchases = list(stats.values())
+        return JsonResponse({'months': months, 'num_purchases': num_purchases})
+
     return render(request, 'community/my-inventory.html', context={'games': games})
 
 
