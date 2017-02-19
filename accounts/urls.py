@@ -8,6 +8,7 @@ app_name = 'accounts'
 
 urlpatterns = [
     url(r'^register/$', views.register, name='register-user'),
+    url(r'^register/link-sent', views.registration_link_sent, name='registration-link-sent'),
     url(r'^register/activate', views.registration_complete, name='registration-complete'),
     url(r'^register/success', views.registration_success, name='registration-success'),
     url(r'^login/$', views.login, name='login-user'),
