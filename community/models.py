@@ -42,14 +42,14 @@ class GameManager(models.Manager):
             for game in games:
                 game.action = ACTION_BUY
                 games_w_actions.append(game)
-        elif user.is_player():
+        elif user.groups.filter(name='player').exists():
             for game in games:
                 if user.plays_game(game):
                     game.action = ACTION_PLAY
                 else:
                     game.action = ACTION_BUY
                 games_w_actions.append(game)
-        elif user.is_developer():
+        elif user.groups.filter(name='developer').exists():
             for game in games:
                 if user.develops_game(game):
                     game.action = ACTION_DEVELOP
