@@ -75,7 +75,7 @@ label {
     font-size: 20px;
 }
 
-.control-label, .controls {
+.control-label, .controls, #div_id_is_developer {
     margin-right: 15px;
     margin-left: 15px;
 }
