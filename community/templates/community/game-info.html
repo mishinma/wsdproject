@@ -15,7 +15,6 @@
 
         </div>
         <div class="col-xs-8 col-md-5">
-            <h3> Rating: {{ game.rating }}</h3>
             {% if game.sales_price %}
               <h3 class="text-danger">Sale! <del>{{game.price}} &euro;</del> {{game.sales_price}}&euro;</h3>
             {% else %}
@@ -25,6 +24,10 @@
             {% if owns_game %}
             <a href={% url 'community:game-play' game_id=game.id %} class="playbtn">
               <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
+            </a>
+            {% elif user|has_group:"developer" %}
+            <a class="playbtn">
+              <button class="btn btn-warning disabled"><span class="glyphicon glyphicon-tag"></span> Buy now!</button>
             </a>
             {% else %}
             <a href={% url 'webshop:purchase-game' game_id=game.id %} class="playbtn">
