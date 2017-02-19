@@ -32,6 +32,10 @@ PAYMENT_SECRET_KEY = '***REMOVED***'
 # PAYMENT_SID = 'mTahcJJXwbA9AybTFv4Z'
 # PAYMENT_SECRET_KEY = 'a4b5b9158b6bef0fd157548f383e7b73'
 
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '***REMOVED***'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '***REMOVED***'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -49,7 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
-    'crispy_forms'
+    'crispy_forms',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -153,6 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
         'accounts.backends.ModelBackend',
+        'social_core.backends.google.GoogleOAuth2',
     )
 
 
