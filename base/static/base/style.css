@@ -11,14 +11,6 @@ body {
     border-radius: 0;
 }
 
-#rating {
-    width: 200px;
-}
-
-#gamename {
-    height: 105px;
-}
-
 .btn-success {
     margin-bottom: 10px;
 }
@@ -27,7 +19,7 @@ body {
     margin-top: 20px;
 }
 
-/* TODO: figure out how to set width and height*/
+
 #playGameIframe {
     visibility: hidden;
 }
@@ -49,6 +41,7 @@ label {
 #game-details-block {
     margin-bottom: 20px;
     margin-top: 20px;
+    min-width: 230px;
 }
 
 #gameframe {
@@ -63,6 +56,11 @@ label {
     font-size: 20px;
 }
 
+.control-label, .controls {
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
 .footer {
     position: absolute;
     bottom: 0;
@@ -70,7 +68,6 @@ label {
     height: 60px;
     background-color: #f5f5f5;
 }
-
 .containerFooter {
   width: auto;
   max-width: 680px;

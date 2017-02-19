@@ -10,8 +10,8 @@
              alt="img unavailable" width="300"
              height="auto"/>
     {% endif %}
-    <div id="gamename"><h3>{{ game.name }}</h3></div>
-    <h4> Rating: {{ game.rating }}</h4>
+    <div id="gamename"><h4>{{ game.name|slice:"28" }}{% if game.name|length > 25 %}...{% endif %}</h4></div>
+    <h5> Rating: {{ game.rating }}</h5>
     <div>
         <!-- Details -->
         <a class="btn btn-primary btn-sm" href={% url 'community:game-info' game_id=game.id %}>Details</a>

@@ -80,11 +80,11 @@
                             Hello, {{ user.username }}!
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" type="button" href={% url 'accounts:edit-profile' %}>Edit
+                            <li><a type="button" href="#"{% comment %}{% url 'accounts:edit-profile' %}{% endcomment %}>Edit
                                 Profile</a></li>
-                            <li><a class="dropdown-item" type="button" href={% url 'accounts:change-password' %}>Change
+                            <li><a type="button" href="#"{% comment %}{% url 'accounts:change-password' %}{% endcomment %}>Change
                                 Password</a></li>
-                            <li><a class="dropdown-item" type="button" href={% url 'accounts:delete-profile' %}>Delete
+                            <li><a type="button" href="#"{% comment %}{% url 'accounts:delete-profile' %}{% endcomment %}>Delete
                                 Profile</a></li>
                         </ul>
                     </li>
