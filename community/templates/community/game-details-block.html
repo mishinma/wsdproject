@@ -11,7 +11,6 @@
              height="auto"/>
     {% endif %}
     <div id="gamename"><h4>{{ game.name|slice:"28" }}{% if game.name|length > 25 %}...{% endif %}</h4></div>
-    <h5> Rating: {{ game.rating }}</h5>
     <div>
         <!-- Details -->
         <a class="btn btn-primary btn-sm" href={% url 'community:game-info' game_id=game.id %}>Details</a>
@@ -27,12 +26,14 @@
         {% elif game.action == 'play' %}
         <a class="btn btn-success btn-sm" href={% url 'community:game-play' game_id=game.id %}>
         <span class="glyphicon glyphicon-play"></span> Play Now!</a>
-        {% elif game.action == 'develop' %}
+        {% else %}
+        <a class="btn btn-success btn-sm disabled">
+        <span class="glyphicon glyphicon-play"></span> Play Now!</a>
+        {% endif %}
+        {% if game.action == 'develop' %}
         <a class="btn btn-warning btn-sm" href={% url 'community:game-edit' game_id=game.id %}>
         <span class="glyphicon glyphicon-pencil"></span> Edit</a>
-
         {% endif %}
-
 
     </div>
 </div>
