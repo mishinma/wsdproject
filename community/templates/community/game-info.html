@@ -1,15 +1,15 @@
 {% extends 'base/base.html' %}
 {% block title %}{{game.name}}{% endblock %}
-
+{% load staticfiles %}
 {% block body %}
 <div class="container">
-    <h1>{{game.name}}</h1>
+    <h1>{{game.name}}</h1><br>
     <div class="row">
         <div class="col-xs-8 col-md-5">
             {% if game.logo %}
                 <img src="{{game.logo}}" class="img-responsive">
             {% else %}
-                <img src="../../static/base/images/placeholder-pacman-grey.jpg" class="img-responsive">
+                <img src="{% static 'base/images/placeholder-pacman-grey.jpg' %}" class="img-responsive">
             {% endif %}
 
         </div>
