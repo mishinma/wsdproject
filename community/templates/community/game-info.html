@@ -20,7 +20,7 @@
             {% else %}
               <h3>{{game.price}} &euro;</h3>
             {% endif %}
-
+            
             {% if game.action == 'play' %}
             <a href={% url 'community:game-play' game_id=game.id %} class="playbtn">
               <button class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Play now!</button>
@@ -41,7 +41,15 @@
             </a>
             {% endif %}
             {% endif %}
+            <br>
+
+            <h3> Category: {{game.category.name }}</h3>
+            <h3> Developer: {{game.developer.username }}</h3>
+
             <p id="description">{{game.description}}</p>
+
+
+
         </div>
     </div>
 </div>
