@@ -1,7 +1,10 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
-    /*
-    background: url("images/006-fine-plaster.png");
-    */
+    margin-bottom: 60px;
 }
 
 #navbar{
@@ -40,6 +43,7 @@ label {
 #content {
     margin-left: 80px;
     margin-right: 80px;
+    margin-bottom: 100px;
 }
 
 #game-details-block {
@@ -59,9 +63,22 @@ label {
     font-size: 20px;
 }
 
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #f5f5f5;
+}
 
-
-
+.containerFooter {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.containerFooter .text-muted {
+  margin: 20px 0;
+}
 
 
 
