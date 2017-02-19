@@ -42,20 +42,31 @@ class PurchaseManagerTestCase(TestCase):
     def setUp(self):
         self.bran_developer = UserMethods.objects.get(username='bran')
         self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.game1 = Game.objects.get(id=1)
+        self.game2 = Game.objects.get(id=2)
         self.game3 = Game.objects.get(id=3)
+        self.game4 = Game.objects.get(id=4)
 
-    def test_get_sales_statistics_all_games(self):
-        dt = datetime(2016, 7, 1, tzinfo=timezone.utc)
+    def test_get_stats_purchases_per_month(self):
+        dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
         with patch.object(timezone, 'now', return_value=dt):
-            stats = Purchase.objects.get_sales_statistics_all_games(self.bran_developer)
+            stats = Purchase.objects.get_stats_purchases_per_month(self.bran_developer)
             self.assertEqual(len(stats.keys()), 7)
             self.assertEqual(stats['February'], 0)
             self.assertEqual(stats['March'], 0)
             self.assertEqual(stats['April'], 0)
-            self.assertEqual(stats['May'], 0)
+            self.assertEqual(stats['May'], 1)
             self.assertEqual(stats['June'], 0)
             self.assertEqual(stats['July'], 2)
             self.assertEqual(stats['August'], 0)
+
+    def test_get_stats_revenue_per_game(self):
+
+        stats = Purchase.objects.get_stats_revenue_per_game(self.bran_developer)
+
+        self.assertEqual(stats[self.game1.name], Decimal("50.00"))
+        self.assertEqual(stats[self.game3.name], Decimal("30.00"))
+        self.assertEqual(stats[self.game4.name], Decimal("10.00"))
 
 
 def restart_pending_transaction_pk(func):

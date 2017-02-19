@@ -2,11 +2,12 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 from dateutil.relativedelta import relativedelta
+from decimal import Decimal
 from hashlib import md5
 
 from django.db import models
-from django.db.models import Count
-from django.db.models.functions import TruncMonth
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth, Coalesce
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -57,7 +58,7 @@ class Gift(models.Model):
 
 class PurchaseManager(models.Manager):
 
-    def get_sales_statistics_all_games(self, developer):
+    def get_stats_purchases_per_month(self, developer):
         """ Returns number of purchases per month for all games of the developer """
 
         # By default take data for the last 6 months
@@ -72,17 +73,28 @@ class PurchaseManager(models.Manager):
                     for i in range(num_months_back+1)]  # format as month
         sales_stats = OrderedDict.fromkeys(months, 0)
 
-        sales_stats_qry = super(PurchaseManager, self).get_queryset().\
+        qry = super(PurchaseManager, self).get_queryset().\
             filter(game__developer=developer).\
             filter(transaction__timestamp__date__gte= first_month).\
             annotate(month=TruncMonth('transaction__timestamp')).values('month').\
             annotate(num_purchases=Count('id'))
 
-        for entry in sales_stats_qry:
+        for entry in qry:
             sales_stats[entry['month'].strftime("%B")] = entry['num_purchases']
 
         return sales_stats
 
+    def get_stats_revenue_per_game(self, developer):
+
+        qry = Game.objects.filter(developer=developer).\
+            annotate(revenue=Coalesce(Sum('purchase__transaction__amount'), 0)).\
+            order_by('revenue')
+
+        revenue_stats = OrderedDict()
+        for game in qry:
+            revenue_stats[game.name] = game.revenue
+
+        return revenue_stats
 
 class Purchase(models.Model):
     transaction = models.ForeignKey(Transaction)

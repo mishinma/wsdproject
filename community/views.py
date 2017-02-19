@@ -19,6 +19,8 @@ MESSAGE_SAVE_SCORE_ERROR = "Sorry, we couldn't save your score."
 MESSAGE_SAVE_STATE_ERROR = "Sorry, we couldn't save your state."
 MESSAGE_LOAD_GAME_ERROR = "Sorry, we couldn't load your game."
 
+CHART_ALL_GAMES_SOLD_MONTH = 'allGamesSoldMonth'
+CHART_REVENUE_PER_GAME = 'allRevenuePerGame'
 
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
@@ -152,11 +154,19 @@ def my_inventory(request):
     games = Game.objects.add_action(games, request.user)
 
     if request.is_ajax():
+
+        data = dict()
         # Get statistics for graphs
-        stats = Purchase.objects.get_sales_statistics_all_games(request.user)
-        months = list(stats.keys())
-        num_purchases = list(stats.values())
-        return JsonResponse({'months': months, 'num_purchases': num_purchases})
+        stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(request.user)
+        data["purchases_per_month_months"] = list(stats_purchases_per_month.keys())
+        data["purchases_per_month_num_purchases"] = list(stats_purchases_per_month.values())
+
+        stats_revenue_per_game = Purchase.objects.get_stats_revenue_per_game(request.user)
+        data["revenue_per_game_game_names"] = list(stats_revenue_per_game.keys())
+        data["revenue_per_game_revenues"] = list(stats_revenue_per_game.values())
+
+        return JsonResponse(data)
+
 
     return render(request, 'community/my-inventory.html', context={'games': games})
 
