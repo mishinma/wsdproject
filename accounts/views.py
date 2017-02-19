@@ -84,6 +84,7 @@ def login(request):
         password = request.POST['password']
         if UserMethods.objects.filter(username=username).exists():
             user = UserMethods.objects.get(username=username)
+
             if user.check_password(password) and not user.confirmed():
                     form = AuthenticationForm(data=request.POST)
                     form.add_error(None, 'Please confirm your email address before trying to log in')
@@ -91,6 +92,7 @@ def login(request):
                         'form': form
                     }
                     return render(request, 'accounts/login-form.html', context=context)
+
 
     return default_login(request, template_name='accounts/login-form.html')
 
