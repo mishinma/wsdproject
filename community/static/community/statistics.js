@@ -25,7 +25,15 @@ function plot_games_sold_month(months, num_purchases){
             },
             legend: {
                 display: false
-            }
+            },
+            scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }]
+        }
         }
     });
 }
