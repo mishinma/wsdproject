@@ -22,16 +22,10 @@ body {
   width: 70px;
   height: auto;
 }
-@media screen and (max-device-width: 760px) {
-  #content {
+
+#content {
     margin-left: 10px;
     margin-right: 10px;
-    margin-bottom: 100px;
-  }
-}
-#content {
-    margin-left: 80px;
-    margin-right: 80px;
     margin-bottom: 100px;
 }
 
