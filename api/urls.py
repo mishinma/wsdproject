@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from api import views
 
-app_name = 'accounts'
+app_name = 'api'
 
 urlpatterns = [
     url(r'^api/v1/games/cat/(?P<category>\w+)/$', views.get_games_of_category, name='cat-games'),
