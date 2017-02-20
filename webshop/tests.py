@@ -74,18 +74,26 @@ class PurchaseManagerTestCase(TestCase):
             self.assertEqual(stats['August'], 0)
 
     def test_get_stats_revenue_per_game(self):
-        stats = Purchase.objects.get_stats_revenue_per_game(self.bran_developer)
+        stats = Purchase.objects.get_stats_revenue_per_game(developer=self.bran_developer)
         self.assertEqual(stats[self.game1.name], Decimal("50.00"))
         self.assertEqual(stats[self.game3.name], Decimal("30.00"))
         self.assertEqual(stats[self.game4.name], Decimal("10.00"))
 
-    def test_get_stats_full_revenue(self):
-        overall_revenue = Purchase.objects.get_stats_overall_revenue(self.bran_developer)
+    def test_get_stats_full_revenue_filter_developer(self):
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(developer=self.bran_developer)
         self.assertEqual(overall_revenue, Decimal("90.00"))
 
-    def test_get_stats_games_sold(self):
-        games_sold = Purchase.objects.get_stats_games_sold(self.bran_developer)
+    def test_get_stats_full_revenue_filter_game(self):
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(developer=self.game3)
+        self.assertEqual(overall_revenue, Decimal("30.00"))
+
+    def test_get_stats_games_sold_filter_developer(self):
+        games_sold = Purchase.objects.get_stats_games_sold(developer=self.bran_developer)
         self.assertEqual(games_sold, 4)
+
+    def test_get_stats_games_sold_filter_game(self):
+        games_sold = Purchase.objects.get_stats_games_sold(game=self.game3)
+        self.assertEqual(games_sold, 2)
 
 
 def restart_pending_transaction_pk(func):

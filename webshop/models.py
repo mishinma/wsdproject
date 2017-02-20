@@ -88,17 +88,27 @@ class PurchaseManager(models.Manager):
 
         return sales_stats
 
-    def get_stats_games_sold(self, developer):
+    def get_stats_games_sold(self, developer=None, game=None):
 
-        games_sold = super(PurchaseManager, self).get_queryset(). \
-            filter(game__developer=developer).count()
+        qry = super(PurchaseManager, self).get_queryset()
+
+        if developer is not None:
+            qry = qry.filter(game__developer=developer)
+        elif game is not None:
+            qry = qry.filter(game=game)
+
+        games_sold = qry.count()
 
         return games_sold
 
-    def get_stats_revenue_per_game(self, developer):
+    def get_stats_revenue_per_game(self, developer=None):
 
-        qry = Game.objects.filter(developer=developer).\
-            annotate(revenue=Coalesce(Sum('purchase__transaction__amount'), 0)).\
+        qry = Game.objects.all()
+
+        if developer is not None:
+            qry = qry.filter(developer=developer)
+
+        qry = qry.annotate(revenue=Coalesce(Sum('purchase__transaction__amount'), 0)).\
             order_by('revenue')
 
         revenue_stats = OrderedDict()
@@ -107,10 +117,16 @@ class PurchaseManager(models.Manager):
 
         return revenue_stats
 
-    def get_stats_overall_revenue(self, developer):
+    def get_stats_overall_revenue(self, developer=None, game=None):
 
-        qry = Game.objects.filter(developer=developer). \
-            aggregate(Sum('purchase__transaction__amount'))
+        qry = Game.objects.all()
+
+        if developer is not None:
+            qry = qry.filter(game__developer=developer)
+        elif game is not None:
+            qry = qry.filter(game=game)
+
+        qry = qry.aggregate(Sum('purchase__transaction__amount'))
 
         return qry['purchase__transaction__amount__sum']
 
