@@ -85,10 +85,10 @@ $(document).ready(function () {
         success: function (data) {
             $('#overallRevenue').text(data.overall_revenue);
             $('#gamesSold').text(data.games_sold);
-            plot_games_sold_month(data.purchases_per_month_months,
-                data.purchases_per_month_num_purchases);
-            plot_revenue_per_game(data.revenue_per_game_game_names,
-                data.revenue_per_game_revenues)
+            plot_games_sold_month(data.purchases_per_month.months,
+                data.purchases_per_month.num_purchases);
+            plot_revenue_per_game(data.revenue_per_game.game_names,
+                data.revenue_per_game.revenues)
         }
     });
 

@@ -161,7 +161,7 @@ def my_inventory(request):
     games = Game.objects.add_action(games, request.user)
 
     if request.is_ajax():
-        return get_statistics_my_inventory(developer=request.user)
+        return get_statistics_my_inventory(request, developer=request.user)
 
     return render(request, 'community/my-inventory.html', context={'games': games})
 
@@ -179,12 +179,18 @@ def get_statistics_my_inventory(request, developer):
 
     # Get statistics for graphs
     stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(developer=developer)
-    data["purchases_per_month_months"] = list(stats_purchases_per_month.keys())
-    data["purchases_per_month_num_purchases"] = list(stats_purchases_per_month.values())
+    purchases_per_month_data = dict(
+        months=list(stats_purchases_per_month.keys()),
+        num_purchases=list(stats_purchases_per_month.values())
+    )
+    data["purchases_per_month"] = purchases_per_month_data
 
     stats_revenue_per_game = Purchase.objects.get_stats_revenue_per_game(developer=developer)
-    data["revenue_per_game_game_names"] = list(stats_revenue_per_game.keys())
-    data["revenue_per_game_revenues"] = list(stats_revenue_per_game.values())
+    revenue_per_game_data = dict(
+        game_names=list(stats_revenue_per_game.keys()),
+        revenues=list(stats_revenue_per_game.values())
+    )
+    data["revenue_per_game"] = revenue_per_game_data
 
     return JsonResponse(data)
 
