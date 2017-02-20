@@ -55,7 +55,7 @@ class RegisterViewTestCase(TestCase):
 
         # Redirect to user
         self.assertEqual(response.status_code, FOUND_302)
-        self.assertEqual(response.url, reverse('base:index'))
+        self.assertEqual(response.url, reverse('accounts:registration-link-sent'))
 
         # Check user data and permissions
         jon_player = User.objects.get(username='jon')
@@ -78,7 +78,7 @@ class RegisterViewTestCase(TestCase):
             })
         # Redirect to user
         self.assertEqual(response.status_code, FOUND_302)
-        self.assertEqual(response.url, reverse('base:index'))
+        self.assertEqual(response.url, reverse('accounts:registration-link-sent'))
 
         # Check user data and permissions
         dany_developer = User.objects.get(username='daenerys')
