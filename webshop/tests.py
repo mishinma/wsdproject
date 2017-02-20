@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from accounts.models import UserMethods
 from haze.settings import PAYMENT_SID
-from community.models import Game
+from community.models import Game, GameCategory
 from webshop import views
 from webshop.views import MESSAGE_PURCHASE_PENDING_ERROR
 from webshop.models import PendingTransaction, Purchase
@@ -42,15 +42,16 @@ class PurchaseManagerTestCase(TestCase):
     def setUp(self):
         self.bran_developer = UserMethods.objects.get(username='bran')
         self.sansa_player = UserMethods.objects.get(username='sansa')
+        self.rpg_cat = GameCategory.objects.get(name='RPG')
         self.game1 = Game.objects.get(id=1)
         self.game2 = Game.objects.get(id=2)
         self.game3 = Game.objects.get(id=3)
         self.game4 = Game.objects.get(id=4)
 
-    def test_get_stats_purchases_per_month(self):
+    def test_get_stats_purchases_per_month_filter_developer(self):
         dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
         with patch.object(timezone, 'now', return_value=dt):
-            stats = Purchase.objects.get_stats_purchases_per_month(self.bran_developer)
+            stats = Purchase.objects.get_stats_purchases_per_month(developer=self.bran_developer)
             self.assertEqual(len(stats.keys()), 7)
             self.assertEqual(stats['February'], 0)
             self.assertEqual(stats['March'], 0)
@@ -60,19 +61,55 @@ class PurchaseManagerTestCase(TestCase):
             self.assertEqual(stats['July'], 2)
             self.assertEqual(stats['August'], 0)
 
+    def test_get_stats_purchases_per_month_filter_game(self):
+        dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
+        with patch.object(timezone, 'now', return_value=dt):
+            stats = Purchase.objects.get_stats_purchases_per_month(game=self.game2)
+            self.assertEqual(len(stats.keys()), 7)
+            self.assertEqual(stats['February'], 0)
+            self.assertEqual(stats['March'], 0)
+            self.assertEqual(stats['April'], 0)
+            self.assertEqual(stats['May'], 1)
+            self.assertEqual(stats['June'], 0)
+            self.assertEqual(stats['July'], 0)
+            self.assertEqual(stats['August'], 0)
+
     def test_get_stats_revenue_per_game(self):
-        stats = Purchase.objects.get_stats_revenue_per_game(self.bran_developer)
+        stats = Purchase.objects.get_stats_revenue_per_game(developer=self.bran_developer)
         self.assertEqual(stats[self.game1.name], Decimal("50.00"))
         self.assertEqual(stats[self.game3.name], Decimal("30.00"))
         self.assertEqual(stats[self.game4.name], Decimal("10.00"))
 
-    def test_get_stats_full_revenue(self):
-        overall_revenue = Purchase.objects.get_stats_overall_revenue(self.bran_developer)
+    def test_get_stats_overall_revenue_filter_developer(self):
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(developer=self.bran_developer)
         self.assertEqual(overall_revenue, Decimal("90.00"))
 
-    def test_get_stats_games_sold(self):
-        games_sold = Purchase.objects.get_stats_games_sold(self.bran_developer)
+    def test_get_stats_overall_revenue_filter_game(self):
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(game=self.game3)
+        self.assertEqual(overall_revenue, Decimal("30.00"))
+
+    def test_get_stats_overall_revenue_coalese_null_to_0(self):
+        new_game = Game.objects.create(
+            developer=self.bran_developer,
+            category=self.rpg_cat,
+            source_url='http://test3.test',
+            price=11.20,
+            name='New Game',
+            description='Lorem ipsum dolor sit amet',
+            rating=3.1
+        )
+        overall_revenue = Purchase.objects.get_stats_overall_revenue(game=new_game)
+        self.assertEqual(overall_revenue, 0)
+
+    def test_get_stats_games_sold_filter_developer(self):
+        games_sold = Purchase.objects.get_stats_games_sold(developer=self.bran_developer)
         self.assertEqual(games_sold, 4)
+
+    def test_get_stats_games_sold_filter_game(self):
+        games_sold = Purchase.objects.get_stats_games_sold(game=self.game3)
+        self.assertEqual(games_sold, 2)
+
+
 
 
 def restart_pending_transaction_pk(func):

@@ -58,11 +58,10 @@ class Gift(models.Model):
 
 class PurchaseManager(models.Manager):
 
-    def get_stats_purchases_per_month(self, developer):
+    def get_stats_purchases_per_month(self, developer=None, game=None):
         """ Returns number of purchases per month for all games of the developer """
 
         # By default take data for the last 6 months
-
         time_now = timezone.now()
         num_months_back = 6
 
@@ -70,12 +69,17 @@ class PurchaseManager(models.Manager):
         first_month = first_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         months = [(first_month + relativedelta(months=i)).strftime("%B")
-                    for i in range(num_months_back+1)]  # format as month
+                  for i in range(num_months_back + 1)]  # format as month
         sales_stats = OrderedDict.fromkeys(months, 0)
 
-        qry = super(PurchaseManager, self).get_queryset().\
-            filter(game__developer=developer).\
-            filter(transaction__timestamp__date__gte= first_month).\
+        qry = super(PurchaseManager, self).get_queryset()
+
+        if developer is not None:
+            qry = qry.filter(game__developer=developer)  # Filter by developer
+        elif game is not None:
+            qry = qry.filter(game=game)  # Filter for a given game
+
+        qry = qry.filter(transaction__timestamp__date__gte= first_month).\
             annotate(month=TruncMonth('transaction__timestamp')).values('month').\
             annotate(num_purchases=Count('id'))
 
@@ -84,17 +88,27 @@ class PurchaseManager(models.Manager):
 
         return sales_stats
 
-    def get_stats_games_sold(self, developer):
+    def get_stats_games_sold(self, developer=None, game=None):
 
-        games_sold = super(PurchaseManager, self).get_queryset(). \
-            filter(game__developer=developer).count()
+        qry = super(PurchaseManager, self).get_queryset()
+
+        if developer is not None:
+            qry = qry.filter(game__developer=developer)
+        elif game is not None:
+            qry = qry.filter(game=game)
+
+        games_sold = qry.count()
 
         return games_sold
 
-    def get_stats_revenue_per_game(self, developer):
+    def get_stats_revenue_per_game(self, developer=None):
 
-        qry = Game.objects.filter(developer=developer).\
-            annotate(revenue=Coalesce(Sum('purchase__transaction__amount'), 0)).\
+        qry = Game.objects.all()
+
+        if developer is not None:
+            qry = qry.filter(developer=developer)
+
+        qry = qry.annotate(revenue=Coalesce(Sum('purchase__transaction__amount'), 0)).\
             order_by('revenue')
 
         revenue_stats = OrderedDict()
@@ -103,12 +117,18 @@ class PurchaseManager(models.Manager):
 
         return revenue_stats
 
-    def get_stats_overall_revenue(self, developer):
+    def get_stats_overall_revenue(self, developer=None, game=None):
 
-        qry = Game.objects.filter(developer=developer). \
-            aggregate(Sum('purchase__transaction__amount'))
+        qry = Game.objects.all()
 
-        return qry['purchase__transaction__amount__sum']
+        if developer is not None:
+            qry = qry.filter(developer=developer)
+        elif game is not None:
+            qry = qry.filter(id=game.id)
+
+        qry = qry.aggregate(overall_revenue=Coalesce(Sum('purchase__transaction__amount'), 0))
+
+        return qry['overall_revenue']
 
 
 class Purchase(models.Model):

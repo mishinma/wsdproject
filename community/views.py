@@ -4,10 +4,12 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required, permission_required, PermissionDenied
-from community.models import Game, GameScore, GameState, GameCategory
+from community.models import Game, GameScore, GameState, GameCategory, \
+    ACTION_BUY, ACTION_DEVELOP, ACTION_PLAY
 from community.forms import GameForm
 from webshop.models import Purchase
 from django.views import defaults
+
 
 MESSAGE_TYPE_SCORE = 'SCORE'
 MESSAGE_TYPE_SAVE = 'SAVE'
@@ -27,6 +29,9 @@ CHART_REVENUE_PER_GAME = 'allRevenuePerGame'
 def game_info(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     game = Game.objects.add_action_single(game, request.user)
+
+    if request.is_ajax() and game.action == ACTION_DEVELOP:
+        return get_statistics_game_info(request, game=game)
 
     context = {
         'game': game,
@@ -154,39 +159,67 @@ def edit_game(request, game_id):
 
 
 @login_required
-@never_cache
 @permission_required('community.add_game', raise_exception=True)
 def my_inventory(request):
     games = Game.objects.games_for_developer(request.user)
     games = Game.objects.add_action(games, request.user)
 
     if request.is_ajax():
-
-        data = dict()
-
-        overall_revenue = Purchase.objects.get_stats_overall_revenue(request.user)
-        games_sold = Purchase.objects.get_stats_games_sold(request.user)
-
-        if overall_revenue is not None:
-            data['overall_revenue'] = overall_revenue
-        else:
-            data['overall_revenue'] = 0
-        
-        data['games_sold'] = games_sold
-
-        # Get statistics for graphs
-        stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(request.user)
-        data["purchases_per_month_months"] = list(stats_purchases_per_month.keys())
-        data["purchases_per_month_num_purchases"] = list(stats_purchases_per_month.values())
-
-        stats_revenue_per_game = Purchase.objects.get_stats_revenue_per_game(request.user)
-        data["revenue_per_game_game_names"] = list(stats_revenue_per_game.keys())
-        data["revenue_per_game_revenues"] = list(stats_revenue_per_game.values())
-
-        return JsonResponse(data)
-
+        return get_statistics_my_inventory(request, developer=request.user)
 
     return render(request, 'community/my-inventory.html', context={'games': games})
+
+
+@never_cache
+def get_statistics_game_info(request, game):
+
+    data = dict()
+
+    overall_revenue = Purchase.objects.get_stats_overall_revenue(game=game)
+    games_sold = Purchase.objects.get_stats_games_sold(game=game)
+
+    data['overall_revenue'] = overall_revenue
+    data['games_sold'] = games_sold
+
+    # Get statistics for graphs
+    stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(game=game)
+    purchases_per_month_data = dict(
+        months=list(stats_purchases_per_month.keys()),
+        num_purchases=list(stats_purchases_per_month.values())
+    )
+    data["purchases_per_month"] = purchases_per_month_data
+
+    return JsonResponse(data)
+
+
+
+@never_cache
+def get_statistics_my_inventory(request, developer):
+
+    data = dict()
+
+    overall_revenue = Purchase.objects.get_stats_overall_revenue(developer=developer)
+    games_sold = Purchase.objects.get_stats_games_sold(developer=developer)
+
+    data['overall_revenue'] = overall_revenue
+    data['games_sold'] = games_sold
+
+    # Get statistics for graphs
+    stats_purchases_per_month = Purchase.objects.get_stats_purchases_per_month(developer=developer)
+    purchases_per_month_data = dict(
+        months=list(stats_purchases_per_month.keys()),
+        num_purchases=list(stats_purchases_per_month.values())
+    )
+    data["purchases_per_month"] = purchases_per_month_data
+
+    stats_revenue_per_game = Purchase.objects.get_stats_revenue_per_game(developer=developer)
+    revenue_per_game_data = dict(
+        game_names=list(stats_revenue_per_game.keys()),
+        revenues=list(stats_revenue_per_game.values())
+    )
+    data["revenue_per_game"] = revenue_per_game_data
+
+    return JsonResponse(data)
 
 
 @login_required
