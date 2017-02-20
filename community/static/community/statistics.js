@@ -1,4 +1,11 @@
 
+function set_overall_values(overall_revenue, games_sold) {
+    'use strict';
+    $('#overallRevenue').text(overall_revenue);
+    $('#gamesSold').text(games_sold);
+}
+
+
 function plot_games_sold_month(months, num_purchases){
     'use strict';
 
@@ -77,20 +84,3 @@ function plot_revenue_per_game(game_names, revenues){
     });
 }
 
-$(document).ready(function () {
-    "use strict";
-    $.ajax({
-        method: "GET",
-        dataType: 'json',
-        success: function (data) {
-            $('#overallRevenue').text(data.overall_revenue);
-            $('#gamesSold').text(data.games_sold);
-            plot_games_sold_month(data.purchases_per_month.months,
-                data.purchases_per_month.num_purchases);
-            plot_revenue_per_game(data.revenue_per_game.game_names,
-                data.revenue_per_game.revenues)
-        }
-    });
-
-
-});

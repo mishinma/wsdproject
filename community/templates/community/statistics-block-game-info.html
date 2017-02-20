@@ -7,7 +7,7 @@
 <script type="text/javascript" src="{% static 'community/statistics.js' %}"></script>
 {% endblock %}
 
-<h2> Sales statistics:</h2>
+<h2> {{ game.name }} sales statistics:</h2>
 
 <h4> Overall revenue: <span id="overallRevenue"></span> &euro;</h4>
 <h4> Games sold: <span id="gamesSold"></span></h4><br>
@@ -16,7 +16,19 @@
     <div class='col-lg-8 col-md-10 col-sm-11 col-xs-12'>
         <canvas id='allGamesSoldMonth' ></canvas>
     </div><br>
-    <div class='col-lg-8 col-md-10 col-sm-11 col-xs-12'>
-        <canvas id='allRevenuePerGame' ></canvas>
-    </div><br>
 </div>
+
+<script>
+    $(document).ready(function () {
+    "use strict";
+    $.ajax({
+        method: "GET",
+        dataType: 'json',
+        success: function (data) {
+            set_overall_values(data.overall_revenue, data.games_sold);
+            plot_games_sold_month(data.purchases_per_month.months,
+                data.purchases_per_month.num_purchases);
+        }
+    });
+});
+</script>
