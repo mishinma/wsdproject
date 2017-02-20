@@ -122,13 +122,13 @@ class PurchaseManager(models.Manager):
         qry = Game.objects.all()
 
         if developer is not None:
-            qry = qry.filter(game__developer=developer)
+            qry = qry.filter(developer=developer)
         elif game is not None:
-            qry = qry.filter(game=game)
+            qry = qry.filter(id=game.id)
 
-        qry = qry.aggregate(Sum('purchase__transaction__amount'))
+        qry = qry.aggregate(overall_revenue=Coalesce(Sum('purchase__transaction__amount'), 0))
 
-        return qry['purchase__transaction__amount__sum']
+        return qry['overall_revenue']
 
 
 class Purchase(models.Model):

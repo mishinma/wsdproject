@@ -174,11 +174,7 @@ def get_statistics_my_inventory(request, developer):
     overall_revenue = Purchase.objects.get_stats_overall_revenue(developer=developer)
     games_sold = Purchase.objects.get_stats_games_sold(developer=developer)
 
-    if overall_revenue is not None:
-        data['overall_revenue'] = overall_revenue
-    else:
-        data['overall_revenue'] = 0
-
+    data['overall_revenue'] = overall_revenue
     data['games_sold'] = games_sold
 
     # Get statistics for graphs
