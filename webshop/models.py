@@ -58,11 +58,10 @@ class Gift(models.Model):
 
 class PurchaseManager(models.Manager):
 
-    def get_stats_purchases_per_month(self, developer):
+    def get_stats_purchases_per_month(self, developer=None, game=None):
         """ Returns number of purchases per month for all games of the developer """
 
         # By default take data for the last 6 months
-
         time_now = timezone.now()
         num_months_back = 6
 
@@ -70,12 +69,17 @@ class PurchaseManager(models.Manager):
         first_month = first_month.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
         months = [(first_month + relativedelta(months=i)).strftime("%B")
-                    for i in range(num_months_back+1)]  # format as month
+                  for i in range(num_months_back + 1)]  # format as month
         sales_stats = OrderedDict.fromkeys(months, 0)
 
-        qry = super(PurchaseManager, self).get_queryset().\
-            filter(game__developer=developer).\
-            filter(transaction__timestamp__date__gte= first_month).\
+        qry = super(PurchaseManager, self).get_queryset()
+
+        if developer is not None:
+            qry = qry.filter(game__developer=developer)  # Filter by developer
+        elif game is not None:
+            qry = qry.filter(game=game)  # Filter for a given game
+
+        qry = qry.filter(transaction__timestamp__date__gte= first_month).\
             annotate(month=TruncMonth('transaction__timestamp')).values('month').\
             annotate(num_purchases=Count('id'))
 

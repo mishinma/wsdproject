@@ -47,10 +47,10 @@ class PurchaseManagerTestCase(TestCase):
         self.game3 = Game.objects.get(id=3)
         self.game4 = Game.objects.get(id=4)
 
-    def test_get_stats_purchases_per_month(self):
+    def test_get_stats_purchases_per_month_filter_developer(self):
         dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
         with patch.object(timezone, 'now', return_value=dt):
-            stats = Purchase.objects.get_stats_purchases_per_month(self.bran_developer)
+            stats = Purchase.objects.get_stats_purchases_per_month(developer=self.bran_developer)
             self.assertEqual(len(stats.keys()), 7)
             self.assertEqual(stats['February'], 0)
             self.assertEqual(stats['March'], 0)
@@ -58,6 +58,19 @@ class PurchaseManagerTestCase(TestCase):
             self.assertEqual(stats['May'], 1)
             self.assertEqual(stats['June'], 0)
             self.assertEqual(stats['July'], 2)
+            self.assertEqual(stats['August'], 0)
+
+    def test_get_stats_purchases_per_month_filter_game(self):
+        dt = datetime(2016, 8, 30, tzinfo=timezone.utc)
+        with patch.object(timezone, 'now', return_value=dt):
+            stats = Purchase.objects.get_stats_purchases_per_month(game=self.game2)
+            self.assertEqual(len(stats.keys()), 7)
+            self.assertEqual(stats['February'], 0)
+            self.assertEqual(stats['March'], 0)
+            self.assertEqual(stats['April'], 0)
+            self.assertEqual(stats['May'], 1)
+            self.assertEqual(stats['June'], 0)
+            self.assertEqual(stats['July'], 0)
             self.assertEqual(stats['August'], 0)
 
     def test_get_stats_revenue_per_game(self):
