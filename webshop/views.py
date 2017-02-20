@@ -15,7 +15,6 @@ MESSAGE_PURCHASE_PENDING_ERROR = "An error occurred while processing your reques
 
 
 @login_required
-@never_cache
 @permission_required('community.buy_game', raise_exception=True)
 def purchase_game(request, game_id):
 
@@ -26,20 +25,18 @@ def purchase_game(request, game_id):
         return redirect('community:game-play', game_id=game_id)
 
     if request.is_ajax():
-        response = purchase_pending(request, game)
+        return purchase_pending(request, game)
 
-    else:
-        form = PendingTransactionForm()
-        context = {
-            'url': 'http://payments.webcourse.niksula.hut.fi/pay/',
-            'game': game,
-            'form': form,
-            }
-        response = render(request, 'webshop/purchase-form.html', context=context)
-
-    return response
+    form = PendingTransactionForm()
+    context = {
+        'url': 'http://payments.webcourse.niksula.hut.fi/pay/',
+        'game': game,
+        'form': form,
+        }
+    return render(request, 'webshop/purchase-form.html', context=context)
 
 
+@never_cache
 def purchase_pending(request, game):
 
     new_pt = PendingTransaction.objects.create_new_pending(user=request.user, game=game)

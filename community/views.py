@@ -35,7 +35,6 @@ def game_info(request, game_id):
 
 
 @login_required
-@never_cache
 @permission_required('community.play_game', raise_exception=True)
 def play_game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
@@ -69,6 +68,7 @@ def play_game(request, game_id):
     return render(request, "community/game-play.html", context)
 
 
+@never_cache
 def save_score(request, game):
     """ Save game score from the received postMessage """
 
@@ -92,6 +92,7 @@ def save_score(request, game):
     })
 
 
+@never_cache
 def save_state(request, game):
     """ Save game state from the received postMessage """
     try:
@@ -106,6 +107,7 @@ def save_state(request, game):
     return HttpResponse()
 
 
+@never_cache
 def load_game(request, game):
     """ Load game for the user """
     # ToDo: currently only loads the last game
