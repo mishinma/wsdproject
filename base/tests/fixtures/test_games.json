@@ -27,6 +27,8 @@
       "description": "The Battle of the Bastards is a battle late in the War of the Five Kings in which Jon Snow and Sansa Stark retake Winterfell from Lord Ramsay Bolton, the Warden of the North, and restore House Stark as the ruling house of the North. ",
       "logo": "",
       "rating": "4.5",
+      "created": "2017-02-20",
+      "last_modified": "2017-02-20",
       "players": [
         3
       ]
@@ -46,6 +48,8 @@
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in felis odio. Suspendisse tristique vestibulum feugiat. Sed hendrerit lacus nulla, a tristique nibh rhoncus sed. ",
       "logo": "",
       "rating": "3.5",
+      "created": "2017-02-20",
+      "last_modified": "2017-02-20",
       "players": [
         3,
         4
@@ -66,6 +70,8 @@
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "logo": "",
       "rating": "4.5",
+      "created": "2017-02-20",
+      "last_modified": "2017-02-20",
       "players": []
     }
   },
@@ -83,6 +89,8 @@
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       "logo": "",
       "rating": "3.5",
+      "created": "2017-02-20",
+      "last_modified": "2017-02-20",
       "players": []
     }
   }
