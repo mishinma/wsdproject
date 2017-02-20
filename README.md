@@ -1,15 +1,18 @@
 #Final Submission (scroll down to see original project plan)
 ## 1. Team
-547592 - Max Reuter
-519656 - Mikhail Mishin
-539940 - Ekaterina Dorrer
+- 547592 - Max Reuter
+- 519656 - Mikhail Mishin
+- 539940 - Ekaterina Dorrer
 
 ## 2. Implemented Features
 ### Authentication
 During registration, new users have to choose if they want to sign up as a player or a developer.
 After submitting the registration form, new users are sent an activation link via mail to verify
 their email address. After clicking on the activation link, users are free to login and play, buy,
-as well as edit games, depending on what account type they chose.
+as well as edit games, depending on what account type they chose. The activation link is freshly
+generated for each user and secured with an HMAC. When the user clicks on his activation link
+the checksum is verified to ensure users cannot activate their account without having access to
+the specified email account.
 Internally we use as many built in Django features as possible. For instance, we choose to not
 create custom users but rather assign user objects to a certain user group that defines their
 rights. We added the `permission_required` tag to sensitive views to enforce access control.
@@ -27,6 +30,10 @@ to access the gameplay page directly. Players can find games in a multitude of w
 unnecessary terms like articles (available to everyone)
 - scroll through the list of purchased games (only available to logged in players)
 
+In addition to finding games, players can also play and purchase games. When attempting to purchase a game,
+a user will have to confirm again that he wants to proceed. After clicking 'Purchase' an AJAX will
+call the backend where a fresh PID and checksum is generated. If this operations is successful, we fill
+the invisible purchase form using jQuery and finally submit it.
 Moreover, we also added some basic profile functionality like changing username, email and password.
 We are very pleased with the implemented functionalities for players. We would give ourselves 300 points
 in this category.
@@ -59,8 +66,12 @@ are happy about the game/service interaction and would give ourselves 200 points
 The tried to implement the seperation-of-concerns principle as much as possible and therefore templates
 are almost exclusively used for displaying data. However, because we wanted to create genereic, re-usable
 templates, we had to shift small parts of the logic to templates. This logic mostly used to determining
-what user group the user belongs to or if a certain button type should be displayed. Moreover, we many
-small templates and used them as components to ensure a great look and feel for the user.
+what user group the user belongs to or if a certain button type should be displayed. Moreover, we created many
+small templates and used them as components to ensure a great look and feel for the user. Furthermore,
+we put a lot of effort creating a good user experience. For instance, we added `never_cache` decorators to
+views that used AJAX calls to make sure that pressing the back button does not reveal any JSON responses
+from our backend. We used the same method to prevent users from buying a game multiple times by pressing the
+back button and proceeding again.
 Unfortunately, we did not have time comment our code and more importantly to write docstrings for our
 funtions. However, we think our code is quite clean and easy to understand, which makes up for the missing
 comments. This is due to fact that we created helper functions for many calls, making the actual code
@@ -90,12 +101,14 @@ very well and pass all other tests, we would award ourselves 100 points
 ### Third-Party Login (Google)
 We implemented third-party login with a Google account using 'social django'. We configured to app to work
 nicely with our backend and configured some custom functions to keep our backend synced when someone logs
-in using a third-party service. Unfortunatly, the deployment to Heroky broke this feature but we are working
-on fixing it.
+in using a third-party service. Users using third-party login are automatically logged in as players and have
+the same options as players who created an account for our service through the login form. We we would give
+ourselves 100 points for this feature.
 
 ### REST API
 We implemented a simple REST API that allows useres to retrieve different kind of informations. Mainly, users
-can look for games in different ways as well as scores associated with a certain game. We intentionally decided
+can look for games in different ways as well as scores associated with a certain game. In addition,
+our API supports JSONP to enable users retrieving the data from their own applications. We intentionally decided
 to not include any endpoint functionality that would require authentication because OAUTH seemed like too much
 for such a simple project and Basic HTTP Authentication seemed like very bad usability for this kind of API.
 Because we think the API is well structured and well tested we would still assign us 75 points.
@@ -104,6 +117,81 @@ Because we think the API is well structured and well tested we would still assig
 We put much effort into making our application responsive. The continuously tested our application with different
 screen sizes and also on mobile phones after deploying our application to Heroku. We used responsive classes of
 the Bootstrap framework as well as viewport tags to ensure this behaviour. We would assign ourselves 50 points.
+
+### Overall
+We heavily used Django documentation and Stackoverflow during the implementation phase. As a result, we had no
+major issues while developing our app. It is worth noting thouh, that two members of our team have multiple years
+background in software development have completed other projects related to websoftware development in the past.
+If we had to call out one thing that causes us the most problems, it would be Django migrations. Fortunately, droping
+the local database resolves all issues regarding migrations and therefore this feature only caused some minor
+annoyance. We were very surprised how smoothly our deployment on Heroku went. We ran into no issues whenever we
+pushed the latest updates to Heroku. This was especially unexpected because so many teams reported about problems
+during deployment to Heroku on Piazza.
+
+### Work Allocation
+#### Max Reuter
+- payment service
+- REST API
+- searching by query and category
+- registration
+- third-party login
+- email verification
+- database design
+
+#### Mikhail Mishin
+- payment service
+- Heroku deployment
+- sales statistics
+- unit testing setup
+- code reviews
+- service/game interaction
+- templates
+- configuration
+- database design
+
+#### Ekaterina Dorrer
+- page structure
+- Bootstrap configuration
+- responsive design
+- basic profile functionality
+- game leadboards and personal scores
+- templates
+- CSS
+- HTML
+
+Overall, we managed to distribute work evenly among all team members and everyone
+fulfilled a crucial role in the project. Thus, all of use had greate impact on the final
+outcome.
+
+## 3. Heroku App
+Our deployed app is available under: [https://shielded-tor-84132.herokuapp.com/index/](https://shielded-tor-84132.herokuapp.com/index/)
+
+
+### Use Case: Anonymous
+Without logging you can place search queries or click on 'Game Categories' to browse through the available games.
+You can also access the info page of each game, however, buying a game will require to log in.
+
+### Use Case: Player
+Login as a player using the following credentials:
+
+As player, you can browse games just like anonymous users but clicking on 'Buy Now' will forward you to the purchase
+page where you have to confirm the purchase again. Already bought games are available under 'My Games' but
+can also be accessed from anywhere else as long as you are logged in. Click on 'Play Now' to go the gamplay page of
+a game. Here you can use all the features the test game provides. After you submit you score, you'll notice that
+the leaderboard updates accordingly. To change things like your username or password, click 'Hello [username]'
+to access the dropdown menu. Deleting the account does not actually delete the account but but sets
+`user.is_active = False`. This ensures, scores are still available but the users still cannot log in anymore afterwards.
+
+
+### User Case: Developer
+Login as a developer using the following credentials:
+
+As developer, you browse games like everyone else but 'Play Now' and 'Buy' buttons are disabled, as developers are not
+meant to play or purchase games. To see your own games click on 'My Inventory'. Here you see all your published games and
+can also edit their properties. Please note that although you can upload pictures, they will not be saved and we use a static
+picture instead to mimic game logos. Scrolling down on the 'My Inventory' page reveals overall sales statistics and sales statistics
+of individual games. The graphs are rendered dynamically when the page is loaded.
+
 
 # Project Plan
 ## 1. Team
