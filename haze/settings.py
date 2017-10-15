@@ -23,18 +23,16 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '***REMOVED***'
+SECRET_KEY = ''
 
 
 # Mock Payment Service Parameters
 PAYMENT_SID = 'HaZeGameStore'
-PAYMENT_SECRET_KEY = '***REMOVED***'
-# PAYMENT_SID = 'mTahcJJXwbA9AybTFv4Z'
-# PAYMENT_SECRET_KEY = 'a4b5b9158b6bef0fd157548f383e7b73'
+PAYMENT_SECRET_KEY = ''
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '***REMOVED***'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '***REMOVED***'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 SOCIAL_AUTH_USER_MODEL = 'accounts.UserMethods'
 
 SOCIAL_AUTH_PIPELINE = (
