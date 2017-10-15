@@ -1,8 +1,12 @@
-#Final Submission (scroll down to see original project plan)
+# Web Software Development Project
+
+A term project for the course CS-C3170 Web Software Development taught in spring 2017 at Aalto University. 
+
+
 ## 1. Team
-- 547592 - Max Reuter
-- 519656 - Mikhail Mishin
-- 539940 - Ekaterina Dorrer
+- Max Reuter
+- Mikhail Mishin
+- Ekaterina Dorrer
 
 ## 2. Implemented Features
 ### Authentication
