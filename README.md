@@ -74,7 +74,8 @@ the Bootstrap framework as well as viewport tags to ensure this behaviour.
 - HTML
 
 
-## 4. Technology Stack
+## Technology Stack
+
 ### Frontend:
 * Bootstrap
 * JQuery
